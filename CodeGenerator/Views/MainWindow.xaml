@@ -313,6 +313,7 @@
                                     </Grid>
 
                                     <Button
+                                        x:Name="DeleteFileSuffixButton"
                                         Width="20"
                                         Height="20"
                                         Margin="3,0,0,0"
@@ -321,11 +322,12 @@
                                         hc:BorderElement.CornerRadius="10"
                                         Background="Transparent"
                                         BorderThickness="0"
-                                        Command="{Binding DataContext.DeleteFileSuffixCommand, ElementName=FileSuffixListBox}"
+                                        Click="DeleteFileSuffixButton_OnClick"
                                         Content="&#xe60a;"
                                         FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                         Foreground="White"
-                                        Style="{StaticResource ButtonCustom}" />
+                                        Style="{StaticResource ButtonCustom}"
+                                        Tag="{Binding}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

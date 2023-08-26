@@ -3,10 +3,11 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using CodeGenerator.Events;
 using CodeGenerator.Views;
 using HandyControl.Controls;
-using Newtonsoft.Json;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using MessageBox = HandyControl.Controls.MessageBox;
 
@@ -76,13 +77,12 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand ItemSelectedCommand { set; get; }
         public DelegateCommand ItemRemoveCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeButton { set; get; }
-        public DelegateCommand DeleteFileSuffixCommand { set; get; }
 
         #endregion
 
         private MainWindow _window;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IEventAggregator eventAggregator)
         {
             WindowLoadedCommand = new DelegateCommand<MainWindow>(delegate(MainWindow window)
             {
@@ -94,6 +94,11 @@ namespace CodeGenerator.ViewModels
                         _window.DragMove();
                     }
                 };
+            });
+
+            eventAggregator.GetEvent<FileSuffixTagEvent>().Subscribe(delegate(string s)
+            {
+                FileSuffixCollection.Remove(s);
             });
 
             OutputSettingCommand = new DelegateCommand(delegate
@@ -165,13 +170,6 @@ namespace CodeGenerator.ViewModels
                 {
                     FileSuffixCollection.Add($".{_suffixType}");
                 }
-            });
-
-            DeleteFileSuffixCommand = new DelegateCommand(delegate
-            {
-                Console.WriteLine(_window.FileSuffixListBox.SelectedIndex);
-                Console.WriteLine(JsonConvert.SerializeObject(FileSuffixCollection));
-                // FileSuffixCollection.RemoveAt(_window.FileSuffixListBox.SelectedIndex);
             });
         }
     }
