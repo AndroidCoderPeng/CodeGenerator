@@ -160,17 +160,17 @@ namespace CodeGenerator.ViewModels
             //左侧列表选中事件
             DirItemSelectedCommand = new DelegateCommand(delegate
             {
-                // var dirPath = _window.DirListBox.SelectedItem.ToString();
-                // if (FileCollection.Any())
-                // {
-                //     FileCollection.Clear();
-                // }
-                //
-                // var files = dirPath.GetDirFiles();
-                // foreach (var file in files)
-                // {
-                //     FileCollection.Add(file);
-                // }
+                var dirPath = _window.DirListBox.SelectedItem.ToString();
+                if (FileCollection.Any())
+                {
+                    FileCollection.Clear();
+                }
+                
+                var files = dirPath.GetDirFiles();
+                foreach (var file in files)
+                {
+                    FileCollection.Add(file);
+                }
             });
 
             MouseHoverCommand = new DelegateCommand(delegate { });

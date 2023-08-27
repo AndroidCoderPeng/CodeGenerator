@@ -167,8 +167,12 @@
                         BorderThickness="0"
                         ItemsSource="{Binding DirItemCollection}">
                         <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="SelectionChanged">
+                            <b:EventTrigger EventName="MouseLeftButtonUp">
                                 <b:InvokeCommandAction Command="{Binding DirItemSelectedCommand}" />
+                            </b:EventTrigger>
+                            
+                            <b:EventTrigger EventName="MouseRightButtonUp">
+                                <b:InvokeCommandAction Command="{Binding DirItemRemoveCommand}" />
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
 
@@ -182,12 +186,6 @@
                                     BorderThickness="0"
                                     CornerRadius="5">
                                     <StackPanel Margin="0,0,10,0" Orientation="Horizontal">
-                                        <b:Interaction.Triggers>
-                                            <b:EventTrigger EventName="MouseRightButtonUp">
-                                                <b:InvokeCommandAction Command="{Binding DataContext.DirItemRemoveCommand, ElementName=DirListBox}" />
-                                            </b:EventTrigger>
-                                        </b:Interaction.Triggers>
-
                                         <Image
                                             Width="35"
                                             Height="35"
