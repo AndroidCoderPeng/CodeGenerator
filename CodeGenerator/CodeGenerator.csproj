@@ -126,5 +126,8 @@
   <ItemGroup>
     <Resource Include="Images\launcher.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\dir_file.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

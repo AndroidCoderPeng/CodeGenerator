@@ -15,7 +15,7 @@ namespace CodeGenerator.Utils
         {
             return new DirectoryInfo(rootDir)
                 .GetFiles("*.*", SearchOption.AllDirectories)
-                .Select(file => file.Extension)
+                .Select(file => file.Name)
                 .ToList();
         }
     }

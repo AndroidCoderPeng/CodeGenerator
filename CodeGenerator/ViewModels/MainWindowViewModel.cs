@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using CodeGenerator.Events;
+using CodeGenerator.Utils;
 using CodeGenerator.Views;
 using HandyControl.Controls;
 using Prism.Commands;
@@ -17,14 +18,14 @@ namespace CodeGenerator.ViewModels
     {
         #region VM
 
-        private ObservableCollection<string> _itemCollection = new ObservableCollection<string>();
+        private ObservableCollection<string> _dirItemCollection = new ObservableCollection<string>();
 
-        public ObservableCollection<string> ItemCollection
+        public ObservableCollection<string> DirItemCollection
         {
-            get => _itemCollection;
+            get => _dirItemCollection;
             set
             {
-                _itemCollection = value;
+                _dirItemCollection = value;
                 RaisePropertyChanged();
             }
         }
@@ -65,6 +66,18 @@ namespace CodeGenerator.ViewModels
             }
         }
 
+        private ObservableCollection<string> _fileCollection = new ObservableCollection<string>();
+
+        public ObservableCollection<string> FileCollection
+        {
+            get => _fileCollection;
+            set
+            {
+                _fileCollection = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #endregion
 
         #region DelegateCommand
@@ -74,9 +87,12 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand MiniSizeWindowCommand { set; get; }
         public DelegateCommand CloseWindowCommand { set; get; }
         public DelegateCommand SelectDirCommand { set; get; }
-        public DelegateCommand ItemSelectedCommand { set; get; }
-        public DelegateCommand ItemRemoveCommand { set; get; }
+        public DelegateCommand DirItemSelectedCommand { set; get; }
+        public DelegateCommand DirItemRemoveCommand { set; get; }
+        public DelegateCommand MouseHoverCommand { set; get; }
+        public DelegateCommand FileRemoveCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeButton { set; get; }
+        public DelegateCommand GeneratorCodeCommand { set; get; }
 
         #endregion
 
@@ -119,32 +135,68 @@ namespace CodeGenerator.ViewModels
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     var dirPath = dialog.SelectedPath;
-                    var lastIndex = dirPath.LastIndexOf("\\", StringComparison.Ordinal);
-
-                    var dirName = dirPath.Substring(lastIndex + 1);
-                    if (ItemCollection.Contains(dirName))
+                    if (DirItemCollection.Contains(dirPath))
                     {
                         Growl.Error("文件夹已添加，请勿重复添加");
                         return;
                     }
 
-                    ItemCollection.Add(dirName);
+                    DirItemCollection.Add(dirPath);
 
                     //遍历文件夹
+                    if (FileCollection.Any())
+                    {
+                        FileCollection.Clear();
+                    }
+
+                    var files = dirPath.GetDirFiles();
+                    foreach (var file in files)
+                    {
+                        FileCollection.Add(file);
+                    }
                 }
             });
 
-            ItemSelectedCommand = new DelegateCommand(delegate { });
+            //左侧列表选中事件
+            DirItemSelectedCommand = new DelegateCommand(delegate
+            {
+                // var dirPath = _window.DirListBox.SelectedItem.ToString();
+                // if (FileCollection.Any())
+                // {
+                //     FileCollection.Clear();
+                // }
+                //
+                // var files = dirPath.GetDirFiles();
+                // foreach (var file in files)
+                // {
+                //     FileCollection.Add(file);
+                // }
+            });
 
-            //ListBox右键删除功能菜单
-            ItemRemoveCommand = new DelegateCommand(delegate
+            MouseHoverCommand = new DelegateCommand(delegate { });
+
+            //左侧列表右键删除功能菜单
+            DirItemRemoveCommand = new DelegateCommand(delegate
             {
                 var boxResult = MessageBox.Show(
                     "是否从列表移除此文件夹", "温馨提示", MessageBoxButton.OKCancel, MessageBoxImage.Warning
                 );
                 if (boxResult == MessageBoxResult.OK)
                 {
-                    ItemCollection.RemoveAt(_window.FileDirListBox.SelectedIndex);
+                    DirItemCollection.RemoveAt(_window.DirListBox.SelectedIndex);
+                    FileCollection.Clear();
+                }
+            });
+
+            //中间列表右键删除文件
+            FileRemoveCommand = new DelegateCommand(delegate
+            {
+                var boxResult = MessageBox.Show(
+                    "是否移除此文件", "温馨提示", MessageBoxButton.OKCancel, MessageBoxImage.Warning
+                );
+                if (boxResult == MessageBoxResult.OK)
+                {
+                    FileCollection.RemoveAt(_window.FileListBox.SelectedIndex);
                 }
             });
 
@@ -171,6 +223,8 @@ namespace CodeGenerator.ViewModels
                     FileSuffixCollection.Add($".{_suffixType}");
                 }
             });
+
+            GeneratorCodeCommand = new DelegateCommand(delegate { });
         }
     }
 }
