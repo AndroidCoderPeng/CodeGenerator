@@ -11,12 +11,9 @@ namespace CodeGenerator.Utils
         /// </summary>
         /// <param name="rootDir"></param>
         /// <returns></returns>
-        public static List<string> GetDirFiles(this string rootDir)
+        public static List<FileInfo> GetDirFiles(this string rootDir)
         {
-            return new DirectoryInfo(rootDir)
-                .GetFiles("*.*", SearchOption.AllDirectories)
-                .Select(file => file.Name)
-                .ToList();
+            return new DirectoryInfo(rootDir).GetFiles("*.*", SearchOption.AllDirectories).ToList();
         }
     }
 }

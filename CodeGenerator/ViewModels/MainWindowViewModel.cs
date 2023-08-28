@@ -151,7 +151,7 @@ namespace CodeGenerator.ViewModels
                     var files = dirPath.GetDirFiles();
                     foreach (var file in files)
                     {
-                        FileCollection.Add(file);
+                        FileCollection.Add(file.Name);
                     }
                 }
             });
@@ -168,7 +168,7 @@ namespace CodeGenerator.ViewModels
                 var files = dirPath.GetDirFiles();
                 foreach (var file in files)
                 {
-                    FileCollection.Add(file);
+                    FileCollection.Add(file.Name);
                 }
             });
 
