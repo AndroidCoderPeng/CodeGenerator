@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -234,7 +233,13 @@ namespace CodeGenerator.ViewModels
                     outputFilePath = $"{_outputDirPath}\\软著代码.doc";
                 }
 
-                Console.WriteLine(outputFilePath);
+                if (!_fileSuffixCollection.Any())
+                {
+                    Growl.Error("请设置需要格式化的文件后缀");
+                    return;
+                }
+                
+                //按照设置的文件后缀遍历文件，然后生成doc
             });
         }
     }
