@@ -8,8 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
     Title="软著代码生成器"
-    Width="1366"
-    Height="768"
+    Width="1280"
+    Height="720"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
@@ -309,7 +309,7 @@
 
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="Width" Value="150" />
+                            <Setter Property="Width" Value="165" />
                             <Setter Property="Margin" Value="1" />
                             <Setter Property="Template">
                                 <Setter.Value>
