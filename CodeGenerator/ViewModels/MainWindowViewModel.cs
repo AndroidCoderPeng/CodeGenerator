@@ -96,6 +96,8 @@ namespace CodeGenerator.ViewModels
         #endregion
 
         private MainWindow _window;
+        private string _dirPath;
+        private readonly ObservableCollection<string> _filePathCollection = new ObservableCollection<string>();
 
         public MainWindowViewModel(IEventAggregator eventAggregator)
         {
@@ -133,43 +135,25 @@ namespace CodeGenerator.ViewModels
                 var dialog = new FolderBrowserDialog();
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    var dirPath = dialog.SelectedPath;
-                    if (DirItemCollection.Contains(dirPath))
+                    _dirPath = dialog.SelectedPath;
+                    if (DirItemCollection.Contains(_dirPath))
                     {
                         Growl.Error("文件夹已添加，请勿重复添加");
                         return;
                     }
 
-                    DirItemCollection.Add(dirPath);
+                    DirItemCollection.Add(_dirPath);
 
                     //遍历文件夹
-                    if (FileCollection.Any())
-                    {
-                        FileCollection.Clear();
-                    }
-
-                    var files = dirPath.GetDirFiles();
-                    foreach (var file in files)
-                    {
-                        FileCollection.Add(file.Name);
-                    }
+                    TraverseDir();
                 }
             });
 
             //左侧列表选中事件
             DirItemSelectedCommand = new DelegateCommand(delegate
             {
-                var dirPath = _window.DirListBox.SelectedItem.ToString();
-                if (FileCollection.Any())
-                {
-                    FileCollection.Clear();
-                }
-
-                var files = dirPath.GetDirFiles();
-                foreach (var file in files)
-                {
-                    FileCollection.Add(file.Name);
-                }
+                _dirPath = _window.DirListBox.SelectedItem.ToString();
+                TraverseDir();
             });
 
             //左侧列表右键删除功能菜单
@@ -238,9 +222,43 @@ namespace CodeGenerator.ViewModels
                     Growl.Error("请设置需要格式化的文件后缀");
                     return;
                 }
+
+                //按照设置的文件后缀遍历文件
+                TraverseDir();
+
+                foreach (var path in _filePathCollection)
+                {
+                    //根据文件路径获取文件内容
+                }
                 
-                //按照设置的文件后缀遍历文件，然后生成doc
+                //生成doc
             });
+        }
+
+        /// <summary>
+        /// 遍历文件夹
+        /// </summary>
+        private void TraverseDir()
+        {
+            if (FileCollection.Any())
+            {
+                FileCollection.Clear();
+            }
+
+            if (_filePathCollection.Any())
+            {
+                _filePathCollection.Clear();
+            }
+
+            var files = _dirPath.GetDirFiles();
+            foreach (var file in files)
+            {
+                FileCollection.Add(file.Name);
+                if (_fileSuffixCollection.Contains(file.Extension))
+                {
+                    _filePathCollection.Add(file.FullName);
+                }
+            }
         }
     }
 }
