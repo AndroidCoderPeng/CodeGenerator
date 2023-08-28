@@ -89,8 +89,6 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand SelectDirCommand { set; get; }
         public DelegateCommand DirItemSelectedCommand { set; get; }
         public DelegateCommand DirItemRemoveCommand { set; get; }
-        public DelegateCommand MouseEnterCommand { set; get; }
-        public DelegateCommand MouseLeaveCommand { set; get; }
         public DelegateCommand FileRemoveCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeButton { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
@@ -172,16 +170,6 @@ namespace CodeGenerator.ViewModels
                 {
                     FileCollection.Add(file);
                 }
-            });
-
-            MouseEnterCommand = new DelegateCommand(delegate
-            {
-                Growl.Success("635465465");
-            });
-            
-            MouseLeaveCommand = new DelegateCommand(delegate
-            {
-                Growl.Clear();
             });
 
             //左侧列表右键删除功能菜单

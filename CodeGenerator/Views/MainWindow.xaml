@@ -185,17 +185,10 @@
                                     Background="#F1F1F1"
                                     BorderThickness="0"
                                     CornerRadius="5">
-                                    <StackPanel Margin="0,0,10,0" Orientation="Horizontal">
-                                        <b:Interaction.Triggers>
-                                            <b:EventTrigger EventName="MouseEnter">
-                                                <b:InvokeCommandAction Command="{Binding DataContext.MouseEnterCommand, ElementName=DirListBox}" />
-                                            </b:EventTrigger>
-
-                                            <b:EventTrigger EventName="MouseLeave">
-                                                <b:InvokeCommandAction Command="{Binding DataContext.MouseLeaveCommand, ElementName=DirListBox}" />
-                                            </b:EventTrigger>
-                                        </b:Interaction.Triggers>
-
+                                    <StackPanel
+                                        Margin="0,0,10,0"
+                                        Orientation="Horizontal"
+                                        ToolTip="{Binding}">
                                         <Image
                                             Width="35"
                                             Height="35"
@@ -272,7 +265,7 @@
                     SelectedIndex="0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
+                            <Grid ToolTip="{Binding}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
