@@ -80,14 +80,21 @@
                     </StackPanel>
                 </StackPanel>
 
-                <TextBlock
+                <DockPanel
                     Grid.Column="1"
                     Margin="30,0"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="18"
-                    Foreground="White"
-                    Text="{Binding OutputFilePath}" />
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        FontSize="18"
+                        Foreground="White"
+                        Text="文档输出路径：" />
+
+                    <TextBlock
+                        FontSize="18"
+                        Foreground="White"
+                        Text="{Binding OutputDirPath}" />
+                </DockPanel>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <Button

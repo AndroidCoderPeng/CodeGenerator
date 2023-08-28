@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
@@ -30,14 +31,14 @@ namespace CodeGenerator.ViewModels
             }
         }
 
-        private string _outputFilePath = "文档输出路径：";
+        private string _outputDirPath = string.Empty;
 
-        public string OutputFilePath
+        public string OutputDirPath
         {
-            get => _outputFilePath;
+            get => _outputDirPath;
             set
             {
-                _outputFilePath = value;
+                _outputDirPath = value;
                 RaisePropertyChanged();
             }
         }
@@ -122,7 +123,7 @@ namespace CodeGenerator.ViewModels
                 dialog.Description = @"请选择文档保存路径";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    OutputFilePath = $"文档输出路径：{dialog.SelectedPath}";
+                    OutputDirPath = dialog.SelectedPath;
                 }
             });
             MiniSizeWindowCommand = new DelegateCommand(delegate { _window.WindowState = WindowState.Minimized; });
@@ -221,7 +222,20 @@ namespace CodeGenerator.ViewModels
                 }
             });
 
-            GeneratorCodeCommand = new DelegateCommand(delegate { });
+            GeneratorCodeCommand = new DelegateCommand(delegate
+            {
+                string outputFilePath;
+                if (string.IsNullOrWhiteSpace(_outputDirPath))
+                {
+                    outputFilePath = @"C:\Users\Administrator\Desktop\软著代码.doc";
+                }
+                else
+                {
+                    outputFilePath = $"{_outputDirPath}\\软著代码.doc";
+                }
+
+                Console.WriteLine(outputFilePath);
+            });
         }
     }
 }
