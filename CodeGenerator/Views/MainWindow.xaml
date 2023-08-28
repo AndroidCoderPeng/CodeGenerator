@@ -294,8 +294,8 @@
                                 <TextBlock
                                     Grid.Row="1"
                                     Margin="5,0,5,5"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding}" />
+                                    Text="{Binding}"
+                                    TextAlignment="Center" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -314,9 +314,20 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                        <Border x:Name="ListBoxItemBorder">
+                                        <Border x:Name="ListBoxItemBorder" CornerRadius="7">
                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                         </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                                <Setter Property="TextBlock.Foreground" Value="White" />
+                                            </Trigger>
+
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                                <Setter Property="TextBlock.Foreground" Value="White" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
