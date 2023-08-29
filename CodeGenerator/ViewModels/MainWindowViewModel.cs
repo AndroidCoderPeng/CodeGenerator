@@ -261,6 +261,12 @@ namespace CodeGenerator.ViewModels
                 TraverseDir();
 
                 //启动文件处理后台线程
+                if (_backgroundWorker.IsBusy)
+                {
+                    Growl.Error("当前正在处理文件中，无法同时运行多个任务");
+                    return;
+                }
+
                 _backgroundWorker.RunWorkerAsync();
             });
         }

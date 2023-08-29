@@ -318,12 +318,7 @@
                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                         </Border>
                                         <ControlTemplate.Triggers>
-                                            <Trigger Property="IsFocused" Value="True">
-                                                <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
-                                                <Setter Property="TextBlock.Foreground" Value="White" />
-                                            </Trigger>
-
-                                            <Trigger Property="IsSelected" Value="True">
+                                            <Trigger Property="IsMouseOver" Value="True">
                                                 <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
                                                 <Setter Property="TextBlock.Foreground" Value="White" />
                                             </Trigger>
