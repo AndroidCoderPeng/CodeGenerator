@@ -449,6 +449,8 @@
                         Command="{Binding GeneratorCodeCommand}"
                         Content="生成文档"
                         FontSize="16"
+                        IsChecked="{Binding IsUnderHandle, Mode=TwoWay}"
+                        Progress="{Binding HandleTextProgress}"
                         Style="{StaticResource ProgressButtonPrimary}" />
                 </Grid>
             </Grid>

@@ -1,5 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -78,6 +81,29 @@ namespace CodeGenerator.ViewModels
             }
         }
 
+        private int _handleTextProgress;
+
+        public int HandleTextProgress
+        {
+            get => _handleTextProgress;
+            set
+            {
+                _handleTextProgress = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _isUnderHandle;
+
+        public bool IsUnderHandle
+        {
+            get => _isUnderHandle;
+            set
+            {
+                _isUnderHandle = value;
+                RaisePropertyChanged();
+            }
+        }
         #endregion
 
         #region DelegateCommand
@@ -97,10 +123,19 @@ namespace CodeGenerator.ViewModels
 
         private MainWindow _window;
         private string _dirPath;
+        private string _outputFilePath;
         private readonly ObservableCollection<string> _filePathCollection = new ObservableCollection<string>();
+        private readonly BackgroundWorker _backgroundWorker;
 
         public MainWindowViewModel(IEventAggregator eventAggregator)
         {
+            _backgroundWorker = new BackgroundWorker();
+            _backgroundWorker.WorkerReportsProgress = true;
+            _backgroundWorker.WorkerSupportsCancellation = true;
+            _backgroundWorker.DoWork += Worker_OnDoWork;
+            _backgroundWorker.ProgressChanged += Worker_OnProgressChanged;
+            _backgroundWorker.RunWorkerCompleted += Worker_OnRunWorkerCompleted;
+
             WindowLoadedCommand = new DelegateCommand<MainWindow>(delegate(MainWindow window)
             {
                 _window = window;
@@ -207,31 +242,26 @@ namespace CodeGenerator.ViewModels
 
             GeneratorCodeCommand = new DelegateCommand(delegate
             {
-                string outputFilePath;
-                if (string.IsNullOrWhiteSpace(_outputDirPath))
-                {
-                    outputFilePath = @"C:\Users\Administrator\Desktop\软著代码.doc";
-                }
-                else
-                {
-                    outputFilePath = $"{_outputDirPath}\\软著代码.doc";
-                }
-
                 if (!_fileSuffixCollection.Any())
                 {
                     Growl.Error("请设置需要格式化的文件后缀");
                     return;
                 }
 
+                if (string.IsNullOrWhiteSpace(_outputDirPath))
+                {
+                    _outputFilePath = @"C:\Users\Administrator\Desktop\软著代码.txt";
+                }
+                else
+                {
+                    _outputFilePath = $"{_outputDirPath}\\软著代码.txt";
+                }
+
                 //按照设置的文件后缀遍历文件
                 TraverseDir();
 
-                foreach (var path in _filePathCollection)
-                {
-                    //根据文件路径获取文件内容
-                }
-                
-                //生成doc
+                //启动文件处理后台线程
+                _backgroundWorker.RunWorkerAsync();
             });
         }
 
@@ -259,6 +289,34 @@ namespace CodeGenerator.ViewModels
                     _filePathCollection.Add(file.FullName);
                 }
             }
+        }
+
+        private void Worker_OnDoWork(object sender, DoWorkEventArgs e)
+        {
+            //所有符合要求的代码文件内容
+            var codeContentArray = _filePathCollection.Select(File.ReadAllText).ToList();
+            //根据文件路径获取文件内容
+
+            //去掉空行
+            for (var i = 0; i < codeContentArray.Count; i++)
+            {
+                var percent = (i + 1) / (float)codeContentArray.Count;
+                _backgroundWorker.ReportProgress((int)(percent * 100));
+                Thread.Sleep(50);
+            }
+
+            //生成doc
+            // File.AppendAllLines(_outputFilePath, txtArray);
+        }
+
+        private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            HandleTextProgress = e.ProgressPercentage;
+        }
+
+        private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsUnderHandle = false;
         }
     }
 }
