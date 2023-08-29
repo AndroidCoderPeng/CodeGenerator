@@ -1,8 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -104,6 +105,7 @@ namespace CodeGenerator.ViewModels
                 RaisePropertyChanged();
             }
         }
+
         #endregion
 
         #region DelegateCommand
@@ -300,24 +302,26 @@ namespace CodeGenerator.ViewModels
         private void Worker_OnDoWork(object sender, DoWorkEventArgs e)
         {
             //所有符合要求的代码文件内容
-            var codeContentArray = _filePathCollection.Select(File.ReadAllText).ToList();
-            //根据文件路径获取文件内容
-
-            //去掉空行
-            for (var i = 0; i < codeContentArray.Count; i++)
+            var codeContentArray = new List<string>();
+            var i = 0;
+            foreach (var filePath in _filePathCollection)
             {
-                var percent = (i + 1) / (float)codeContentArray.Count;
+                var codeContent = File.ReadAllText(filePath);
+                codeContentArray.Add(codeContent);
+
+                i++;
+                var percent = i / (float)_filePathCollection.Count;
                 _backgroundWorker.ReportProgress((int)(percent * 100));
-                Thread.Sleep(50);
             }
 
             //生成doc
-            // File.AppendAllLines(_outputFilePath, txtArray);
+            // File.AppendAllLines(_outputFilePath, codeContentArray);
         }
 
         private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             HandleTextProgress = e.ProgressPercentage;
+            Console.WriteLine(HandleTextProgress);
         }
 
         private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
