@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -335,7 +336,14 @@ namespace CodeGenerator.ViewModels
                 Size = 10
             };
             paragraph.Append(text, fmt);
-            docX.Save();
+            try
+            {
+                docX.Save();
+            }
+            catch (ArgumentException)
+            {
+                Growl.Error("非字符串类型，无法写入Word文档");
+            }
         }
 
         private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e)
