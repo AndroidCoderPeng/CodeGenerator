@@ -124,10 +124,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\start_background.png" />
-    <Resource Include="Images\start_icon2.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\dir.png" />
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\dir_file.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\bg_launcher.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
