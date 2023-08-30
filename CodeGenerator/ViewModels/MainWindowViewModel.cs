@@ -15,6 +15,8 @@ using HandyControl.Controls;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Xceed.Document.NET;
+using Xceed.Words.NET;
 using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace CodeGenerator.ViewModels
@@ -242,11 +244,11 @@ namespace CodeGenerator.ViewModels
 
                 if (string.IsNullOrWhiteSpace(_outputDirPath))
                 {
-                    _outputFilePath = @"C:\Users\Administrator\Desktop\软著代码.txt";
+                    _outputFilePath = @"C:\Users\Administrator\Desktop\软著代码";
                 }
                 else
                 {
-                    _outputFilePath = $"{_outputDirPath}\\软著代码.txt";
+                    _outputFilePath = $"{_outputDirPath}\\软著代码";
                 }
 
                 //按照设置的文件后缀遍历文件
@@ -315,8 +317,20 @@ namespace CodeGenerator.ViewModels
                 Thread.Sleep(20);
             }
 
-            //生成doc
-            File.WriteAllLines(_outputFilePath, codeContentArray);
+            //生成带有缩进格式的Text，便于写入word
+            File.WriteAllLines($"{_outputFilePath}.txt", codeContentArray);
+
+            //读取整篇格式化好了的Text写入word
+            var text = File.ReadAllText($"{_outputFilePath}.txt");
+            var docX = DocX.Create(_outputFilePath);
+            var paragraph = docX.InsertParagraph();
+            var fmt = new Formatting
+            {
+                FontFamily = new Font("微软雅黑"),
+                Size = 10
+            };
+            paragraph.Append(text, fmt);
+            docX.Save();
         }
 
         private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e)
