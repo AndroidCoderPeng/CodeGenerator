@@ -296,25 +296,27 @@ namespace CodeGenerator.ViewModels
             var i = 0;
             foreach (var filePath in _filePathCollection)
             {
-                //读取源文件
-                var codeContent = File.ReadAllText(filePath);
-
-                //去掉空行
-
-                //将处理好的内容缓存到List
-                codeContentArray.Add(codeContent);
+                //读取源文件，跳过读取空白行
+                var lines = File.ReadAllLines(filePath);
+                foreach (var line in lines)
+                {
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        codeContentArray.Add(line);
+                    }
+                }
 
                 //更新处理进度
                 i++;
                 var percent = i / (float)_filePathCollection.Count;
                 _backgroundWorker.ReportProgress((int)(percent * 100));
-                
+
                 //此行代码根据情况可选择删除或者保留
                 Thread.Sleep(20);
             }
 
             //生成doc
-            File.AppendAllLines(_outputFilePath, codeContentArray);
+            File.WriteAllLines(_outputFilePath, codeContentArray);
         }
 
         private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e)
