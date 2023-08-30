@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
@@ -242,9 +242,14 @@ namespace CodeGenerator.ViewModels
                     return;
                 }
 
+                var current = WindowsIdentity.GetCurrent();
+                //DESKTOP-3JOGREU\Administrator
+                var currentName = current.Name;
+                var userName = currentName.Split('\\')[1];
+
                 if (string.IsNullOrWhiteSpace(_outputDirPath))
                 {
-                    _outputFilePath = @"C:\Users\Administrator\Desktop\软著代码";
+                    _outputFilePath = $@"C:\Users\{userName}\Desktop\软著代码";
                 }
                 else
                 {
@@ -336,7 +341,6 @@ namespace CodeGenerator.ViewModels
         private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             HandleTextProgress = e.ProgressPercentage;
-            Console.WriteLine(HandleTextProgress);
         }
 
         private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

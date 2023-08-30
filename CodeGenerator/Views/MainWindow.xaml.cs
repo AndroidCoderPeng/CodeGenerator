@@ -11,11 +11,11 @@ namespace CodeGenerator.Views
     public partial class MainWindow
     {
         private readonly IEventAggregator _eventAggregator;
-        
+
         public MainWindow(IEventAggregator eventAggregator)
         {
             InitializeComponent();
-            
+
             _eventAggregator = eventAggregator;
         }
 
@@ -25,10 +25,10 @@ namespace CodeGenerator.Views
             {
                 return;
             }
-            
+
             _eventAggregator.GetEvent<FileNameTagEvent>().Publish(button.Tag.ToString());
         }
-        
+
         private void DeleteFileSuffixButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (!(sender is Button button))
