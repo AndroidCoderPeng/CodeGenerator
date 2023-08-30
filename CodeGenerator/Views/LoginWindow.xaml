@@ -5,8 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="LoginWindow"
-    Width="1280"
-    Height="720"
+    Width="900"
+    Height="600"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
@@ -27,8 +27,8 @@
 
         <StackPanel VerticalAlignment="Center" Orientation="Vertical">
             <Image
-                Width="458"
-                Height="330"
+                Width="344"
+                Height="247"
                 Source="/CodeGenerator;component/Images/start_icon2.png" />
             <TextBlock
                 Margin="0,20,0,0"
