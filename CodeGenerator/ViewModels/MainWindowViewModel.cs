@@ -117,7 +117,6 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand SelectDirCommand { set; get; }
         public DelegateCommand DirItemSelectedCommand { set; get; }
         public DelegateCommand DirItemRemoveCommand { set; get; }
-        public DelegateCommand FileRemoveCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeButton { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
 
@@ -150,6 +149,8 @@ namespace CodeGenerator.ViewModels
                 };
             });
 
+            eventAggregator.GetEvent<FileNameTagEvent>().Subscribe(delegate(string s) { FileCollection.Remove(s); });
+            
             eventAggregator.GetEvent<FileSuffixTagEvent>().Subscribe(delegate(string s)
             {
                 FileSuffixCollection.Remove(s);
@@ -203,18 +204,6 @@ namespace CodeGenerator.ViewModels
                 {
                     DirItemCollection.RemoveAt(_window.DirListBox.SelectedIndex);
                     FileCollection.Clear();
-                }
-            });
-
-            //中间列表右键删除文件
-            FileRemoveCommand = new DelegateCommand(delegate
-            {
-                var boxResult = MessageBox.Show(
-                    "是否移除此文件", "温馨提示", MessageBoxButton.OKCancel, MessageBoxImage.Warning
-                );
-                if (boxResult == MessageBoxResult.OK)
-                {
-                    FileCollection.RemoveAt(_window.FileListBox.SelectedIndex);
                 }
             });
 
