@@ -134,15 +134,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\dir.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\launcher.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\dir_file.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\bg_launcher.png" />
+    <Resource Include="Images\bg_main_frame_1.jpg" />
+    <Resource Include="Images\bg_main_frame_2.jpg" />
+    <Resource Include="Images\bg_main_frame_3.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

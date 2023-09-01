@@ -37,12 +37,7 @@
         <DockPanel LastChildFill="True">
             <Grid DockPanel.Dock="Top">
                 <Grid.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Offset="0.0" Color="DarkBlue" />
-                        <GradientStop Offset="0.25" Color="LightBlue" />
-                        <GradientStop Offset="0.75" Color="LightBlue" />
-                        <GradientStop Offset="1.0" Color="DarkBlue" />
-                    </LinearGradientBrush>
+                    <ImageBrush ImageSource="/CodeGenerator;component/Images/bg_main_frame_1.jpg" Stretch="UniformToFill" />
                 </Grid.Background>
 
                 <Grid.ColumnDefinitions>
