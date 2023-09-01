@@ -261,10 +261,17 @@
                 <Grid Grid.Column="1" Background="LightGray" />
 
                 <ListBox
+                    x:Name="FileListBox"
                     Grid.Column="2"
                     BorderThickness="0"
                     ItemsSource="{Binding FileCollection}"
                     SelectedIndex="0">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="MouseDoubleClick">
+                            <b:InvokeCommandAction Command="{Binding MouseDoubleClickCommand}" />
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid ToolTip="{Binding}">

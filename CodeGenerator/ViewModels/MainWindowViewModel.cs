@@ -121,6 +121,7 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand SelectDirCommand { set; get; }
         public DelegateCommand DirItemSelectedCommand { set; get; }
         public DelegateCommand DirItemRemoveCommand { set; get; }
+        public DelegateCommand MouseDoubleClickCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeButton { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
 
@@ -129,7 +130,17 @@ namespace CodeGenerator.ViewModels
         private MainWindow _window;
         private string _dirPath;
         private string _outputFilePath;
+
+        /// <summary>
+        /// 需要格式化的文件全路径集
+        /// </summary>
+        private readonly ObservableCollection<string> _generateFilePathCollection = new ObservableCollection<string>();
+
+        /// <summary>
+        /// 不做限制的文件全路径集
+        /// </summary>
         private readonly ObservableCollection<string> _filePathCollection = new ObservableCollection<string>();
+
         private readonly BackgroundWorker _backgroundWorker;
 
         public MainWindowViewModel(IEventAggregator eventAggregator)
@@ -211,6 +222,21 @@ namespace CodeGenerator.ViewModels
                 }
             });
 
+            //打开文件
+            MouseDoubleClickCommand = new DelegateCommand(delegate
+            {
+                var fileIndex = _window.FileListBox.SelectedIndex;
+                var file = new FileInfo(_filePathCollection[fileIndex]);
+                if (RuntimeCache.ImageSuffixArray.Contains(file.Extension))
+                {
+                    new ShowImageWindow(file) { Owner = _window }.Show();
+                }
+                else
+                {
+                    new ShowTextWindow(file) { Owner = _window }.Show();
+                }
+            });
+
             AddFileSuffixTypeButton = new DelegateCommand(delegate
             {
                 if (string.IsNullOrWhiteSpace(_suffixType))
@@ -281,18 +307,19 @@ namespace CodeGenerator.ViewModels
                 FileCollection.Clear();
             }
 
-            if (_filePathCollection.Any())
+            if (_generateFilePathCollection.Any())
             {
-                _filePathCollection.Clear();
+                _generateFilePathCollection.Clear();
             }
 
             var files = _dirPath.GetDirFiles();
             foreach (var file in files)
             {
                 FileCollection.Add(file.Name);
+                _filePathCollection.Add(file.FullName);
                 if (_fileSuffixCollection.Contains(file.Extension))
                 {
-                    _filePathCollection.Add(file.FullName);
+                    _generateFilePathCollection.Add(file.FullName);
                 }
             }
         }
@@ -302,7 +329,7 @@ namespace CodeGenerator.ViewModels
             //所有符合要求的代码文件内容
             var codeContentArray = new List<string>();
             var i = 0;
-            foreach (var filePath in _filePathCollection)
+            foreach (var filePath in _generateFilePathCollection)
             {
                 //读取源文件，跳过读取空白行
                 var lines = File.ReadAllLines(filePath);
@@ -316,7 +343,7 @@ namespace CodeGenerator.ViewModels
 
                 //更新处理进度
                 i++;
-                var percent = i / (float)_filePathCollection.Count;
+                var percent = i / (float)_generateFilePathCollection.Count;
                 _backgroundWorker.ReportProgress((int)(percent * 100));
 
                 //此行代码根据情况可选择删除或者保留
@@ -333,7 +360,7 @@ namespace CodeGenerator.ViewModels
             var fmt = new Formatting
             {
                 FontFamily = new Font("微软雅黑"),
-                Size = 10
+                Size = 8 //软著要求煤业50行代码，8号字体正好合适
             };
             paragraph.Append(text, fmt);
             try
