@@ -233,7 +233,14 @@ namespace CodeGenerator.ViewModels
                 }
                 else
                 {
-                    new ShowTextWindow(file) { Owner = _window }.Show();
+                    if (RuntimeCache.TextSuffixArray.Contains(file.Extension))
+                    {
+                        new ShowTextWindow(file) { Owner = _window }.Show();
+                    }
+                    else
+                    {
+                        Growl.Error("文件类型无法打开，请重新选择");
+                    }
                 }
             });
 
