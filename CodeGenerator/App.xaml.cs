@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using CodeGenerator.Dialogs;
+using CodeGenerator.ViewModels;
 using CodeGenerator.Views;
 using Prism.DryIoc;
 using Prism.Ioc;
@@ -38,6 +40,7 @@ namespace CodeGenerator
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterDialog<AlertDialogView, AlertDialogViewModel>();
         }
     }
 }

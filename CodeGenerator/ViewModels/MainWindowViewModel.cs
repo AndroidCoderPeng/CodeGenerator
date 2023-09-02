@@ -15,8 +15,10 @@ using CodeGenerator.Views;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
+using DialogResult = System.Windows.Forms.DialogResult;
 using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace CodeGenerator.ViewModels
@@ -127,6 +129,7 @@ namespace CodeGenerator.ViewModels
         #endregion
 
         private MainWindow _window;
+        private IDialogService _dialogService;
         private string _dirPath;
         private string _outputFilePath;
 
@@ -142,7 +145,7 @@ namespace CodeGenerator.ViewModels
 
         private readonly BackgroundWorker _backgroundWorker;
 
-        public MainWindowViewModel(IEventAggregator eventAggregator)
+        public MainWindowViewModel(IEventAggregator eventAggregator, IDialogService dialogService)
         {
             _backgroundWorker = new BackgroundWorker();
             _backgroundWorker.WorkerReportsProgress = true;
@@ -170,6 +173,8 @@ namespace CodeGenerator.ViewModels
                 FileSuffixCollection.Remove(s);
             });
 
+            _dialogService = dialogService;
+
             OutputSettingCommand = new DelegateCommand(delegate
             {
                 var dialog = new FolderBrowserDialog();
@@ -190,7 +195,12 @@ namespace CodeGenerator.ViewModels
                     _dirPath = dialog.SelectedPath;
                     if (DirItemCollection.Contains(_dirPath))
                     {
-                        MessageBox.Show("文件夹已添加，请勿重复添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        // MessageBox.Show("文件夹已添加，请勿重复添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _dialogService.ShowDialog(
+                            "AlertDialogView",
+                            new DialogParameters { { "Title", "错误" }, { "Message", "文件夹已添加，请勿重复添加" } },
+                            delegate { }
+                        );
                         return;
                     }
 
@@ -366,7 +376,7 @@ namespace CodeGenerator.ViewModels
 
             //设置有效代码行数
             EffectiveCodeLines = codeContentArray.Count;
-            
+
             //读取整篇格式化好了的Text写入word
             var text = File.ReadAllText($"{_outputFilePath}.txt");
             var docX = DocX.Create(_outputFilePath);
@@ -394,7 +404,6 @@ namespace CodeGenerator.ViewModels
 
         private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
         }
     }
 }

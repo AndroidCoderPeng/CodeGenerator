@@ -29,7 +29,7 @@
         <cvt:VisibilityConverter x:Key="VisibilityConverter" />
     </Window.Resources>
 
-    <Border Margin="5" Background="White">
+    <Border Margin="2" Background="White">
         <Border.Effect>
             <DropShadowEffect
                 BlurRadius="5"
