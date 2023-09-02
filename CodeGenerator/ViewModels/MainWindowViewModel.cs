@@ -365,6 +365,9 @@ namespace CodeGenerator.ViewModels
             //生成带有缩进格式的Text，便于写入word
             File.WriteAllLines($"{_outputFilePath}.txt", codeContentArray);
 
+            //设置有效代码行数
+            EffectiveCodeLines = codeContentArray.Count;
+            
             //读取整篇格式化好了的Text写入word
             var text = File.ReadAllText($"{_outputFilePath}.txt");
             var docX = DocX.Create(_outputFilePath);
@@ -392,7 +395,7 @@ namespace CodeGenerator.ViewModels
 
         private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            EffectiveCodeLines = File.ReadAllLines($"{_outputFilePath}.txt").Length;
+            
         }
     }
 }
