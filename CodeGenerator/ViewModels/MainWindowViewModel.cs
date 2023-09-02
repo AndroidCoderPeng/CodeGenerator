@@ -19,7 +19,6 @@ using Prism.Services.Dialogs;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 using DialogResult = System.Windows.Forms.DialogResult;
-using MessageBox = System.Windows.MessageBox;
 
 namespace CodeGenerator.ViewModels
 {
@@ -220,14 +219,18 @@ namespace CodeGenerator.ViewModels
             //左侧列表右键删除功能菜单
             DirItemRemoveCommand = new DelegateCommand(delegate
             {
-                var boxResult = MessageBox.Show(
-                    "是否从列表移除此文件夹", "温馨提示", MessageBoxButton.OKCancel, MessageBoxImage.Warning
+                _dialogService.ShowDialog(
+                    "AlertControlDialog",
+                    new DialogParameters { { "Title", "温馨提示" }, { "Message", "是否从列表移除此文件夹" } },
+                    delegate(IDialogResult result)
+                    {
+                        if (result.Result == ButtonResult.OK)
+                        {
+                            DirItemCollection.RemoveAt(_window.DirListBox.SelectedIndex);
+                            FileCollection.Clear();
+                        }
+                    }
                 );
-                if (boxResult == MessageBoxResult.OK)
-                {
-                    DirItemCollection.RemoveAt(_window.DirListBox.SelectedIndex);
-                    FileCollection.Clear();
-                }
             });
 
             //打开文件

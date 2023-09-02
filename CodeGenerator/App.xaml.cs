@@ -41,6 +41,7 @@ namespace CodeGenerator
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialog<AlertMessageDialog, AlertMessageDialogViewModel>();
+            containerRegistry.RegisterDialog<AlertControlDialog, AlertControlDialogViewModel>();
         }
     }
 }
