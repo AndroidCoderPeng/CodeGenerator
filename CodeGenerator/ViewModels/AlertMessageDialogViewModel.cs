@@ -5,7 +5,7 @@ using Prism.Services.Dialogs;
 
 namespace CodeGenerator.ViewModels
 {
-    public class AlertDialogViewModel : BindableBase, IDialogAware
+    public class AlertMessageDialogViewModel : BindableBase, IDialogAware
     {
         public string Title { get; private set; }
         public event Action<IDialogResult> RequestClose;
@@ -32,7 +32,7 @@ namespace CodeGenerator.ViewModels
 
         #endregion
 
-        public AlertDialogViewModel()
+        public AlertMessageDialogViewModel()
         {
             CloseAlertCommand = new DelegateCommand(delegate
             {

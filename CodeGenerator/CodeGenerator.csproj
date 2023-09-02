@@ -84,14 +84,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\VisibilityConverter.cs" />
-    <Compile Include="Dialogs\AlertDialogView.xaml.cs">
-      <DependentUpon>AlertDialogView.xaml</DependentUpon>
+    <Compile Include="Dialogs\AlertMessageDialog.xaml.cs">
+      <DependentUpon>AlertMessageDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Events\FileNameTagEvent.cs" />
     <Compile Include="Events\FileSuffixTagEvent.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
     <Compile Include="Utils\RuntimeCache.cs" />
-    <Compile Include="ViewModels\AlertDialogViewModel.cs" />
+    <Compile Include="ViewModels\AlertMessageDialogViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
@@ -110,7 +110,7 @@
     <Compile Include="Views\ShowTextWindow.xaml.cs">
       <DependentUpon>ShowTextWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Dialogs\AlertDialogView.xaml" />
+    <Page Include="Dialogs\AlertMessageDialog.xaml" />
     <Page Include="Views\LoginWindow.xaml" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

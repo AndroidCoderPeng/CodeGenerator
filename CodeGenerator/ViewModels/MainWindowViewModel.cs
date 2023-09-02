@@ -196,7 +196,7 @@ namespace CodeGenerator.ViewModels
                     if (DirItemCollection.Contains(_dirPath))
                     {
                         _dialogService.ShowDialog(
-                            "AlertDialogView",
+                            "AlertMessageDialog",
                             new DialogParameters { { "Title", "错误" }, { "Message", "文件夹已添加，请勿重复添加" } },
                             delegate { }
                         );
@@ -248,7 +248,7 @@ namespace CodeGenerator.ViewModels
                     else
                     {
                         _dialogService.ShowDialog(
-                            "AlertDialogView",
+                            "AlertMessageDialog",
                             new DialogParameters { { "Title", "错误" }, { "Message", "文件类型无法打开，请重新选择" } },
                             delegate { }
                         );
@@ -261,7 +261,7 @@ namespace CodeGenerator.ViewModels
                 if (string.IsNullOrWhiteSpace(_suffixType))
                 {
                     _dialogService.ShowDialog(
-                        "AlertDialogView",
+                        "AlertMessageDialog",
                         new DialogParameters { { "Title", "错误" }, { "Message", "文件类型为空，无法添加" } },
                         delegate { }
                     );
@@ -271,7 +271,7 @@ namespace CodeGenerator.ViewModels
                 if (FileSuffixCollection.Contains(_suffixType) || FileSuffixCollection.Contains($".{_suffixType}"))
                 {
                     _dialogService.ShowDialog(
-                        "AlertDialogView",
+                        "AlertMessageDialog",
                         new DialogParameters { { "Title", "错误" }, { "Message", "文件类型已添加，请勿重复添加" } },
                         delegate { }
                     );
@@ -296,7 +296,7 @@ namespace CodeGenerator.ViewModels
                 if (!_fileSuffixCollection.Any())
                 {
                     _dialogService.ShowDialog(
-                        "AlertDialogView",
+                        "AlertMessageDialog",
                         new DialogParameters { { "Title", "错误" }, { "Message", "请设置需要格式化的文件后缀" } },
                         delegate { }
                     );
@@ -324,7 +324,7 @@ namespace CodeGenerator.ViewModels
                 if (_backgroundWorker.IsBusy)
                 {
                     _dialogService.ShowDialog(
-                        "AlertDialogView",
+                        "AlertMessageDialog",
                         new DialogParameters { { "Title", "错误" }, { "Message", "当前正在处理文件中" } },
                         delegate { }
                     );
@@ -413,7 +413,7 @@ namespace CodeGenerator.ViewModels
             catch (ArgumentException)
             {
                 _dialogService.ShowDialog(
-                    "AlertDialogView",
+                    "AlertMessageDialog",
                     new DialogParameters { { "Title", "错误" }, { "Message", "文件类型错误，无法生成代码文件" } },
                     delegate { }
                 );

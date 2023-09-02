@@ -2,9 +2,9 @@
 
 namespace CodeGenerator.Dialogs
 {
-    public partial class AlertDialogView : UserControl
+    public partial class AlertMessageDialog : UserControl
     {
-        public AlertDialogView()
+        public AlertMessageDialog()
         {
             InitializeComponent();
         }
