@@ -12,7 +12,6 @@ using System.Windows.Input;
 using CodeGenerator.Events;
 using CodeGenerator.Utils;
 using CodeGenerator.Views;
-using HandyControl.Controls;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -191,7 +190,7 @@ namespace CodeGenerator.ViewModels
                     _dirPath = dialog.SelectedPath;
                     if (DirItemCollection.Contains(_dirPath))
                     {
-                        Growl.Error("文件夹已添加，请勿重复添加");
+                        MessageBox.Show("文件夹已添加，请勿重复添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
 
@@ -239,7 +238,7 @@ namespace CodeGenerator.ViewModels
                     }
                     else
                     {
-                        Growl.Error("文件类型无法打开，请重新选择");
+                        MessageBox.Show("文件类型无法打开，请重新选择", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             });
@@ -248,13 +247,13 @@ namespace CodeGenerator.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(_suffixType))
                 {
-                    Growl.Error("文件类型为空，无法添加");
+                    MessageBox.Show("文件类型为空，无法添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 if (FileSuffixCollection.Contains(_suffixType) || FileSuffixCollection.Contains($".{_suffixType}"))
                 {
-                    Growl.Error("文件类型已添加，请勿重复添加");
+                    MessageBox.Show("文件类型已添加，请勿重复添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -275,7 +274,7 @@ namespace CodeGenerator.ViewModels
             {
                 if (!_fileSuffixCollection.Any())
                 {
-                    Growl.Error("请设置需要格式化的文件后缀");
+                    MessageBox.Show("请设置需要格式化的文件后缀", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -299,7 +298,7 @@ namespace CodeGenerator.ViewModels
                 //启动文件处理后台线程
                 if (_backgroundWorker.IsBusy)
                 {
-                    Growl.Error("当前正在处理文件中，无法同时运行多个任务");
+                    MessageBox.Show("当前正在处理文件中", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -384,7 +383,7 @@ namespace CodeGenerator.ViewModels
             }
             catch (ArgumentException)
             {
-                Growl.Error("非字符串类型，无法写入Word文档");
+                MessageBox.Show("当前正在处理文件中", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
