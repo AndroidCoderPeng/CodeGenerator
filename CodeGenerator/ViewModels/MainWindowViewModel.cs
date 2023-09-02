@@ -98,14 +98,14 @@ namespace CodeGenerator.ViewModels
             }
         }
 
-        private bool _isUnderHandle;
+        private int _effectiveCodeLines;
 
-        public bool IsUnderHandle
+        public int EffectiveCodeLines
         {
-            get => _isUnderHandle;
+            get => _effectiveCodeLines;
             set
             {
-                _isUnderHandle = value;
+                _effectiveCodeLines = value;
                 RaisePropertyChanged();
             }
         }
@@ -122,7 +122,7 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand DirItemSelectedCommand { set; get; }
         public DelegateCommand DirItemRemoveCommand { set; get; }
         public DelegateCommand MouseDoubleClickCommand { set; get; }
-        public DelegateCommand AddFileSuffixTypeButton { set; get; }
+        public DelegateCommand AddFileSuffixTypeCommand { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
 
         #endregion
@@ -244,7 +244,7 @@ namespace CodeGenerator.ViewModels
                 }
             });
 
-            AddFileSuffixTypeButton = new DelegateCommand(delegate
+            AddFileSuffixTypeCommand = new DelegateCommand(delegate
             {
                 if (string.IsNullOrWhiteSpace(_suffixType))
                 {
@@ -266,6 +266,9 @@ namespace CodeGenerator.ViewModels
                 {
                     FileSuffixCollection.Add($".{_suffixType}");
                 }
+
+                //添加之后将输入框置空
+                SuffixType = string.Empty;
             });
 
             GeneratorCodeCommand = new DelegateCommand(delegate
@@ -318,6 +321,8 @@ namespace CodeGenerator.ViewModels
             {
                 _generateFilePathCollection.Clear();
             }
+
+            EffectiveCodeLines = 0;
 
             var files = _dirPath.GetDirFiles();
             foreach (var file in files)
@@ -387,7 +392,7 @@ namespace CodeGenerator.ViewModels
 
         private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            IsUnderHandle = false;
+            EffectiveCodeLines = File.ReadAllLines($"{_outputFilePath}.txt").Length;
         }
     }
 }

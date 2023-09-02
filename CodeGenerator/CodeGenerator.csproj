@@ -83,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Events\FileNameTagEvent.cs" />
     <Compile Include="Events\FileSuffixTagEvent.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
