@@ -19,7 +19,7 @@ using Prism.Services.Dialogs;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 using DialogResult = System.Windows.Forms.DialogResult;
-using MessageBox = HandyControl.Controls.MessageBox;
+using MessageBox = System.Windows.MessageBox;
 
 namespace CodeGenerator.ViewModels
 {
@@ -129,7 +129,7 @@ namespace CodeGenerator.ViewModels
         #endregion
 
         private MainWindow _window;
-        private IDialogService _dialogService;
+        private readonly IDialogService _dialogService;
         private string _dirPath;
         private string _outputFilePath;
 
@@ -195,7 +195,6 @@ namespace CodeGenerator.ViewModels
                     _dirPath = dialog.SelectedPath;
                     if (DirItemCollection.Contains(_dirPath))
                     {
-                        // MessageBox.Show("文件夹已添加，请勿重复添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                         _dialogService.ShowDialog(
                             "AlertDialogView",
                             new DialogParameters { { "Title", "错误" }, { "Message", "文件夹已添加，请勿重复添加" } },
@@ -248,7 +247,11 @@ namespace CodeGenerator.ViewModels
                     }
                     else
                     {
-                        MessageBox.Show("文件类型无法打开，请重新选择", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _dialogService.ShowDialog(
+                            "AlertDialogView",
+                            new DialogParameters { { "Title", "错误" }, { "Message", "文件类型无法打开，请重新选择" } },
+                            delegate { }
+                        );
                     }
                 }
             });
@@ -257,13 +260,21 @@ namespace CodeGenerator.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(_suffixType))
                 {
-                    MessageBox.Show("文件类型为空，无法添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _dialogService.ShowDialog(
+                        "AlertDialogView",
+                        new DialogParameters { { "Title", "错误" }, { "Message", "文件类型为空，无法添加" } },
+                        delegate { }
+                    );
                     return;
                 }
 
                 if (FileSuffixCollection.Contains(_suffixType) || FileSuffixCollection.Contains($".{_suffixType}"))
                 {
-                    MessageBox.Show("文件类型已添加，请勿重复添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _dialogService.ShowDialog(
+                        "AlertDialogView",
+                        new DialogParameters { { "Title", "错误" }, { "Message", "文件类型已添加，请勿重复添加" } },
+                        delegate { }
+                    );
                     return;
                 }
 
@@ -284,7 +295,11 @@ namespace CodeGenerator.ViewModels
             {
                 if (!_fileSuffixCollection.Any())
                 {
-                    MessageBox.Show("请设置需要格式化的文件后缀", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _dialogService.ShowDialog(
+                        "AlertDialogView",
+                        new DialogParameters { { "Title", "错误" }, { "Message", "请设置需要格式化的文件后缀" } },
+                        delegate { }
+                    );
                     return;
                 }
 
@@ -308,7 +323,11 @@ namespace CodeGenerator.ViewModels
                 //启动文件处理后台线程
                 if (_backgroundWorker.IsBusy)
                 {
-                    MessageBox.Show("当前正在处理文件中", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    _dialogService.ShowDialog(
+                        "AlertDialogView",
+                        new DialogParameters { { "Title", "错误" }, { "Message", "当前正在处理文件中" } },
+                        delegate { }
+                    );
                     return;
                 }
 
@@ -393,7 +412,11 @@ namespace CodeGenerator.ViewModels
             }
             catch (ArgumentException)
             {
-                MessageBox.Show("当前正在处理文件中", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                _dialogService.ShowDialog(
+                    "AlertDialogView",
+                    new DialogParameters { { "Title", "错误" }, { "Message", "文件类型错误，无法生成代码文件" } },
+                    delegate { }
+                );
             }
         }
 

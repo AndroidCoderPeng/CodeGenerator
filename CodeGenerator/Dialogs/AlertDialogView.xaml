@@ -2,15 +2,13 @@
     x:Class="CodeGenerator.Dialogs.AlertDialogView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
     Width="350"
-    Height="180"
+    Height="150"
     d:DataContext="{d:DesignInstance Type=vm:AlertDialogViewModel}"
-    Background="Transparent"
     mc:Ignorable="d">
 
     <prism:Dialog.WindowStyle>
@@ -22,12 +20,6 @@
             <Setter Property="AllowsTransparency" Value="True" />
         </Style>
     </prism:Dialog.WindowStyle>
-
-    <b:Interaction.Triggers>
-        <b:EventTrigger EventName="Loaded">
-            <b:InvokeCommandAction Command="{Binding DialogLoadedCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
-        </b:EventTrigger>
-    </b:Interaction.Triggers>
 
     <Border
         Margin="2"
@@ -42,51 +34,61 @@
                 Color="Blue" />
         </Border.Effect>
 
-        <DockPanel LastChildFill="True">
-            <Border
-                Width="50"
-                Height="50"
-                Margin="15,20"
-                VerticalAlignment="Top"
-                Background="DarkBlue"
-                CornerRadius="25">
-                <Image
-                    Width="35"
-                    Height="35"
-                    Margin="5"
-                    Source="/CodeGenerator;component/Images/launcher.ico" />
-            </Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
 
-                <TextBlock
-                    Grid.Row="0"
-                    VerticalAlignment="Bottom"
-                    FontSize="16"
-                    FontWeight="Bold"
-                    Text="{Binding Title}" />
-
-                <TextBlock
-                    Grid.Row="1"
-                    Margin="0,0,15,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding AlertMessage}"
-                    TextWrapping="Wrap" />
-
-                <Button
-                    Grid.Row="2"
-                    Width="128"
+                <Border
+                    Grid.Column="0"
+                    Width="50"
+                    Height="50"
                     Margin="15"
-                    HorizontalAlignment="Right"
-                    Command="{Binding CloseAlertCommand}"
-                    Content="知道了"
-                    Style="{StaticResource ButtonPrimary}" />
+                    VerticalAlignment="Top"
+                    Background="DarkBlue"
+                    CornerRadius="25">
+                    <Image
+                        Width="35"
+                        Height="35"
+                        Margin="5"
+                        Source="/CodeGenerator;component/Images/launcher.ico" />
+                </Border>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,20,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="OrangeRed"
+                        Text="{Binding Title}" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Margin="0,10,15,0"
+                        VerticalAlignment="Top"
+                        FontSize="14"
+                        Text="{Binding AlertMessage}"
+                        TextWrapping="Wrap" />
+                </StackPanel>
             </Grid>
-        </DockPanel>
+
+            <Button
+                Grid.Row="1"
+                Width="128"
+                Margin="0,0,15,15"
+                HorizontalAlignment="Right"
+                Command="{Binding CloseAlertCommand}"
+                Content="知道了"
+                Style="{StaticResource ButtonPrimary}" />
+        </Grid>
     </Border>
 </UserControl>
