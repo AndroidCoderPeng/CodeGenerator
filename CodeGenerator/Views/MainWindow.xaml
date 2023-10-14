@@ -27,13 +27,21 @@
 
         <ContextMenu x:Key="RightKeyContextMenu">
             <MenuItem
-                Height="35"
-                Background="Transparent"
-                BorderThickness="0"
-                Click="MenuItem_OnClick"
-                Header="删除"
-                Style="{x:Null}" />
-            <Separator Height="2" Background="White" />
+                Width="100"
+                Click="MenuItem_DeleteButtonOnClick"
+                FontSize="16"
+                Header="删除">
+                <MenuItem.Icon>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Foreground="Red"
+                        Text="&#xe60a;"
+                        TextAlignment="Center" />
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
     </Window.Resources>
 
