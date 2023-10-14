@@ -19,6 +19,11 @@ namespace CodeGenerator.Views
             _eventAggregator = eventAggregator;
         }
 
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            _eventAggregator.GetEvent<DirectoryEvent>().Publish(DirListBox.SelectedIndex);
+        }
+        
         private void DeleteFileButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (!(sender is Button button))

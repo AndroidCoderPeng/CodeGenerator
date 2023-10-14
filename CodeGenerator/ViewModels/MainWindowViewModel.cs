@@ -6,9 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
-using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;
 using CodeGenerator.Events;
 using CodeGenerator.Utils;
 using CodeGenerator.Views;
@@ -34,18 +32,6 @@ namespace CodeGenerator.ViewModels
             set
             {
                 _dirItemCollection = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string _outputDirPath = string.Empty;
-
-        public string OutputDirPath
-        {
-            get => _outputDirPath;
-            set
-            {
-                _outputDirPath = value;
                 RaisePropertyChanged();
             }
         }
@@ -115,12 +101,8 @@ namespace CodeGenerator.ViewModels
         #region DelegateCommand
 
         public DelegateCommand<MainWindow> WindowLoadedCommand { set; get; }
-        public DelegateCommand OutputSettingCommand { set; get; }
-        public DelegateCommand MiniSizeWindowCommand { set; get; }
-        public DelegateCommand CloseWindowCommand { set; get; }
         public DelegateCommand SelectDirCommand { set; get; }
         public DelegateCommand DirItemSelectedCommand { set; get; }
-        public DelegateCommand DirItemRemoveCommand { set; get; }
         public DelegateCommand MouseDoubleClickCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
@@ -153,18 +135,14 @@ namespace CodeGenerator.ViewModels
             _backgroundWorker.ProgressChanged += Worker_OnProgressChanged;
             _backgroundWorker.RunWorkerCompleted += Worker_OnRunWorkerCompleted;
 
-            WindowLoadedCommand = new DelegateCommand<MainWindow>(delegate(MainWindow window)
-            {
-                _window = window;
-                _window.MouseDown += delegate
-                {
-                    if (Mouse.LeftButton == MouseButtonState.Pressed)
-                    {
-                        _window.DragMove();
-                    }
-                };
-            });
+            WindowLoadedCommand = new DelegateCommand<MainWindow>(delegate(MainWindow window) { _window = window; });
 
+            eventAggregator.GetEvent<DirectoryEvent>().Subscribe(delegate(int i)
+            {
+                DirItemCollection.RemoveAt(i);
+                FileCollection.Clear();
+            });
+            
             eventAggregator.GetEvent<FileNameTagEvent>().Subscribe(delegate(string s) { FileCollection.Remove(s); });
 
             eventAggregator.GetEvent<FileSuffixTagEvent>().Subscribe(delegate(string s)
@@ -173,18 +151,6 @@ namespace CodeGenerator.ViewModels
             });
 
             _dialogService = dialogService;
-
-            OutputSettingCommand = new DelegateCommand(delegate
-            {
-                var dialog = new FolderBrowserDialog();
-                dialog.Description = @"请选择文档保存路径";
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    OutputDirPath = dialog.SelectedPath;
-                }
-            });
-            MiniSizeWindowCommand = new DelegateCommand(delegate { _window.WindowState = WindowState.Minimized; });
-            CloseWindowCommand = new DelegateCommand(delegate { _window.Close(); });
 
             SelectDirCommand = new DelegateCommand(delegate
             {
@@ -214,23 +180,6 @@ namespace CodeGenerator.ViewModels
             {
                 _dirPath = _window.DirListBox.SelectedItem.ToString();
                 TraverseDir();
-            });
-
-            //左侧列表右键删除功能菜单
-            DirItemRemoveCommand = new DelegateCommand(delegate
-            {
-                _dialogService.ShowDialog(
-                    "AlertControlDialog",
-                    new DialogParameters { { "Title", "温馨提示" }, { "Message", "是否从列表移除此文件夹" } },
-                    delegate(IDialogResult result)
-                    {
-                        if (result.Result == ButtonResult.OK)
-                        {
-                            DirItemCollection.RemoveAt(_window.DirListBox.SelectedIndex);
-                            FileCollection.Clear();
-                        }
-                    }
-                );
             });
 
             //打开文件
@@ -311,14 +260,7 @@ namespace CodeGenerator.ViewModels
                 var currentName = current.Name;
                 var userName = currentName.Split('\\')[1];
 
-                if (string.IsNullOrWhiteSpace(_outputDirPath))
-                {
-                    _outputFilePath = $@"C:\Users\{userName}\Desktop\软著代码";
-                }
-                else
-                {
-                    _outputFilePath = $"{_outputDirPath}\\软著代码";
-                }
+                _outputFilePath = $@"C:\Users\{userName}\Desktop\软著代码";
 
                 //按照设置的文件后缀遍历文件
                 TraverseDir();

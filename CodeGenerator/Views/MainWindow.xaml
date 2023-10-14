@@ -8,15 +8,12 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
-    Title="软著代码生成器"
+    Title="软著代码生成器(Software Copyright's Code Generator)"
     Width="900"
     Height="600"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
-    AllowsTransparency="True"
-    Background="Transparent"
-    ResizeMode="NoResize"
+    ResizeMode="CanMinimize"
     WindowStartupLocation="CenterScreen"
-    WindowStyle="None"
     mc:Ignorable="d">
 
     <b:Interaction.Triggers>
@@ -27,218 +24,227 @@
 
     <Window.Resources>
         <cvt:VisibilityConverter x:Key="VisibilityConverter" />
+
+        <ContextMenu x:Key="RightKeyContextMenu">
+            <MenuItem
+                Height="35"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="MenuItem_OnClick"
+                Header="删除"
+                Style="{x:Null}" />
+            <Separator Height="2" Background="White" />
+        </ContextMenu>
     </Window.Resources>
 
-    <Border Margin="2" Background="White">
-        <Border.Effect>
-            <DropShadowEffect
-                BlurRadius="5"
-                Direction="0"
-                Opacity="0.5"
-                ShadowDepth="0"
-                Color="Blue" />
-        </Border.Effect>
+    <Border BorderBrush="LightGray" BorderThickness="0,0.5,0,0">
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="0.5" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-        <DockPanel LastChildFill="True">
-            <Grid DockPanel.Dock="Top">
-                <Grid.Background>
-                    <ImageBrush ImageSource="/CodeGenerator;component/Images/bg_main_frame_1.jpg" Stretch="UniformToFill" />
-                </Grid.Background>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Row="0"
+                    Width="200"
+                    Height="35"
+                    Margin="0,10"
+                    Command="{Binding SelectDirCommand}"
+                    Content="选择文件（夹）"
+                    FontSize="16"
+                    Style="{StaticResource ButtonDashed}" />
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <Image
-                        Width="30"
-                        Height="30"
-                        Margin="5,0"
-                        Source="/CodeGenerator;component/Images/launcher.ico" />
-
-                    <StackPanel
-                        Margin="0,0,10,0"
-                        VerticalAlignment="Center"
-                        Orientation="Vertical">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="15"
-                            Foreground="White"
-                            Text="软著代码生成器" />
-
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="10"
-                            Foreground="White"
-                            Text="Software Copyright's Code Generator" />
-                    </StackPanel>
-                </StackPanel>
-
-                <DockPanel
-                    Grid.Column="1"
-                    Margin="30,0"
+                <ListBox
+                    x:Name="DirListBox"
+                    Grid.Row="1"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <TextBlock
-                        FontSize="15"
-                        Foreground="White"
-                        Text="输出路径：" />
+                    BorderThickness="0"
+                    ItemsSource="{Binding DirItemCollection}">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="MouseLeftButtonUp">
+                            <b:InvokeCommandAction Command="{Binding DirItemSelectedCommand}" />
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
 
-                    <TextBlock
-                        FontSize="15"
-                        Foreground="White"
-                        Text="{Binding OutputDirPath}" />
-                </DockPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                x:Name="ListBoxItemBorder"
+                                Width="200"
+                                Height="50"
+                                Background="#F1F1F1"
+                                BorderThickness="0"
+                                CornerRadius="5">
+                                <StackPanel
+                                    Margin="0,0,10,0"
+                                    Orientation="Horizontal"
+                                    ToolTip="{Binding}">
+                                    <Image
+                                        Width="35"
+                                        Height="35"
+                                        Margin="10,0"
+                                        Source="/CodeGenerator;component/Images/dir.png" />
 
-                <StackPanel
-                    Grid.Column="2"
-                    Height="40"
-                    Orientation="Horizontal">
-                    <Button
-                        Width="50"
-                        hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
-                        hc:BackgroundSwitchElement.MouseHoverBackground="Red"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Command="{Binding OutputSettingCommand}"
-                        Content="&#xe6f0;"
-                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                        FontSize="26"
-                        Foreground="White"
-                        Style="{StaticResource ButtonCustom}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="{Binding}" />
+                                </StackPanel>
+                            </Border>
 
-                    <Button
-                        Width="50"
-                        hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
-                        hc:BackgroundSwitchElement.MouseHoverBackground="Red"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Command="{Binding MiniSizeWindowCommand}"
-                        Content="&#xe609;"
-                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                        FontSize="20"
-                        Foreground="White"
-                        Style="{StaticResource ButtonCustom}" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}, AncestorLevel=1}}" Value="True">
+                                    <Setter Property="IsHitTestVisible" Value="True" />
+                                    <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                </DataTrigger>
 
-                    <Button
-                        Width="50"
-                        hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
-                        hc:BackgroundSwitchElement.MouseHoverBackground="Red"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Command="{Binding CloseWindowCommand}"
-                        Content="&#xe60a;"
-                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                        FontSize="20"
-                        Foreground="White"
-                        Style="{StaticResource ButtonCustom}" />
-                </StackPanel>
+                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}, AncestorLevel=1}}" Value="True">
+                                    <Setter Property="IsHitTestVisible" Value="True" />
+                                    <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="OverridesDefaultStyle" Value="True" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="Width" Value="200" />
+                            <Setter Property="Height" Value="60" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <Border x:Name="ListBoxItemBorder" Margin="0,5">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter Property="TextBlock.Foreground" Value="White" />
+                                                <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                                            </Trigger>
+
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="TextBlock.Foreground" Value="White" />
+                                                <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ContextMenu" Value="{StaticResource RightKeyContextMenu}" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+
+                <TextBlock
+                    Grid.Row="2"
+                    Margin="65,10"
+                    FontSize="16"
+                    Foreground="DarkGray"
+                    Text="{Binding ElementName=DirListBox, Path=Items.Count, StringFormat=共\{0\}个文件夹}" />
             </Grid>
 
-            <Grid DockPanel.Dock="Bottom">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="0.5" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1" Background="LightGray" />
 
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="0.5" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-                    <Button
-                        Grid.Row="0"
-                        Width="200"
-                        Height="35"
-                        Margin="0,10"
-                        Command="{Binding SelectDirCommand}"
-                        Content="选择文件（夹）"
-                        FontSize="16"
-                        Style="{StaticResource ButtonDashed}" />
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="0.5" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
                     <ListBox
-                        x:Name="DirListBox"
-                        Grid.Row="1"
-                        HorizontalAlignment="Center"
+                        x:Name="FileListBox"
+                        Grid.Column="0"
                         BorderThickness="0"
-                        ItemsSource="{Binding DirItemCollection}">
+                        ItemsSource="{Binding FileCollection}"
+                        SelectedIndex="0">
                         <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="MouseLeftButtonUp">
-                                <b:InvokeCommandAction Command="{Binding DirItemSelectedCommand}" />
-                            </b:EventTrigger>
-
-                            <b:EventTrigger EventName="MouseRightButtonUp">
-                                <b:InvokeCommandAction Command="{Binding DirItemRemoveCommand}" />
+                            <b:EventTrigger EventName="MouseDoubleClick">
+                                <b:InvokeCommandAction Command="{Binding MouseDoubleClickCommand}" />
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
 
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border
-                                    x:Name="ListBoxItemBorder"
-                                    Width="200"
-                                    Height="50"
-                                    Background="#F1F1F1"
-                                    BorderThickness="0"
-                                    CornerRadius="5">
-                                    <StackPanel
-                                        Margin="0,0,10,0"
-                                        Orientation="Horizontal"
-                                        ToolTip="{Binding}">
+                                <Grid ToolTip="{Binding}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0" HorizontalAlignment="Center">
                                         <Image
-                                            Width="35"
-                                            Height="35"
-                                            Margin="10,0"
-                                            Source="/CodeGenerator;component/Images/dir.png" />
+                                            Width="50"
+                                            Height="50"
+                                            Margin="0,10"
+                                            Source="/CodeGenerator;component/Images/dir_file.ico" />
 
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            FontSize="16"
-                                            Text="{Binding}" />
-                                    </StackPanel>
-                                </Border>
+                                        <Button
+                                            x:Name="DeleteFileButton"
+                                            Width="20"
+                                            Height="20"
+                                            hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
+                                            hc:BackgroundSwitchElement.MouseHoverBackground="Red"
+                                            hc:BorderElement.CornerRadius="10"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Click="DeleteFileButton_OnClick"
+                                            Content="&#xe60a;"
+                                            FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                            Foreground="White"
+                                            Style="{StaticResource ButtonCustom}"
+                                            Tag="{Binding}" />
+                                    </Grid>
 
-                                <DataTemplate.Triggers>
-                                    <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}, AncestorLevel=1}}" Value="True">
-                                        <Setter Property="IsHitTestVisible" Value="True" />
-                                        <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
-                                    </DataTrigger>
-
-                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}, AncestorLevel=1}}" Value="True">
-                                        <Setter Property="IsHitTestVisible" Value="True" />
-                                        <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
-                                    </DataTrigger>
-                                </DataTemplate.Triggers>
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Margin="5,0,5,5"
+                                        Text="{Binding}"
+                                        TextAlignment="Center"
+                                        TextTrimming="WordEllipsis"
+                                        TextWrapping="NoWrap" />
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
 
+                        <!--  ListBox横排  -->
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="OverridesDefaultStyle" Value="True" />
-                                <Setter Property="VerticalContentAlignment" Value="Center" />
-                                <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                <Setter Property="Width" Value="200" />
-                                <Setter Property="Height" Value="60" />
+                                <Setter Property="Width" Value="150" />
+                                <Setter Property="Margin" Value="1" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                            <Border x:Name="ListBoxItemBorder" Margin="0,5">
+                                            <Border x:Name="ListBoxItemBorder" Background="White">
                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Border>
                                             <ControlTemplate.Triggers>
-                                                <Trigger Property="IsFocused" Value="True">
-                                                    <Setter Property="TextBlock.Foreground" Value="White" />
-                                                    <Setter Property="TextBlock.FontWeight" Value="Bold" />
-                                                </Trigger>
-
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="TextBlock.Foreground" Value="White" />
-                                                    <Setter Property="TextBlock.FontWeight" Value="Bold" />
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -248,82 +254,77 @@
                         </ListBox.ItemContainerStyle>
                     </ListBox>
 
-                    <TextBlock
-                        Grid.Row="2"
-                        Margin="65,10"
-                        FontSize="16"
-                        Foreground="DarkGray"
-                        Text="{Binding ElementName=DirListBox, Path=Items.Count, StringFormat=共\{0\}个文件夹}" />
-                </Grid>
+                    <Grid Grid.Column="1" Background="LightGray" />
 
-                <Grid Grid.Column="1" Background="LightGray" />
+                    <Grid Grid.Column="2" Width="200">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="0.5" />
+                            <RowDefinition />
+                            <RowDefinition Height="0.5" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                <Grid Grid.Column="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="0.5" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Margin="10"
+                            Orientation="Vertical">
+                            <TextBlock
+                                Height="35"
+                                FontSize="16"
+                                Text="文件后缀" />
 
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="0.5" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                            <hc:TextBox
+                                Height="35"
+                                hc:InfoElement.Placeholder="请输入文件后缀"
+                                hc:InfoElement.ShowClearButton="True"
+                                FontSize="16"
+                                Text="{Binding SuffixType}" />
+
+                            <Button
+                                Width="180"
+                                Height="35"
+                                Margin="0,10,0,0"
+                                Command="{Binding AddFileSuffixTypeCommand}"
+                                Content="添加"
+                                FontSize="16"
+                                Style="{StaticResource ButtonPrimary}" />
+                        </StackPanel>
+
+                        <Grid Grid.Row="1" Background="LightGray" />
 
                         <ListBox
-                            x:Name="FileListBox"
-                            Grid.Column="0"
+                            Grid.Row="2"
                             BorderThickness="0"
-                            ItemsSource="{Binding FileCollection}"
-                            SelectedIndex="0">
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="MouseDoubleClick">
-                                    <b:InvokeCommandAction Command="{Binding MouseDoubleClickCommand}" />
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-
+                            ItemsSource="{Binding FileSuffixCollection}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid ToolTip="{Binding}">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-
-                                        <Grid Grid.Row="0" HorizontalAlignment="Center">
-                                            <Image
-                                                Width="50"
-                                                Height="50"
-                                                Margin="0,10"
-                                                Source="/CodeGenerator;component/Images/dir_file.ico" />
-
-                                            <Button
-                                                x:Name="DeleteFileButton"
-                                                Width="20"
-                                                Height="20"
-                                                hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
-                                                hc:BackgroundSwitchElement.MouseHoverBackground="Red"
-                                                hc:BorderElement.CornerRadius="10"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Click="DeleteFileButton_OnClick"
-                                                Content="&#xe60a;"
-                                                FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                                Foreground="White"
-                                                Style="{StaticResource ButtonCustom}"
-                                                Tag="{Binding}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <Grid Width="40" Margin="3,0,0,0">
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                FontSize="14"
+                                                Text="{Binding}" />
                                         </Grid>
 
-                                        <TextBlock
-                                            Grid.Row="1"
-                                            Margin="5,0,5,5"
-                                            Text="{Binding}"
-                                            TextAlignment="Center"
-                                            TextTrimming="WordEllipsis"
-                                            TextWrapping="NoWrap" />
-                                    </Grid>
+                                        <Button
+                                            x:Name="DeleteFileSuffixButton"
+                                            Width="20"
+                                            Height="20"
+                                            Margin="3,0,0,0"
+                                            hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
+                                            hc:BackgroundSwitchElement.MouseHoverBackground="Red"
+                                            hc:BorderElement.CornerRadius="10"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Click="DeleteFileSuffixButton_OnClick"
+                                            Content="&#xe60a;"
+                                            FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                            Foreground="White"
+                                            Style="{StaticResource ButtonCustom}"
+                                            Tag="{Binding}" />
+                                    </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
 
@@ -336,19 +337,20 @@
 
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
-                                    <Setter Property="Width" Value="153" />
-                                    <Setter Property="Margin" Value="1" />
+                                    <Setter Property="Width" Value="80" />
+                                    <Setter Property="Height" Value="50" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="Margin" Value="5,0" />
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                                <Border x:Name="ListBoxItemBorder" Background="White">
+                                                <Border
+                                                    x:Name="ListBoxItemBorder"
+                                                    Margin="0,5"
+                                                    Background="{StaticResource PrimaryBrush}"
+                                                    CornerRadius="20">
                                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>
@@ -356,143 +358,38 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
 
-                        <Grid Grid.Column="1" Background="LightGray" />
+                        <Grid Grid.Row="3" Background="LightGray" />
 
-                        <Grid Grid.Column="2" Width="200">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="0.5" />
-                                <RowDefinition />
-                                <RowDefinition Height="0.5" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <StackPanel
-                                Grid.Row="0"
-                                Margin="10"
-                                Orientation="Vertical">
-                                <TextBlock
-                                    Height="35"
-                                    FontSize="16"
-                                    Text="文件后缀" />
-
-                                <hc:TextBox
-                                    Height="35"
-                                    hc:InfoElement.Placeholder="请输入文件后缀"
-                                    hc:InfoElement.ShowClearButton="True"
-                                    FontSize="16"
-                                    Text="{Binding SuffixType}" />
-
-                                <Button
-                                    Width="180"
-                                    Height="35"
-                                    Margin="0,10,0,0"
-                                    Command="{Binding AddFileSuffixTypeCommand}"
-                                    Content="添加"
-                                    FontSize="16"
-                                    Style="{StaticResource ButtonPrimary}" />
-                            </StackPanel>
-
-                            <Grid Grid.Row="1" Background="LightGray" />
-
-                            <ListBox
-                                Grid.Row="2"
-                                BorderThickness="0"
-                                ItemsSource="{Binding FileSuffixCollection}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Grid Width="40" Margin="3,0,0,0">
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="14"
-                                                    Text="{Binding}" />
-                                            </Grid>
-
-                                            <Button
-                                                x:Name="DeleteFileSuffixButton"
-                                                Width="20"
-                                                Height="20"
-                                                Margin="3,0,0,0"
-                                                hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
-                                                hc:BackgroundSwitchElement.MouseHoverBackground="Red"
-                                                hc:BorderElement.CornerRadius="10"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Click="DeleteFileSuffixButton_OnClick"
-                                                Content="&#xe60a;"
-                                                FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                                Foreground="White"
-                                                Style="{StaticResource ButtonCustom}"
-                                                Tag="{Binding}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-
-                                <!--  ListBox横排  -->
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-
-                                <ListBox.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="Width" Value="80" />
-                                        <Setter Property="Height" Value="50" />
-                                        <Setter Property="Foreground" Value="White" />
-                                        <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                                    <Border
-                                                        x:Name="ListBoxItemBorder"
-                                                        Margin="0,5"
-                                                        Background="{StaticResource PrimaryBrush}"
-                                                        CornerRadius="20">
-                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
-                            </ListBox>
-
-                            <Grid Grid.Row="3" Background="LightGray" />
-
-                            <Button
-                                Grid.Row="4"
-                                Width="180"
-                                Height="35"
-                                Margin="0,10"
-                                Command="{Binding GeneratorCodeCommand}"
-                                Content="生成文档"
-                                FontSize="16"
-                                Style="{StaticResource ButtonPrimary}" />
-                        </Grid>
-                    </Grid>
-
-                    <Grid Grid.Row="1" Background="LightGray" />
-
-                    <Grid Grid.Row="2">
-                        <ProgressBar
-                            x:Name="HandleProgressBar"
-                            Margin="10"
-                            Visibility="{Binding HandleTextProgress, ConverterParameter=ProgressBar, Converter={StaticResource VisibilityConverter}}"
-                            Value="{Binding HandleTextProgress}" />
-
-                        <TextBlock
-                            Margin="10"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="15"
-                            Text="{Binding EffectiveCodeLines, StringFormat=代码文档已生成，有效代码共：\{0\}行}"
-                            Visibility="{Binding ElementName=HandleProgressBar, Path=Value, ConverterParameter=TextBlock, Converter={StaticResource VisibilityConverter}}" />
+                        <Button
+                            Grid.Row="4"
+                            Width="180"
+                            Height="35"
+                            Margin="0,10"
+                            Command="{Binding GeneratorCodeCommand}"
+                            Content="生成文档"
+                            FontSize="16"
+                            Style="{StaticResource ButtonPrimary}" />
                     </Grid>
                 </Grid>
+
+                <Grid Grid.Row="1" Background="LightGray" />
+
+                <Grid Grid.Row="2">
+                    <ProgressBar
+                        x:Name="HandleProgressBar"
+                        Margin="10"
+                        Visibility="{Binding HandleTextProgress, ConverterParameter=ProgressBar, Converter={StaticResource VisibilityConverter}}"
+                        Value="{Binding HandleTextProgress}" />
+
+                    <TextBlock
+                        Margin="10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="15"
+                        Text="{Binding EffectiveCodeLines, StringFormat=代码文档已生成，有效代码共：\{0\}行}"
+                        Visibility="{Binding ElementName=HandleProgressBar, Path=Value, ConverterParameter=TextBlock, Converter={StaticResource VisibilityConverter}}" />
+                </Grid>
             </Grid>
-        </DockPanel>
+        </Grid>
     </Border>
 </Window>

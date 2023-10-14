@@ -90,6 +90,7 @@
     <Compile Include="Dialogs\AlertMessageDialog.xaml.cs">
       <DependentUpon>AlertMessageDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Events\DirectoryEvent.cs" />
     <Compile Include="Events\FileNameTagEvent.cs" />
     <Compile Include="Events\FileSuffixTagEvent.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
