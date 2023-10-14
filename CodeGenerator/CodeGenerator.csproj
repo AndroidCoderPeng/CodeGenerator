@@ -93,13 +93,14 @@
     <Compile Include="Events\DirectoryEvent.cs" />
     <Compile Include="Events\FileNameTagEvent.cs" />
     <Compile Include="Events\FileSuffixTagEvent.cs" />
+    <Compile Include="Utils\AlertType.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
     <Compile Include="Utils\RuntimeCache.cs" />
     <Compile Include="ViewModels\AlertControlDialogViewModel.cs" />
     <Compile Include="ViewModels\AlertMessageDialogViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Views\LoginWindow.xaml.cs">
-      <DependentUpon>LoginWindow.xaml</DependentUpon>
+    <Compile Include="Views\StartupWindow.xaml.cs">
+      <DependentUpon>StartupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -117,7 +118,7 @@
     </Compile>
     <Page Include="Dialogs\AlertControlDialog.xaml" />
     <Page Include="Dialogs\AlertMessageDialog.xaml" />
-    <Page Include="Views\LoginWindow.xaml" />
+    <Page Include="Views\StartupWindow.xaml" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

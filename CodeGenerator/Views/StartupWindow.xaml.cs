@@ -4,16 +4,16 @@ using System.Windows.Threading;
 
 namespace CodeGenerator.Views
 {
-    public partial class LoginWindow : Window
+    public partial class StartupWindow : Window
     {
         private readonly DispatcherTimer _timer = new DispatcherTimer
         {
-            Interval = new TimeSpan(0, 0, 1)
+            Interval = new TimeSpan(0, 0, 0,0,1)
         };
 
-        private int _counterTime = 1;
+        private int _counterTime = 100;
 
-        public LoginWindow()
+        public StartupWindow()
         {
             InitializeComponent();
 
@@ -23,6 +23,7 @@ namespace CodeGenerator.Views
             {
                 if (_counterTime > 0)
                 {
+                    LoadingProgress.Value++;
                     _counterTime--;
                 }
                 else

@@ -38,7 +38,7 @@
                         FontSize="18"
                         FontWeight="Bold"
                         Foreground="Red"
-                        Text="&#xe60a;"
+                        Text="&#xe668;"
                         TextAlignment="Center" />
                 </MenuItem.Icon>
             </MenuItem>
@@ -215,7 +215,7 @@
                                             Background="Transparent"
                                             BorderThickness="0"
                                             Click="DeleteFileButton_OnClick"
-                                            Content="&#xe60a;"
+                                            Content="&#xe668;"
                                             FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                             Foreground="White"
                                             Style="{StaticResource ButtonCustom}"
@@ -327,7 +327,7 @@
                                             Background="Transparent"
                                             BorderThickness="0"
                                             Click="DeleteFileSuffixButton_OnClick"
-                                            Content="&#xe60a;"
+                                            Content="&#xe668;"
                                             FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                             Foreground="White"
                                             Style="{StaticResource ButtonCustom}"

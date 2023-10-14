@@ -162,7 +162,10 @@ namespace CodeGenerator.ViewModels
                     {
                         _dialogService.ShowDialog(
                             "AlertMessageDialog",
-                            new DialogParameters { { "Title", "错误" }, { "Message", "文件夹已添加，请勿重复添加" } },
+                            new DialogParameters
+                            {
+                                { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "文件夹已添加，请勿重复添加" }
+                            },
                             delegate { }
                         );
                         return;
@@ -201,7 +204,10 @@ namespace CodeGenerator.ViewModels
                     {
                         _dialogService.ShowDialog(
                             "AlertMessageDialog",
-                            new DialogParameters { { "Title", "错误" }, { "Message", "文件类型无法打开，请重新选择" } },
+                            new DialogParameters
+                            {
+                                { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型无法打开，请重新选择" }
+                            },
                             delegate { }
                         );
                     }
@@ -214,7 +220,10 @@ namespace CodeGenerator.ViewModels
                 {
                     _dialogService.ShowDialog(
                         "AlertMessageDialog",
-                        new DialogParameters { { "Title", "错误" }, { "Message", "文件类型为空，无法添加" } },
+                        new DialogParameters
+                        {
+                            { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型为空，无法添加" }
+                        },
                         delegate { }
                     );
                     return;
@@ -224,7 +233,10 @@ namespace CodeGenerator.ViewModels
                 {
                     _dialogService.ShowDialog(
                         "AlertMessageDialog",
-                        new DialogParameters { { "Title", "错误" }, { "Message", "文件类型已添加，请勿重复添加" } },
+                        new DialogParameters
+                        {
+                            { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "文件类型已添加，请勿重复添加" }
+                        },
                         delegate { }
                     );
                     return;
@@ -249,7 +261,10 @@ namespace CodeGenerator.ViewModels
                 {
                     _dialogService.ShowDialog(
                         "AlertMessageDialog",
-                        new DialogParameters { { "Title", "错误" }, { "Message", "请设置需要格式化的文件后缀" } },
+                        new DialogParameters
+                        {
+                            { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "请设置需要格式化的文件后缀" }
+                        },
                         delegate { }
                     );
                     return;
@@ -270,7 +285,10 @@ namespace CodeGenerator.ViewModels
                 {
                     _dialogService.ShowDialog(
                         "AlertMessageDialog",
-                        new DialogParameters { { "Title", "错误" }, { "Message", "当前正在处理文件中" } },
+                        new DialogParameters
+                        {
+                            { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "当前正在处理文件中" }
+                        },
                         delegate { }
                     );
                     return;
@@ -359,7 +377,10 @@ namespace CodeGenerator.ViewModels
             {
                 _dialogService.ShowDialog(
                     "AlertMessageDialog",
-                    new DialogParameters { { "Title", "错误" }, { "Message", "文件类型错误，无法生成代码文件" } },
+                    new DialogParameters
+                    {
+                        { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型错误，无法生成代码文件" }
+                    },
                     delegate { }
                 );
             }

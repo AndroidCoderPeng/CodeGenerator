@@ -20,15 +20,15 @@ namespace CodeGenerator
         protected override void InitializeShell(Window shell)
         {
             //可以实现登录
-            var loginWindow = Container.Resolve<LoginWindow>();
-            var loginResult = loginWindow.ShowDialog();
-            if (loginResult == null)
+            var startupWindow = Container.Resolve<StartupWindow>();
+            var result = startupWindow.ShowDialog();
+            if (result == null)
             {
                 Current.Shutdown();
                 return;
             }
 
-            if (loginResult.Value)
+            if (result.Value)
             {
                 base.OnInitialized();
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using CodeGenerator.Utils;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -24,8 +25,32 @@ namespace CodeGenerator.ViewModels
             }
         }
 
+        private string _alertIcon;
+
+        public string AlertIcon
+        {
+            get => _alertIcon;
+            private set
+            {
+                _alertIcon = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _alertIconColor;
+
+        public string AlertIconColor
+        {
+            get => _alertIconColor;
+            private set
+            {
+                _alertIconColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #endregion
-        
+
         #region DelegateCommand
 
         public DelegateCommand CloseAlertCommand { set; get; }
@@ -34,12 +59,9 @@ namespace CodeGenerator.ViewModels
 
         public AlertMessageDialogViewModel()
         {
-            CloseAlertCommand = new DelegateCommand(delegate
-            {
-                RequestClose?.Invoke(new DialogResult(ButtonResult.Cancel));
-            });
+            CloseAlertCommand = new DelegateCommand(delegate { RequestClose?.Invoke(new DialogResult()); });
         }
-        
+
         public bool CanCloseDialog()
         {
             return true;
@@ -51,6 +73,25 @@ namespace CodeGenerator.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            var alertType = parameters.GetValue<AlertType>("AlertType");
+            switch (alertType)
+            {
+                case AlertType.Question:
+                    AlertIcon = "\ue68a";
+                    AlertIconColor = "RoyalBlue";
+                    break;
+                case AlertType.Warning:
+                    AlertIcon = "\ue701";
+                    AlertIconColor = "DarkOrange";
+                    break;
+                case AlertType.Error:
+                    AlertIcon = "\ue667";
+                    AlertIconColor = "Red";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             Title = parameters.GetValue<string>("Title");
             AlertMessage = parameters.GetValue<string>("Message");
         }
