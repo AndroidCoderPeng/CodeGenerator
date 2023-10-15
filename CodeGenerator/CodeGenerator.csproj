@@ -93,6 +93,7 @@
     <Compile Include="Events\DirectoryEvent.cs" />
     <Compile Include="Events\FileNameTagEvent.cs" />
     <Compile Include="Events\FileSuffixTagEvent.cs" />
+    <Compile Include="Models\DirectoryModel.cs" />
     <Compile Include="Utils\AlertType.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
     <Compile Include="Utils\RuntimeCache.cs" />

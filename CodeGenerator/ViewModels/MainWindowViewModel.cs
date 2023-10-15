@@ -8,6 +8,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
 using CodeGenerator.Events;
+using CodeGenerator.Models;
 using CodeGenerator.Utils;
 using CodeGenerator.Views;
 using Prism.Commands;
@@ -24,9 +25,9 @@ namespace CodeGenerator.ViewModels
     {
         #region VM
 
-        private ObservableCollection<string> _dirItemCollection = new ObservableCollection<string>();
+        private ObservableCollection<DirectoryModel> _dirItemCollection = new ObservableCollection<DirectoryModel>();
 
-        public ObservableCollection<string> DirItemCollection
+        public ObservableCollection<DirectoryModel> DirItemCollection
         {
             get => _dirItemCollection;
             set
@@ -111,7 +112,7 @@ namespace CodeGenerator.ViewModels
 
         private MainWindow _window;
         private readonly IDialogService _dialogService;
-        private string _dirPath;
+        private DirectoryModel _directory;
         private string _outputFilePath;
 
         /// <summary>
@@ -154,11 +155,16 @@ namespace CodeGenerator.ViewModels
 
             SelectDirCommand = new DelegateCommand(delegate
             {
-                var dialog = new FolderBrowserDialog();
+                var temp = DirItemCollection.Select(file => file.FullPath).ToList();
+
+                var dialog = new FolderBrowserDialog
+                {
+                    ShowNewFolderButton = false
+                };
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    _dirPath = dialog.SelectedPath;
-                    if (DirItemCollection.Contains(_dirPath))
+                    var dirPath = dialog.SelectedPath;
+                    if (temp.Contains(dirPath))
                     {
                         _dialogService.ShowDialog(
                             "AlertMessageDialog",
@@ -171,7 +177,13 @@ namespace CodeGenerator.ViewModels
                         return;
                     }
 
-                    DirItemCollection.Add(_dirPath);
+                    var file = new FileInfo(dirPath);
+                    _directory = new DirectoryModel
+                    {
+                        Name = file.Name,
+                        FullPath = dirPath
+                    };
+                    DirItemCollection.Add(_directory);
 
                     //遍历文件夹
                     TraverseDir();
@@ -181,7 +193,7 @@ namespace CodeGenerator.ViewModels
             //左侧列表选中事件
             DirItemSelectedCommand = new DelegateCommand(delegate
             {
-                _dirPath = _window.DirListBox.SelectedItem.ToString();
+                _directory = (DirectoryModel)_window.DirListBox.SelectedItem;
                 TraverseDir();
             });
 
@@ -315,7 +327,7 @@ namespace CodeGenerator.ViewModels
 
             EffectiveCodeLines = 0;
 
-            var files = _dirPath.GetDirFiles();
+            var files = _directory.FullPath.GetDirFiles();
             foreach (var file in files)
             {
                 FileCollection.Add(file.Name);
@@ -366,7 +378,7 @@ namespace CodeGenerator.ViewModels
             var fmt = new Formatting
             {
                 FontFamily = new Font("微软雅黑"),
-                Size = 8 //软著要求煤业50行代码，8号字体正好合适
+                Size = 8 //软著要求每页50行代码，8号字体正好合适
             };
             paragraph.Append(text, fmt);
             try
