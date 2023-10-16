@@ -3,7 +3,7 @@
 
 这是一个可以自动生成符合软件著作权源代码文件的工具。
 
-### 下载地址：[CodeGenerator.exe](Example/CodeGenerator.zip)
+### 下载地址：[CodeGenerator.exe](Example/CodeGenerator.exe)
 
 ### 使用方法
 1、下载后双击运行，启动后如下图：

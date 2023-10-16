@@ -18,11 +18,12 @@
             <Setter Property="SizeToContent" Value="WidthAndHeight" />
             <Setter Property="WindowStyle" Value="None" />
             <Setter Property="AllowsTransparency" Value="True" />
+            <Setter Property="Background" Value="Transparent" />
         </Style>
     </prism:Dialog.WindowStyle>
 
     <Border
-        Margin="2"
+        Margin="3"
         Background="White"
         CornerRadius="10">
         <Border.Effect>
