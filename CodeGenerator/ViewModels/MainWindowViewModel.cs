@@ -85,9 +85,9 @@ namespace CodeGenerator.ViewModels
             }
         }
 
-        private int _effectiveCodeLines;
+        private string _effectiveCodeLines;
 
-        public int EffectiveCodeLines
+        public string EffectiveCodeLines
         {
             get => _effectiveCodeLines;
             set
@@ -143,7 +143,7 @@ namespace CodeGenerator.ViewModels
                 DirItemCollection.RemoveAt(i);
                 FileCollection.Clear();
             });
-            
+
             eventAggregator.GetEvent<FileNameTagEvent>().Subscribe(delegate(string s) { FileCollection.Remove(s); });
 
             eventAggregator.GetEvent<FileSuffixTagEvent>().Subscribe(delegate(string s)
@@ -193,7 +193,13 @@ namespace CodeGenerator.ViewModels
             //左侧列表选中事件
             DirItemSelectedCommand = new DelegateCommand(delegate
             {
-                _directory = (DirectoryModel)_window.DirListBox.SelectedItem;
+                var selectedItem = _window.DirListBox.SelectedItem;
+                if (selectedItem == null)
+                {
+                    return;
+                }
+
+                _directory = (DirectoryModel)selectedItem;
                 TraverseDir();
             });
 
@@ -325,7 +331,7 @@ namespace CodeGenerator.ViewModels
                 _generateFilePathCollection.Clear();
             }
 
-            EffectiveCodeLines = 0;
+            EffectiveCodeLines = "有效代码共：0行";
 
             var files = _directory.FullPath.GetDirFiles();
             foreach (var file in files)
@@ -343,6 +349,7 @@ namespace CodeGenerator.ViewModels
         {
             //所有符合要求的代码文件内容
             var codeContentArray = new List<string>();
+            var effectiveCode = new List<string>();
             var i = 0;
             foreach (var filePath in _generateFilePathCollection)
             {
@@ -365,11 +372,33 @@ namespace CodeGenerator.ViewModels
                 Thread.Sleep(20);
             }
 
-            //生成带有缩进格式的Text，便于写入word
-            File.WriteAllLines($"{_outputFilePath}.txt", codeContentArray);
+            //筛选代码行区间
+            if (codeContentArray.Count <= RuntimeCache.EffectiveCodeCount)
+            {
+                effectiveCode = codeContentArray;
+                //设置有效代码行数
+                EffectiveCodeLines = $"代码文档已生成，有效代码共：{effectiveCode.Count}行";
+            }
+            else
+            {
+                //选择前后30页代码，写入Txt
+                for (var j = 0; j < RuntimeCache.EffectiveCodeCount / 2; j++)
+                {
+                    effectiveCode.Add(codeContentArray[j]);
+                }
 
-            //设置有效代码行数
-            EffectiveCodeLines = codeContentArray.Count;
+                var end = codeContentArray.Count - RuntimeCache.EffectiveCodeCount / 2;
+                for (var k = codeContentArray.Count - 1; k >= end; k--)
+                {
+                    effectiveCode.Add(codeContentArray[k]);
+                }
+
+                //设置有效代码行数
+                EffectiveCodeLines = $"有效代码共：{effectiveCode.Count}行，源代码共：{codeContentArray.Count}行";
+            }
+
+            //生成带有缩进格式的Text，便于写入word
+            File.WriteAllLines($"{_outputFilePath}.txt", effectiveCode);
 
             //读取整篇格式化好了的Text写入word
             var text = File.ReadAllText($"{_outputFilePath}.txt");

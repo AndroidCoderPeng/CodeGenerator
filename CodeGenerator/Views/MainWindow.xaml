@@ -392,7 +392,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="15"
-                        Text="{Binding EffectiveCodeLines, StringFormat=代码文档已生成，有效代码共：\{0\}行}"
+                        Text="{Binding EffectiveCodeLines}"
                         Visibility="{Binding ElementName=HandleProgressBar, Path=Value, ConverterParameter=TextBlock, Converter={StaticResource VisibilityConverter}}" />
                 </Grid>
             </Grid>
