@@ -11,6 +11,7 @@ using CodeGenerator.Events;
 using CodeGenerator.Models;
 using CodeGenerator.Utils;
 using CodeGenerator.Views;
+using HandyControl.Controls;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -107,6 +108,7 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand MouseDoubleClickCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
+        public DelegateCommand SelectPathCommand { set; get; }
 
         #endregion
 
@@ -288,12 +290,15 @@ namespace CodeGenerator.ViewModels
                     return;
                 }
 
-                var current = WindowsIdentity.GetCurrent();
-                //DESKTOP-3JOGREU\Administrator
-                var currentName = current.Name;
-                var userName = currentName.Split('\\')[1];
+                //如果用户没有设置过保存路径，那就默认已登录账号桌面路径为保存文档的路径
+                if (string.IsNullOrEmpty(_outputFilePath))
+                {
+                    var current = WindowsIdentity.GetCurrent();
+                    var currentName = current.Name;
+                    var userName = currentName.Split('\\')[1];
 
-                _outputFilePath = $@"C:\Users\{userName}\Desktop\软著代码";
+                    _outputFilePath = $@"C:\Users\{userName}\Desktop\软著代码";
+                }
 
                 //按照设置的文件后缀遍历文件
                 TraverseDir();
@@ -313,6 +318,16 @@ namespace CodeGenerator.ViewModels
                 }
 
                 _backgroundWorker.RunWorkerAsync();
+            });
+
+            //选择文档保存的路径
+            SelectPathCommand = new DelegateCommand(delegate
+            {
+                var fileDialog = new SaveFileDialog();
+                if (fileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    _outputFilePath = fileDialog.FileName;
+                }
             });
         }
 
@@ -434,6 +449,7 @@ namespace CodeGenerator.ViewModels
 
         private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            Growl.Success($"软著代码生成完毕，保存在{_outputFilePath}");
         }
     }
 }

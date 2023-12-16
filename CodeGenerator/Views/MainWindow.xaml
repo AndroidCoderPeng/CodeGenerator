@@ -267,34 +267,39 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="0.5" />
                             <RowDefinition />
-                            <RowDefinition Height="0.5" />
-                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <StackPanel
                             Grid.Row="0"
                             Margin="10"
                             Orientation="Vertical">
+
                             <TextBlock
-                                Height="35"
+                                VerticalAlignment="Center"
                                 FontSize="16"
                                 Text="文件后缀" />
 
-                            <hc:TextBox
-                                Height="35"
-                                hc:InfoElement.Placeholder="请输入文件后缀"
-                                hc:InfoElement.ShowClearButton="True"
-                                FontSize="16"
-                                Text="{Binding SuffixType}" />
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <Button
-                                Width="180"
-                                Height="35"
-                                Margin="0,10,0,0"
-                                Command="{Binding AddFileSuffixTypeCommand}"
-                                Content="添加"
-                                FontSize="16"
-                                Style="{StaticResource ButtonPrimary}" />
+                                <hc:TextBox
+                                    Grid.Column="0"
+                                    hc:InfoElement.Placeholder="如：cs"
+                                    hc:InfoElement.ShowClearButton="True"
+                                    FontSize="16"
+                                    Text="{Binding SuffixType}" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    hc:BorderElement.CornerRadius="3"
+                                    Command="{Binding AddFileSuffixTypeCommand}"
+                                    Content="添加"
+                                    Style="{StaticResource ButtonPrimary}" />
+                            </Grid>
                         </StackPanel>
 
                         <Grid Grid.Row="1" Background="LightGray" />
@@ -363,37 +368,56 @@
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>
-
-                        <Grid Grid.Row="3" Background="LightGray" />
-
-                        <Button
-                            Grid.Row="4"
-                            Width="180"
-                            Height="35"
-                            Margin="0,10"
-                            Command="{Binding GeneratorCodeCommand}"
-                            Content="生成文档"
-                            FontSize="16"
-                            Style="{StaticResource ButtonPrimary}" />
                     </Grid>
                 </Grid>
 
                 <Grid Grid.Row="1" Background="LightGray" />
 
                 <Grid Grid.Row="2">
-                    <ProgressBar
-                        x:Name="HandleProgressBar"
-                        Margin="10"
-                        Visibility="{Binding HandleTextProgress, ConverterParameter=ProgressBar, Converter={StaticResource VisibilityConverter}}"
-                        Value="{Binding HandleTextProgress}" />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                    <TextBlock
-                        Margin="10"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="15"
-                        Text="{Binding EffectiveCodeLines}"
-                        Visibility="{Binding ElementName=HandleProgressBar, Path=Value, ConverterParameter=TextBlock, Converter={StaticResource VisibilityConverter}}" />
+                    <Grid Grid.Column="0">
+                        <ProgressBar
+                            x:Name="HandleProgressBar"
+                            Margin="10"
+                            Visibility="{Binding HandleTextProgress, ConverterParameter=ProgressBar, Converter={StaticResource VisibilityConverter}}"
+                            Value="{Binding HandleTextProgress}" />
+
+                        <TextBlock
+                            Margin="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            Text="{Binding EffectiveCodeLines}"
+                            Visibility="{Binding ElementName=HandleProgressBar, Path=Value, ConverterParameter=TextBlock, Converter={StaticResource VisibilityConverter}}" />
+                    </Grid>
+
+                    <Button
+                        Grid.Column="1"
+                        Width="160"
+                        Height="40"
+                        hc:BorderElement.CornerRadius="0"
+                        Command="{Binding GeneratorCodeCommand}"
+                        Content="生成文档"
+                        FontSize="16"
+                        Style="{StaticResource ButtonPrimary}" />
+
+                    <Button
+                        Grid.Column="2"
+                        Width="40"
+                        Height="40"
+                        hc:BorderElement.CornerRadius="0"
+                        Command="{Binding SelectPathCommand}"
+                        Content="&#xe6fb;"
+                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                        FontSize="16"
+                        Foreground="White"
+                        Style="{StaticResource ButtonPrimary}"
+                        ToolTip="修改文档保存路径" />
                 </Grid>
             </Grid>
         </Grid>
