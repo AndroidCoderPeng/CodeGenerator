@@ -11,7 +11,7 @@ namespace CodeGenerator.Views
             Interval = new TimeSpan(0, 0, 0,0,1)
         };
 
-        private int _counterTime = 100;
+        private int _counterTime = 50;
 
         public StartupWindow()
         {
