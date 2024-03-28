@@ -403,11 +403,11 @@ namespace CodeGenerator.ViewModels
                 }
 
                 var end = codeContentArray.Count - RuntimeCache.EffectiveCodeCount / 2;
-                for (var k = codeContentArray.Count - 1; k >= end; k--)
+                for(var k = end; k < codeContentArray.Count; k++)
                 {
                     effectiveCode.Add(codeContentArray[k]);
                 }
-
+                
                 //设置有效代码行数
                 EffectiveCodeLines = $"有效代码共：{effectiveCode.Count}行，源代码共：{codeContentArray.Count}行";
             }
