@@ -233,7 +233,7 @@
     <Compile Include="Events\DirectoryEvent.cs" />
     <Compile Include="Events\FileNameTagEvent.cs" />
     <Compile Include="Events\FileSuffixTagEvent.cs" />
-    <Compile Include="Models\DirectoryModel.cs" />
+    <Compile Include="Models\FolderModel.cs" />
     <Compile Include="Utils\AlertType.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
     <Compile Include="Utils\RuntimeCache.cs" />
@@ -251,12 +251,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\ShowImageWindow.xaml.cs">
-      <DependentUpon>ShowImageWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ShowTextWindow.xaml.cs">
-      <DependentUpon>ShowTextWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="Dialogs\AlertControlDialog.xaml" />
     <Page Include="Dialogs\AlertMessageDialog.xaml" />
     <Page Include="Views\StartupWindow.xaml" />
@@ -264,8 +258,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ShowImageWindow.xaml" />
-    <Page Include="Views\ShowTextWindow.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

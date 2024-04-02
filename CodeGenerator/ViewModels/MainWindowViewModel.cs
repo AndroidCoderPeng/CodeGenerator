@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
@@ -26,14 +27,14 @@ namespace CodeGenerator.ViewModels
     {
         #region VM
 
-        private ObservableCollection<DirectoryModel> _dirItemCollection = new ObservableCollection<DirectoryModel>();
+        private ObservableCollection<FolderModel> _folderItemCollection = new ObservableCollection<FolderModel>();
 
-        public ObservableCollection<DirectoryModel> DirItemCollection
+        public ObservableCollection<FolderModel> FolderItemCollection
         {
-            get => _dirItemCollection;
+            get => _folderItemCollection;
             set
             {
-                _dirItemCollection = value;
+                _folderItemCollection = value;
                 RaisePropertyChanged();
             }
         }
@@ -62,14 +63,14 @@ namespace CodeGenerator.ViewModels
             }
         }
 
-        private ObservableCollection<string> _fileCollection = new ObservableCollection<string>();
+        private ObservableCollection<string> _fileNameCollection = new ObservableCollection<string>();
 
-        public ObservableCollection<string> FileCollection
+        public ObservableCollection<string> FileNameCollection
         {
-            get => _fileCollection;
+            get => _fileNameCollection;
             set
             {
-                _fileCollection = value;
+                _fileNameCollection = value;
                 RaisePropertyChanged();
             }
         }
@@ -104,7 +105,7 @@ namespace CodeGenerator.ViewModels
 
         public DelegateCommand<MainWindow> WindowLoadedCommand { set; get; }
         public DelegateCommand SelectDirCommand { set; get; }
-        public DelegateCommand DirItemSelectedCommand { set; get; }
+        public DelegateCommand FolderItemSelectedCommand { set; get; }
         public DelegateCommand MouseDoubleClickCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
@@ -114,23 +115,31 @@ namespace CodeGenerator.ViewModels
 
         private MainWindow _window;
         private readonly IDialogService _dialogService;
-        private DirectoryModel _directory;
+        private FolderModel _folderModel;
         private string _outputFilePath;
+        private readonly BackgroundWorker _backgroundWorker;
 
         /// <summary>
         /// 需要格式化的文件全路径集
         /// </summary>
-        private readonly ObservableCollection<string> _generateFilePathCollection = new ObservableCollection<string>();
-
-        /// <summary>
-        /// 不做限制的文件全路径集
-        /// </summary>
-        private readonly ObservableCollection<string> _filePathCollection = new ObservableCollection<string>();
-
-        private readonly BackgroundWorker _backgroundWorker;
+        private ObservableCollection<string> _generateFilePathCollection;
 
         public MainWindowViewModel(IEventAggregator eventAggregator, IDialogService dialogService)
         {
+            eventAggregator.GetEvent<DirectoryEvent>().Subscribe(delegate(int i)
+            {
+                FolderItemCollection.RemoveAt(i);
+                FileNameCollection.Clear();
+            });
+
+            eventAggregator.GetEvent<FileNameTagEvent>()
+                .Subscribe(delegate(string s) { FileNameCollection.Remove(s); });
+
+            eventAggregator.GetEvent<FileSuffixTagEvent>().Subscribe(delegate(string s)
+            {
+                FileSuffixCollection.Remove(s);
+            });
+
             _backgroundWorker = new BackgroundWorker();
             _backgroundWorker.WorkerReportsProgress = true;
             _backgroundWorker.WorkerSupportsCancellation = true;
@@ -138,39 +147,21 @@ namespace CodeGenerator.ViewModels
             _backgroundWorker.ProgressChanged += Worker_OnProgressChanged;
             _backgroundWorker.RunWorkerCompleted += Worker_OnRunWorkerCompleted;
 
-            WindowLoadedCommand = new DelegateCommand<MainWindow>(delegate(MainWindow window) { _window = window; });
-
-            eventAggregator.GetEvent<DirectoryEvent>().Subscribe(delegate(int i)
-            {
-                DirItemCollection.RemoveAt(i);
-                FileCollection.Clear();
-            });
-
-            eventAggregator.GetEvent<FileNameTagEvent>().Subscribe(delegate(string s) { FileCollection.Remove(s); });
-
-            eventAggregator.GetEvent<FileSuffixTagEvent>().Subscribe(delegate(string s)
-            {
-                FileSuffixCollection.Remove(s);
-            });
-
             _dialogService = dialogService;
+
+            WindowLoadedCommand = new DelegateCommand<MainWindow>(delegate(MainWindow window) { _window = window; });
 
             SelectDirCommand = new DelegateCommand(delegate
             {
-                var temp = DirItemCollection.Select(file => file.FullPath).ToList();
+                var temp = FolderItemCollection.Select(file => file.FullPath).ToList();
 
-                var dialog = new FolderBrowserDialog
-                {
-                    ShowNewFolderButton = false
-                };
+                var dialog = new FolderBrowserDialog { ShowNewFolderButton = false };
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    var dirPath = dialog.SelectedPath;
-                    if (temp.Contains(dirPath))
+                    var folderPath = dialog.SelectedPath;
+                    if (temp.Contains(folderPath))
                     {
-                        _dialogService.ShowDialog(
-                            "AlertMessageDialog",
-                            new DialogParameters
+                        _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
                             {
                                 { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "文件夹已添加，请勿重复添加" }
                             },
@@ -179,58 +170,48 @@ namespace CodeGenerator.ViewModels
                         return;
                     }
 
-                    var file = new FileInfo(dirPath);
-                    _directory = new DirectoryModel
+                    var folder = new FileInfo(folderPath);
+                    _folderModel = new FolderModel
                     {
-                        Name = file.Name,
-                        FullPath = dirPath
+                        Name = folder.Name,
+                        FullPath = folderPath
                     };
-                    DirItemCollection.Add(_directory);
+                    FolderItemCollection.Add(_folderModel);
 
-                    //遍历文件夹
-                    TraverseDir();
+                    //遍历刚刚添加的文件夹
+                    var traverseResult = _folderModel.FullPath.TraverseFolder();
+                    //更新中间区域文件九宫格
+                    UpdateCenterGridView(traverseResult.Item2);
                 }
             });
 
             //左侧列表选中事件
-            DirItemSelectedCommand = new DelegateCommand(delegate
+            FolderItemSelectedCommand = new DelegateCommand(delegate
             {
-                var selectedItem = _window.DirListBox.SelectedItem;
+                var selectedItem = _window.FolderListBox.SelectedItem;
                 if (selectedItem == null)
                 {
                     return;
                 }
 
-                _directory = (DirectoryModel)selectedItem;
-                TraverseDir();
+                _folderModel = (FolderModel)selectedItem;
+                //遍历刚刚添加的文件夹
+                var traverseResult = _folderModel.FullPath.TraverseFolder();
+                //更新中间区域文件九宫格
+                UpdateCenterGridView(traverseResult.Item2);
             });
 
             //打开文件
             MouseDoubleClickCommand = new DelegateCommand(delegate
             {
-                var fileIndex = _window.FileListBox.SelectedIndex;
-                var file = new FileInfo(_filePathCollection[fileIndex]);
-                if (RuntimeCache.ImageSuffixArray.Contains(file.Extension))
+                var selectedFileName = _window.FileListBox.SelectedItem as string;
+                var fullPaths = _folderModel.FullPath.TraverseFolder().Item1;
+                foreach (var fullPath in fullPaths.Where(fullPath =>
+                             selectedFileName != null && fullPath.Contains(selectedFileName)))
                 {
-                    new ShowImageWindow(file) { Owner = _window }.Show();
-                }
-                else
-                {
-                    if (RuntimeCache.TextSuffixArray.Contains(file.Extension))
-                    {
-                        new ShowTextWindow(file) { Owner = _window }.Show();
-                    }
-                    else
-                    {
-                        _dialogService.ShowDialog(
-                            "AlertMessageDialog",
-                            new DialogParameters
-                            {
-                                { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型无法打开，请重新选择" }
-                            },
-                            delegate { }
-                        );
-                    }
+                    //本机默认文件打开
+                    Process.Start(fullPath);
+                    return;
                 }
             });
 
@@ -238,9 +219,7 @@ namespace CodeGenerator.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(_suffixType))
                 {
-                    _dialogService.ShowDialog(
-                        "AlertMessageDialog",
-                        new DialogParameters
+                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
                         {
                             { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型为空，无法添加" }
                         },
@@ -251,9 +230,7 @@ namespace CodeGenerator.ViewModels
 
                 if (FileSuffixCollection.Contains(_suffixType) || FileSuffixCollection.Contains($".{_suffixType}"))
                 {
-                    _dialogService.ShowDialog(
-                        "AlertMessageDialog",
-                        new DialogParameters
+                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
                         {
                             { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "文件类型已添加，请勿重复添加" }
                         },
@@ -279,9 +256,7 @@ namespace CodeGenerator.ViewModels
             {
                 if (!_fileSuffixCollection.Any())
                 {
-                    _dialogService.ShowDialog(
-                        "AlertMessageDialog",
-                        new DialogParameters
+                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
                         {
                             { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "请设置需要格式化的文件后缀" }
                         },
@@ -301,14 +276,18 @@ namespace CodeGenerator.ViewModels
                 }
 
                 //按照设置的文件后缀遍历文件
-                TraverseDir();
+                _generateFilePathCollection = new ObservableCollection<string>();
+
+                var files = _folderModel.FullPath.GetDirFiles();
+                foreach (var file in files.Where(file => _fileSuffixCollection.Contains(file.Extension)))
+                {
+                    _generateFilePathCollection.Add(file.FullName);
+                }
 
                 //启动文件处理后台线程
                 if (_backgroundWorker.IsBusy)
                 {
-                    _dialogService.ShowDialog(
-                        "AlertMessageDialog",
-                        new DialogParameters
+                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
                         {
                             { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "当前正在处理文件中" }
                         },
@@ -332,31 +311,19 @@ namespace CodeGenerator.ViewModels
         }
 
         /// <summary>
-        /// 遍历文件夹
+        /// 更新中间区域文件九宫格
         /// </summary>
-        private void TraverseDir()
+        private void UpdateCenterGridView(List<string> result)
         {
-            if (FileCollection.Any())
+            //每次选中文件夹都需要同步刷新中间九宫格文件以
+            if (FileNameCollection.Any())
             {
-                FileCollection.Clear();
+                FileNameCollection.Clear();
             }
 
-            if (_generateFilePathCollection.Any())
+            foreach (var name in result)
             {
-                _generateFilePathCollection.Clear();
-            }
-
-            EffectiveCodeLines = "有效代码共：0行";
-
-            var files = _directory.FullPath.GetDirFiles();
-            foreach (var file in files)
-            {
-                FileCollection.Add(file.Name);
-                _filePathCollection.Add(file.FullName);
-                if (_fileSuffixCollection.Contains(file.Extension))
-                {
-                    _generateFilePathCollection.Add(file.FullName);
-                }
+                FileNameCollection.Add(name);
             }
         }
 
@@ -370,13 +337,7 @@ namespace CodeGenerator.ViewModels
             {
                 //读取源文件，跳过读取空白行
                 var lines = File.ReadAllLines(filePath);
-                foreach (var line in lines)
-                {
-                    if (!string.IsNullOrWhiteSpace(line))
-                    {
-                        codeContentArray.Add(line);
-                    }
-                }
+                codeContentArray.AddRange(lines.Where(line => !string.IsNullOrWhiteSpace(line)));
 
                 //更新处理进度
                 i++;
@@ -403,11 +364,11 @@ namespace CodeGenerator.ViewModels
                 }
 
                 var end = codeContentArray.Count - RuntimeCache.EffectiveCodeCount / 2;
-                for(var k = end; k < codeContentArray.Count; k++)
+                for (var k = end; k < codeContentArray.Count; k++)
                 {
                     effectiveCode.Add(codeContentArray[k]);
                 }
-                
+
                 //设置有效代码行数
                 EffectiveCodeLines = $"有效代码共：{effectiveCode.Count}行，源代码共：{codeContentArray.Count}行";
             }
@@ -431,9 +392,7 @@ namespace CodeGenerator.ViewModels
             }
             catch (ArgumentException)
             {
-                _dialogService.ShowDialog(
-                    "AlertMessageDialog",
-                    new DialogParameters
+                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
                     {
                         { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型错误，无法生成代码文件" }
                     },

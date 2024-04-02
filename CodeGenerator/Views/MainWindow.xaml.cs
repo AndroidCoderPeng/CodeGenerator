@@ -21,7 +21,7 @@ namespace CodeGenerator.Views
 
         private void MenuItem_DeleteButtonOnClick(object sender, RoutedEventArgs e)
         {
-            _eventAggregator.GetEvent<DirectoryEvent>().Publish(DirListBox.SelectedIndex);
+            _eventAggregator.GetEvent<DirectoryEvent>().Publish(FolderListBox.SelectedIndex);
         }
         
         private void DeleteFileButton_OnClick(object sender, RoutedEventArgs e)
