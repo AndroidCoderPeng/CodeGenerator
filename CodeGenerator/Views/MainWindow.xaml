@@ -65,7 +65,7 @@
                     Width="200"
                     Height="35"
                     Margin="10"
-                    Command="{Binding SelectDirCommand}"
+                    Command="{Binding SelectFolderCommand}"
                     Content="选择文件（夹）"
                     FontSize="16"
                     Style="{StaticResource ButtonDashed}" />

@@ -104,7 +104,7 @@ namespace CodeGenerator.ViewModels
         #region DelegateCommand
 
         public DelegateCommand<MainWindow> WindowLoadedCommand { set; get; }
-        public DelegateCommand SelectDirCommand { set; get; }
+        public DelegateCommand SelectFolderCommand { set; get; }
         public DelegateCommand FolderItemSelectedCommand { set; get; }
         public DelegateCommand MouseDoubleClickCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
@@ -151,7 +151,7 @@ namespace CodeGenerator.ViewModels
 
             WindowLoadedCommand = new DelegateCommand<MainWindow>(delegate(MainWindow window) { _window = window; });
 
-            SelectDirCommand = new DelegateCommand(delegate
+            SelectFolderCommand = new DelegateCommand(delegate
             {
                 var temp = FolderItemCollection.Select(file => file.FullPath).ToList();
 
@@ -209,7 +209,7 @@ namespace CodeGenerator.ViewModels
                 foreach (var fullPath in fullPaths.Where(fullPath =>
                              selectedFileName != null && fullPath.Contains(selectedFileName)))
                 {
-                    //本机默认文件打开
+                    //本机默认程序打开
                     Process.Start(fullPath);
                     return;
                 }
@@ -325,6 +325,8 @@ namespace CodeGenerator.ViewModels
             {
                 FileNameCollection.Add(name);
             }
+
+            FileSuffixCollection.Clear();
         }
 
         private void Worker_OnDoWork(object sender, DoWorkEventArgs e)
@@ -352,8 +354,6 @@ namespace CodeGenerator.ViewModels
             if (codeContentArray.Count <= RuntimeCache.EffectiveCodeCount)
             {
                 effectiveCode = codeContentArray;
-                //设置有效代码行数
-                EffectiveCodeLines = $"代码文档已生成，有效代码共：{effectiveCode.Count}行";
             }
             else
             {
@@ -368,10 +368,10 @@ namespace CodeGenerator.ViewModels
                 {
                     effectiveCode.Add(codeContentArray[k]);
                 }
-
-                //设置有效代码行数
-                EffectiveCodeLines = $"有效代码共：{effectiveCode.Count}行，源代码共：{codeContentArray.Count}行";
             }
+
+            //设置有效代码行数
+            EffectiveCodeLines = $"代码文档已生成，有效代码共：{effectiveCode.Count}行";
 
             //生成带有缩进格式的Text，便于写入word
             File.WriteAllLines($"{_outputFilePath}.txt", effectiveCode);
