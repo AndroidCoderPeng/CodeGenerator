@@ -181,7 +181,7 @@ namespace CodeGenerator.ViewModels
                     //遍历刚刚添加的文件夹
                     var traverseResult = _folderModel.FullPath.TraverseFolder();
                     //更新中间区域文件九宫格
-                    UpdateCenterGridView(traverseResult.Item2);
+                    UpdateCenterGridView(traverseResult);
                 }
             });
 
@@ -198,20 +198,22 @@ namespace CodeGenerator.ViewModels
                 //遍历刚刚添加的文件夹
                 var traverseResult = _folderModel.FullPath.TraverseFolder();
                 //更新中间区域文件九宫格
-                UpdateCenterGridView(traverseResult.Item2);
+                UpdateCenterGridView(traverseResult);
             });
 
             //打开文件
             MouseDoubleClickCommand = new DelegateCommand(delegate
             {
                 var selectedFileName = _window.FileListBox.SelectedItem as string;
-                var fullPaths = _folderModel.FullPath.TraverseFolder().Item1;
-                foreach (var fullPath in fullPaths.Where(fullPath =>
-                             selectedFileName != null && fullPath.Contains(selectedFileName)))
+                var files = _folderModel.FullPath.TraverseFolder();
+                foreach (var file in files)
                 {
-                    //本机默认程序打开
-                    Process.Start(fullPath);
-                    return;
+                    if (selectedFileName != null && file.FullName.Contains(selectedFileName))
+                    {
+                        //本机默认程序打开
+                        Process.Start(file.FullName);
+                        return;
+                    }
                 }
             });
 
@@ -278,7 +280,7 @@ namespace CodeGenerator.ViewModels
                 //按照设置的文件后缀遍历文件
                 _generateFilePathCollection = new ObservableCollection<string>();
 
-                var files = _folderModel.FullPath.GetDirFiles();
+                var files = _folderModel.FullPath.TraverseFolder();
                 foreach (var file in files.Where(file => _fileSuffixCollection.Contains(file.Extension)))
                 {
                     _generateFilePathCollection.Add(file.FullName);
@@ -313,7 +315,7 @@ namespace CodeGenerator.ViewModels
         /// <summary>
         /// 更新中间区域文件九宫格
         /// </summary>
-        private void UpdateCenterGridView(List<string> result)
+        private void UpdateCenterGridView(FileInfo[] result)
         {
             //每次选中文件夹都需要同步刷新中间九宫格文件以
             if (FileNameCollection.Any())
@@ -321,9 +323,9 @@ namespace CodeGenerator.ViewModels
                 FileNameCollection.Clear();
             }
 
-            foreach (var name in result)
+            foreach (var file in result)
             {
-                FileNameCollection.Add(name);
+                FileNameCollection.Add(file.Name);
             }
 
             FileSuffixCollection.Clear();
