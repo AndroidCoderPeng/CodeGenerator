@@ -157,7 +157,7 @@
                     Margin="65,10"
                     FontSize="16"
                     Foreground="DarkGray"
-                    Text="{Binding ElementName=DirListBox, Path=Items.Count, StringFormat=共\{0\}个文件夹}" />
+                    Text="{Binding ElementName=FolderListBox, Path=Items.Count, StringFormat=共\{0\}个文件夹}" />
             </Grid>
 
             <Grid Grid.Column="1" Background="LightGray" />
