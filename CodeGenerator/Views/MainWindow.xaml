@@ -198,7 +198,10 @@
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
 
-                                    <Grid Grid.Row="0" HorizontalAlignment="Center">
+                                    <Grid
+                                        Grid.Row="0"
+                                        Width="87.5"
+                                        HorizontalAlignment="Center">
                                         <Image
                                             Width="50"
                                             Height="50"
@@ -209,6 +212,8 @@
                                             x:Name="DeleteFileButton"
                                             Width="20"
                                             Height="20"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
                                             hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
                                             hc:BackgroundSwitchElement.MouseHoverBackground="Red"
                                             hc:BorderElement.CornerRadius="10"
