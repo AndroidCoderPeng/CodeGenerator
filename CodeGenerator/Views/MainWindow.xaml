@@ -65,7 +65,7 @@
                     Grid.Row="0"
                     Width="200"
                     Height="35"
-                    Margin="10"
+                    Margin="10,10,10,0"
                     Command="{Binding SelectFolderCommand}"
                     Content="选择文件（夹）"
                     FontSize="16"
@@ -357,8 +357,8 @@
 
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
-                                    <Setter Property="Width" Value="80" />
-                                    <Setter Property="Height" Value="50" />
+                                    <Setter Property="Width" Value="85" />
+                                    <Setter Property="Height" Value="45" />
                                     <Setter Property="Foreground" Value="White" />
                                     <Setter Property="Margin" Value="5,0" />
                                     <Setter Property="Template">
@@ -368,7 +368,7 @@
                                                     x:Name="ListBoxItemBorder"
                                                     Margin="0,5"
                                                     Background="{StaticResource PrimaryBrush}"
-                                                    CornerRadius="20">
+                                                    CornerRadius="17.5">
                                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 </Border>
                                             </ControlTemplate>
