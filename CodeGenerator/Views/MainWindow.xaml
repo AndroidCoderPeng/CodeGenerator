@@ -24,6 +24,7 @@
 
     <Window.Resources>
         <cvt:VisibilityConverter x:Key="VisibilityConverter" />
+        <cvt:FileTypeConverter x:Key="FileTypeConverter" />
 
         <ContextMenu x:Key="RightKeyContextMenu">
             <MenuItem
@@ -202,7 +203,7 @@
                                             Width="50"
                                             Height="50"
                                             Margin="0,5"
-                                            Source="/CodeGenerator;component/Images/dir_file.ico" />
+                                            Source="{Binding Converter={StaticResource FileTypeConverter}}" />
 
                                         <Button
                                             x:Name="DeleteFileButton"

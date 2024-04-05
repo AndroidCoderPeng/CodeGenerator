@@ -219,6 +219,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\FileTypeConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Dialogs\AlertControlDialog.xaml.cs">
       <DependentUpon>AlertControlDialog.xaml</DependentUpon>
@@ -276,7 +277,6 @@
   <ItemGroup>
     <Resource Include="Images\dir.png" />
     <Resource Include="Images\launcher.ico" />
-    <Resource Include="Images\dir_file.ico" />
     <Resource Include="Images\bg_launcher.png" />
     <Resource Include="Images\bg_main_frame_1.jpg" />
     <Resource Include="Images\bg_main_frame_2.jpg" />
@@ -284,6 +284,36 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\class.png" />
+    <Resource Include="Images\css.png" />
+    <Resource Include="Images\doc.png" />
+    <Resource Include="Images\dockerfile.png" />
+    <Resource Include="Images\exe.png" />
+    <Resource Include="Images\file.png" />
+    <Resource Include="Images\gitignore.png" />
+    <Resource Include="Images\html.png" />
+    <Resource Include="Images\iso.png" />
+    <Resource Include="Images\jar.png" />
+    <Resource Include="Images\java.png" />
+    <Resource Include="Images\jpg.png" />
+    <Resource Include="Images\js.png" />
+    <Resource Include="Images\json.png" />
+    <Resource Include="Images\md.png" />
+    <Resource Include="Images\mp3.png" />
+    <Resource Include="Images\mp4.png" />
+    <Resource Include="Images\pdf.png" />
+    <Resource Include="Images\png.png" />
+    <Resource Include="Images\ppt.png" />
+    <Resource Include="Images\py.png" />
+    <Resource Include="Images\sql.png" />
+    <Resource Include="Images\svg.png" />
+    <Resource Include="Images\txt.png" />
+    <Resource Include="Images\xls.png" />
+    <Resource Include="Images\xml.png" />
+    <Resource Include="Images\yml.png" />
+    <Resource Include="Images\zip.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
