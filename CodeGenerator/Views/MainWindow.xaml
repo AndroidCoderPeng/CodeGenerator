@@ -47,7 +47,7 @@
     </Window.Resources>
 
     <Border BorderBrush="LightGray" BorderThickness="0,0.5,0,0">
-        <Grid DockPanel.Dock="Bottom">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="0.5" />
