@@ -180,7 +180,7 @@
                     <ListBox
                         x:Name="FileListBox"
                         Grid.Column="0"
-                        Padding="0,2,0,3"
+                        Padding="2,2,0,3"
                         BorderThickness="0"
                         ItemsSource="{Binding FileNameCollection}"
                         SelectedIndex="0">
@@ -236,7 +236,7 @@
                         <!--  ListBox横排  -->
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel HorizontalAlignment="Center" Orientation="Horizontal" />
+                                <WrapPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
 
