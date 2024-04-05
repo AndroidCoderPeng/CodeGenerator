@@ -260,6 +260,7 @@
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                                                    <Setter Property="TextBlock.Opacity" Value="0.6" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
