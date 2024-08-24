@@ -168,7 +168,7 @@
                         SelectedIndex="0">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="MouseDoubleClick">
-                                <b:InvokeCommandAction Command="{Binding MouseDoubleClickCommand}" />
+                                <b:InvokeCommandAction Command="{Binding MouseDoubleClickCommand}" CommandParameter="{Binding ElementName=FileListBox, Path=SelectedItem}" />
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
 

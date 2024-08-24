@@ -106,7 +106,7 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand<MainWindow> WindowLoadedCommand { set; get; }
         public DelegateCommand SelectFolderCommand { set; get; }
         public DelegateCommand FolderItemSelectedCommand { set; get; }
-        public DelegateCommand MouseDoubleClickCommand { set; get; }
+        public DelegateCommand<string> MouseDoubleClickCommand { set; get; }
         public DelegateCommand<string> DeleteFileCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
         public DelegateCommand<string> DeleteFileSuffixCommand { set; get; }
@@ -196,13 +196,12 @@ namespace CodeGenerator.ViewModels
             });
 
             //打开文件
-            MouseDoubleClickCommand = new DelegateCommand(delegate
+            MouseDoubleClickCommand = new DelegateCommand<string>(delegate(string selectedItem)
             {
-                var selectedFileName = _window.FileListBox.SelectedItem as string;
                 var files = _folderModel.FullPath.TraverseFolder();
                 foreach (var file in files)
                 {
-                    if (selectedFileName != null && file.FullName.Contains(selectedFileName))
+                    if (selectedItem != null && file.FullName.Contains(selectedItem))
                     {
                         //本机默认程序打开
                         Process.Start(file.FullName);
