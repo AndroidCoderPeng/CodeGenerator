@@ -8,7 +8,6 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
-    x:Name="TargetWindow"
     Title="软著代码生成器(Software Copyright's Code Generator)"
     Width="900"
     Height="600"
@@ -16,12 +15,6 @@
     ResizeMode="CanMinimize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-
-    <b:Interaction.Triggers>
-        <b:EventTrigger EventName="Loaded">
-            <b:InvokeCommandAction Command="{Binding WindowLoadedCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
-        </b:EventTrigger>
-    </b:Interaction.Triggers>
 
     <Window.Resources>
         <cvt:VisibilityConverter x:Key="VisibilityConverter" />

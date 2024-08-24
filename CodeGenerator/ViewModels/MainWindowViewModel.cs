@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using CodeGenerator.Events;
 using CodeGenerator.Models;
 using CodeGenerator.Utils;
-using CodeGenerator.Views;
 using HandyControl.Controls;
 using Prism.Commands;
 using Prism.Events;
@@ -103,7 +102,6 @@ namespace CodeGenerator.ViewModels
 
         #region DelegateCommand
 
-        public DelegateCommand<MainWindow> WindowLoadedCommand { set; get; }
         public DelegateCommand SelectFolderCommand { set; get; }
         public DelegateCommand<object> FolderItemSelectedCommand { set; get; }
         public DelegateCommand<string> MouseDoubleClickCommand { set; get; }
@@ -115,7 +113,6 @@ namespace CodeGenerator.ViewModels
 
         #endregion
 
-        private MainWindow _window;
         private readonly IDialogService _dialogService;
         private FolderModel _folderModel;
         private string _outputFilePath;
@@ -142,8 +139,6 @@ namespace CodeGenerator.ViewModels
             _backgroundWorker.RunWorkerCompleted += Worker_OnRunWorkerCompleted;
 
             _dialogService = dialogService;
-
-            WindowLoadedCommand = new DelegateCommand<MainWindow>(delegate(MainWindow window) { _window = window; });
 
             SelectFolderCommand = new DelegateCommand(delegate
             {
