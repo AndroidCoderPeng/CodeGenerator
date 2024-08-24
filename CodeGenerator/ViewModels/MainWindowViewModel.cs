@@ -223,7 +223,7 @@ namespace CodeGenerator.ViewModels
                     return;
                 }
 
-                if (FileSuffixCollection.Contains(_suffixType) || FileSuffixCollection.Contains($".{_suffixType}"))
+                if (FileSuffixCollection.Contains($"*{_suffixType}") || FileSuffixCollection.Contains($"*.{_suffixType}"))
                 {
                     _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
                         {

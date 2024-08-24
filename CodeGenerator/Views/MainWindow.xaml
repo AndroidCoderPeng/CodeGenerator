@@ -298,11 +298,32 @@
 
                                 <Button
                                     Grid.Column="1"
-                                    Margin="10,0,0,0"
-                                    hc:BorderElement.CornerRadius="3"
+                                    Margin="7,0,0,0"
                                     Command="{Binding AddFileSuffixTypeCommand}"
-                                    Content="添加"
-                                    Style="{StaticResource ButtonPrimary}" />
+                                    Content="&#xe604;"
+                                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                    FontSize="30"
+                                    Foreground="{StaticResource PrimaryBrush}">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="ButtonContainerBorder">
+                                                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                                        </Border>
+
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="ButtonContainerBorder" Property="Opacity" Value="0.75" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
                             </Grid>
                         </StackPanel>
 
