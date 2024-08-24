@@ -28,19 +28,15 @@
 
         <ContextMenu x:Key="RightKeyContextMenu">
             <MenuItem
-                Width="100"
+                Width="80"
                 Click="MenuItem_DeleteButtonOnClick"
-                FontSize="16"
                 Header="删除">
                 <MenuItem.Icon>
                     <TextBlock
                         VerticalAlignment="Center"
                         FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                        FontSize="18"
-                        FontWeight="Bold"
                         Foreground="Red"
-                        Text="&#xe668;"
-                        TextAlignment="Center" />
+                        Text="&#xe668;" />
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
@@ -63,9 +59,9 @@
 
                 <Button
                     Grid.Row="0"
-                    Width="200"
                     Height="35"
-                    Margin="10,10,10,0"
+                    Margin="5,5,5,2"
+                    HorizontalAlignment="Stretch"
                     Command="{Binding SelectFolderCommand}"
                     Content="选择文件（夹）"
                     FontSize="16"
@@ -74,9 +70,10 @@
                 <ListBox
                     x:Name="FolderListBox"
                     Grid.Row="1"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Stretch"
                     BorderThickness="0"
-                    ItemsSource="{Binding FolderItemCollection}">
+                    ItemsSource="{Binding FolderItemCollection}"
+                    SelectedIndex="0">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="MouseLeftButtonUp">
                             <b:InvokeCommandAction Command="{Binding FolderItemSelectedCommand}" />
@@ -85,64 +82,48 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border
-                                x:Name="ListBoxItemBorder"
-                                Width="200"
-                                Height="50"
-                                Background="#F1F1F1"
-                                BorderThickness="0"
-                                CornerRadius="5">
-                                <StackPanel
-                                    Margin="0,0,10,0"
-                                    Orientation="Horizontal"
-                                    ToolTip="{Binding FullPath}">
-                                    <Image
-                                        Width="35"
-                                        Height="35"
-                                        Margin="10,0"
-                                        Source="/CodeGenerator;component/Images/dir.png" />
+                            <Grid ToolTip="{Binding FullPath}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
 
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="16"
-                                        Text="{Binding Name}" />
-                                </StackPanel>
-                            </Border>
+                                <Image
+                                    Grid.Column="0"
+                                    Width="30"
+                                    Height="30"
+                                    Margin="10,0"
+                                    Source="/CodeGenerator;component/Images/dir.png" />
 
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}, AncestorLevel=1}}" Value="True">
-                                    <Setter Property="IsHitTestVisible" Value="True" />
-                                    <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}, AncestorLevel=1}}" Value="True">
-                                    <Setter Property="IsHitTestVisible" Value="True" />
-                                    <Setter TargetName="ListBoxItemBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Padding="5,15,15,15"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Name}" />
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
 
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="OverridesDefaultStyle" Value="True" />
-                            <Setter Property="VerticalContentAlignment" Value="Center" />
-                            <Setter Property="HorizontalContentAlignment" Value="Center" />
-                            <Setter Property="Width" Value="200" />
-                            <Setter Property="Height" Value="60" />
+                            <Setter Property="Margin" Value="2,0,2,2" />
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                        <Border x:Name="ListBoxItemBorder" Margin="0,5">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        <Border x:Name="ItemContainerBorder" CornerRadius="7">
+                                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                         </Border>
+
                                         <ControlTemplate.Triggers>
-                                            <Trigger Property="IsFocused" Value="True">
-                                                <Setter Property="TextBlock.Foreground" Value="White" />
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ItemContainerBorder" Property="Background" Value="#F8F8F8" />
+                                                <Setter TargetName="ItemContainerBorder" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
                                             </Trigger>
 
                                             <Trigger Property="IsSelected" Value="True">
-                                                <Setter Property="TextBlock.Foreground" Value="White" />
+                                                <Setter TargetName="ItemContainerBorder" Property="Background" Value="#E7F4FF" />
+                                                <Setter TargetName="ItemContainerBorder" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -210,21 +191,34 @@
 
                                         <Button
                                             x:Name="DeleteFileButton"
-                                            Width="20"
-                                            Height="20"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
-                                            hc:BackgroundSwitchElement.MouseDownBackground="PaleVioletRed"
-                                            hc:BackgroundSwitchElement.MouseHoverBackground="Red"
-                                            hc:BorderElement.CornerRadius="10"
-                                            Background="Transparent"
-                                            BorderThickness="0"
                                             Click="DeleteFileButton_OnClick"
                                             Content="&#xe668;"
                                             FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                             Foreground="White"
-                                            Style="{StaticResource ButtonCustom}"
-                                            Tag="{Binding}" />
+                                            Tag="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border x:Name="ButtonContainerBorder" Padding="3">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                </Border>
+
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="ButtonContainerBorder" Property="Background" Value="Red" />
+                                                                        <Setter TargetName="ButtonContainerBorder" Property="TextBlock.Foreground" Value="White" />
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
                                     </Grid>
 
                                     <TextBlock
@@ -252,15 +246,20 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type ListBoxItem}">
                                             <Border
-                                                x:Name="ListBoxItemBorder"
+                                                x:Name="ItemContainerBorder"
                                                 BorderBrush="#F1F1F1"
                                                 BorderThickness="1">
                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="ItemContainerBorder" Property="Background" Value="#F8F8F8" />
                                                     <Setter Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
-                                                    <Setter Property="TextBlock.Opacity" Value="0.6" />
+                                                </Trigger>
+
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="ItemContainerBorder" Property="Background" Value="#E7F4FF" />
+                                                    <Setter TargetName="ItemContainerBorder" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
