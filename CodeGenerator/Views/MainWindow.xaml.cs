@@ -23,16 +23,6 @@ namespace CodeGenerator.Views
         {
             _eventAggregator.GetEvent<DirectoryEvent>().Publish(FolderListBox.SelectedIndex);
         }
-        
-        private void DeleteFileButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (!(sender is Button button))
-            {
-                return;
-            }
-
-            _eventAggregator.GetEvent<FileNameTagEvent>().Publish(button.Tag.ToString());
-        }
 
         private void DeleteFileSuffixButton_OnClick(object sender, RoutedEventArgs e)
         {

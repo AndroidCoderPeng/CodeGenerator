@@ -8,6 +8,7 @@
     xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
+    x:Name="TargetWindow"
     Title="软著代码生成器(Software Copyright's Code Generator)"
     Width="900"
     Height="600"
@@ -26,7 +27,7 @@
         <cvt:VisibilityConverter x:Key="VisibilityConverter" />
         <cvt:FileTypeConverter x:Key="FileTypeConverter" />
 
-        <ContextMenu x:Key="RightKeyContextMenu">
+        <ContextMenu x:Key="RightContextMenuKey">
             <MenuItem
                 Width="80"
                 Click="MenuItem_DeleteButtonOnClick"
@@ -72,6 +73,7 @@
                     Grid.Row="1"
                     HorizontalAlignment="Stretch"
                     BorderThickness="0"
+                    ContextMenu="{StaticResource RightContextMenuKey}"
                     ItemsSource="{Binding FolderItemCollection}"
                     SelectedIndex="0">
                     <b:Interaction.Triggers>
@@ -129,7 +131,6 @@
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="ContextMenu" Value="{StaticResource RightKeyContextMenu}" />
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
@@ -193,7 +194,8 @@
                                             x:Name="DeleteFileButton"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
-                                            Click="DeleteFileButton_OnClick"
+                                            Command="{Binding DataContext.DeleteFileCommand, ElementName=FileListBox}"
+                                            CommandParameter="{Binding Path=Tag, ElementName=DeleteFileButton}"
                                             Content="&#xe668;"
                                             FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                             Foreground="White"

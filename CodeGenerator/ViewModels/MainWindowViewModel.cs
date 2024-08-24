@@ -107,6 +107,7 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand SelectFolderCommand { set; get; }
         public DelegateCommand FolderItemSelectedCommand { set; get; }
         public DelegateCommand MouseDoubleClickCommand { set; get; }
+        public DelegateCommand<string> DeleteFileCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
         public DelegateCommand SelectPathCommand { set; get; }
@@ -131,9 +132,6 @@ namespace CodeGenerator.ViewModels
                 FolderItemCollection.RemoveAt(i);
                 FileNameCollection.Clear();
             });
-
-            eventAggregator.GetEvent<FileNameTagEvent>()
-                .Subscribe(delegate(string s) { FileNameCollection.Remove(s); });
 
             eventAggregator.GetEvent<FileSuffixTagEvent>().Subscribe(delegate(string s)
             {
@@ -216,6 +214,9 @@ namespace CodeGenerator.ViewModels
                     }
                 }
             });
+
+            //删除文件
+            DeleteFileCommand = new DelegateCommand<string>(delegate(string fileName) { FileNameCollection.Remove(fileName); });
 
             AddFileSuffixTypeCommand = new DelegateCommand(delegate
             {
