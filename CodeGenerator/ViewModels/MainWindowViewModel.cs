@@ -234,14 +234,7 @@ namespace CodeGenerator.ViewModels
                     return;
                 }
 
-                if (_suffixType.Contains("."))
-                {
-                    FileSuffixCollection.Add(_suffixType);
-                }
-                else
-                {
-                    FileSuffixCollection.Add($".{_suffixType}");
-                }
+                FileSuffixCollection.Add(_suffixType.Contains(".") ? $"*{_suffixType}" : $"*.{_suffixType}");
 
                 //添加之后将输入框置空
                 SuffixType = string.Empty;
