@@ -105,7 +105,7 @@ namespace CodeGenerator.ViewModels
 
         public DelegateCommand<MainWindow> WindowLoadedCommand { set; get; }
         public DelegateCommand SelectFolderCommand { set; get; }
-        public DelegateCommand FolderItemSelectedCommand { set; get; }
+        public DelegateCommand<object> FolderItemSelectedCommand { set; get; }
         public DelegateCommand<string> MouseDoubleClickCommand { set; get; }
         public DelegateCommand<string> DeleteFileCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
@@ -180,9 +180,8 @@ namespace CodeGenerator.ViewModels
             });
 
             //左侧列表选中事件
-            FolderItemSelectedCommand = new DelegateCommand(delegate
+            FolderItemSelectedCommand = new DelegateCommand<object>(delegate(object selectedItem)
             {
-                var selectedItem = _window.FolderListBox.SelectedItem;
                 if (selectedItem == null)
                 {
                     return;
