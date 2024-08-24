@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using CodeGenerator.Events;
 using Prism.Events;
 
@@ -22,16 +21,6 @@ namespace CodeGenerator.Views
         private void MenuItem_DeleteButtonOnClick(object sender, RoutedEventArgs e)
         {
             _eventAggregator.GetEvent<DirectoryEvent>().Publish(FolderListBox.SelectedIndex);
-        }
-
-        private void DeleteFileSuffixButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (!(sender is Button button))
-            {
-                return;
-            }
-
-            _eventAggregator.GetEvent<FileSuffixTagEvent>().Publish(button.Tag.ToString());
         }
     }
 }

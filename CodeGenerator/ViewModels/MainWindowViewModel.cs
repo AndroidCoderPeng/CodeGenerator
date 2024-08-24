@@ -109,6 +109,7 @@ namespace CodeGenerator.ViewModels
         public DelegateCommand MouseDoubleClickCommand { set; get; }
         public DelegateCommand<string> DeleteFileCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
+        public DelegateCommand<string> DeleteFileSuffixCommand { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
         public DelegateCommand SelectPathCommand { set; get; }
 
@@ -131,11 +132,6 @@ namespace CodeGenerator.ViewModels
             {
                 FolderItemCollection.RemoveAt(i);
                 FileNameCollection.Clear();
-            });
-
-            eventAggregator.GetEvent<FileSuffixTagEvent>().Subscribe(delegate(string s)
-            {
-                FileSuffixCollection.Remove(s);
             });
 
             _backgroundWorker = new BackgroundWorker();
@@ -216,7 +212,10 @@ namespace CodeGenerator.ViewModels
             });
 
             //删除文件
-            DeleteFileCommand = new DelegateCommand<string>(delegate(string fileName) { FileNameCollection.Remove(fileName); });
+            DeleteFileCommand = new DelegateCommand<string>(delegate(string fileName)
+            {
+                FileNameCollection.Remove(fileName);
+            });
 
             AddFileSuffixTypeCommand = new DelegateCommand(delegate
             {
@@ -253,6 +252,12 @@ namespace CodeGenerator.ViewModels
 
                 //添加之后将输入框置空
                 SuffixType = string.Empty;
+            });
+
+            //删除文件后缀
+            DeleteFileSuffixCommand = new DelegateCommand<string>(delegate(string fileSuffix)
+            {
+                FileSuffixCollection.Remove(fileSuffix);
             });
 
             GeneratorCodeCommand = new DelegateCommand(delegate

@@ -316,6 +316,7 @@
                         <Grid Grid.Row="1" Background="LightGray" />
 
                         <ListBox
+                            x:Name="FileSuffixListBox"
                             Grid.Row="2"
                             BorderThickness="0"
                             ItemsSource="{Binding FileSuffixCollection}">
@@ -340,7 +341,8 @@
                                             hc:BorderElement.CornerRadius="10"
                                             Background="Transparent"
                                             BorderThickness="0"
-                                            Click="DeleteFileSuffixButton_OnClick"
+                                            Command="{Binding DataContext.DeleteFileSuffixCommand, ElementName=FileSuffixListBox}"
+                                            CommandParameter="{Binding Path=Tag, ElementName=DeleteFileSuffixButton}"
                                             Content="&#xe668;"
                                             FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                             Foreground="White"
