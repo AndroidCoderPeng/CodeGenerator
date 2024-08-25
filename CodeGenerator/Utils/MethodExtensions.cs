@@ -15,5 +15,10 @@ namespace CodeGenerator.Utils
                 ? null
                 : new DirectoryInfo(path).GetFiles("*.*", SearchOption.AllDirectories);
         }
+
+        public static bool IsNumber(this string value)
+        {
+            return int.TryParse(value, out _);
+        }
     }
 }

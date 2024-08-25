@@ -223,11 +223,8 @@
     <Compile Include="Dialogs\AlertMessageDialog.xaml.cs">
       <DependentUpon>AlertMessageDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Events\DirectoryEvent.cs" />
-    <Compile Include="Models\FolderModel.cs" />
     <Compile Include="Utils\AlertType.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
-    <Compile Include="Utils\RuntimeCache.cs" />
     <Compile Include="ViewModels\AlertControlDialogViewModel.cs" />
     <Compile Include="ViewModels\AlertMessageDialogViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

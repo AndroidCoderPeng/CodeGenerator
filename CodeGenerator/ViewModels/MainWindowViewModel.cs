@@ -8,17 +8,15 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using CodeGenerator.Events;
-using CodeGenerator.Models;
 using CodeGenerator.Utils;
 using HandyControl.Controls;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 using DialogResult = System.Windows.Forms.DialogResult;
+using Formatting = Xceed.Document.NET.Formatting;
 
 namespace CodeGenerator.ViewModels
 {
@@ -26,14 +24,26 @@ namespace CodeGenerator.ViewModels
     {
         #region VM
 
-        private ObservableCollection<FolderModel> _folderItemCollection = new ObservableCollection<FolderModel>();
+        private string _folderPath;
 
-        public ObservableCollection<FolderModel> FolderItemCollection
+        public string FolderPath
         {
-            get => _folderItemCollection;
+            get => _folderPath;
             set
             {
-                _folderItemCollection = value;
+                _folderPath = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _codePageLimit;
+
+        public string CodePageLimit
+        {
+            get => _codePageLimit;
+            set
+            {
+                _codePageLimit = value;
                 RaisePropertyChanged();
             }
         }
@@ -103,7 +113,6 @@ namespace CodeGenerator.ViewModels
         #region DelegateCommand
 
         public DelegateCommand SelectFolderCommand { set; get; }
-        public DelegateCommand<object> FolderItemSelectedCommand { set; get; }
         public DelegateCommand<string> MouseDoubleClickCommand { set; get; }
         public DelegateCommand<string> DeleteFileCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
@@ -114,22 +123,18 @@ namespace CodeGenerator.ViewModels
         #endregion
 
         private readonly IDialogService _dialogService;
-        private FolderModel _folderModel;
         private string _outputFilePath;
+        private int _effectiveCodeCount;
         private readonly BackgroundWorker _backgroundWorker;
 
         /// <summary>
         /// 需要格式化的文件全路径集
         /// </summary>
-        private ObservableCollection<string> _generateFilePathCollection;
+        private List<string> _generateFilePaths;
 
-        public MainWindowViewModel(IEventAggregator eventAggregator, IDialogService dialogService)
+        public MainWindowViewModel(IDialogService dialogService)
         {
-            eventAggregator.GetEvent<DirectoryEvent>().Subscribe(delegate(int i)
-            {
-                FolderItemCollection.RemoveAt(i);
-                FileNameCollection.Clear();
-            });
+            _dialogService = dialogService;
 
             _backgroundWorker = new BackgroundWorker();
             _backgroundWorker.WorkerReportsProgress = true;
@@ -138,189 +143,198 @@ namespace CodeGenerator.ViewModels
             _backgroundWorker.ProgressChanged += Worker_OnProgressChanged;
             _backgroundWorker.RunWorkerCompleted += Worker_OnRunWorkerCompleted;
 
-            _dialogService = dialogService;
-
-            SelectFolderCommand = new DelegateCommand(delegate
-            {
-                var temp = FolderItemCollection.Select(file => file.FullPath).ToList();
-
-                var dialog = new FolderBrowserDialog { ShowNewFolderButton = false };
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    var folderPath = dialog.SelectedPath;
-                    if (temp.Contains(folderPath))
-                    {
-                        _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                            {
-                                { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "文件夹已添加，请勿重复添加" }
-                            },
-                            delegate { }
-                        );
-                        return;
-                    }
-
-                    var folder = new FileInfo(folderPath);
-                    _folderModel = new FolderModel
-                    {
-                        Name = folder.Name,
-                        FullPath = folderPath
-                    };
-                    FolderItemCollection.Add(_folderModel);
-
-                    //遍历刚刚添加的文件夹
-                    var traverseResult = _folderModel.FullPath.TraverseFolder();
-                    //更新中间区域文件九宫格
-                    UpdateCenterGridView(traverseResult);
-                }
-            });
-
-            //左侧列表选中事件
-            FolderItemSelectedCommand = new DelegateCommand<object>(delegate(object selectedItem)
-            {
-                if (selectedItem == null)
-                {
-                    return;
-                }
-
-                _folderModel = (FolderModel)selectedItem;
-                //遍历刚刚添加的文件夹
-                var traverseResult = _folderModel.FullPath.TraverseFolder();
-                //更新中间区域文件九宫格
-                UpdateCenterGridView(traverseResult);
-            });
-
-            //打开文件
-            MouseDoubleClickCommand = new DelegateCommand<string>(delegate(string selectedItem)
-            {
-                var files = _folderModel.FullPath.TraverseFolder();
-                foreach (var file in files)
-                {
-                    if (selectedItem != null && file.FullName.Contains(selectedItem))
-                    {
-                        //本机默认程序打开
-                        Process.Start(file.FullName);
-                        return;
-                    }
-                }
-            });
-
-            //删除文件
-            DeleteFileCommand = new DelegateCommand<string>(delegate(string fileName)
-            {
-                FileNameCollection.Remove(fileName);
-            });
-
-            AddFileSuffixTypeCommand = new DelegateCommand(delegate
-            {
-                if (string.IsNullOrWhiteSpace(_suffixType))
-                {
-                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                        {
-                            { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型为空，无法添加" }
-                        },
-                        delegate { }
-                    );
-                    return;
-                }
-
-                if (FileSuffixCollection.Contains($"*{_suffixType}") || FileSuffixCollection.Contains($"*.{_suffixType}"))
-                {
-                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                        {
-                            { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "文件类型已添加，请勿重复添加" }
-                        },
-                        delegate { }
-                    );
-                    return;
-                }
-
-                FileSuffixCollection.Add(_suffixType.Contains(".") ? $"*{_suffixType}" : $"*.{_suffixType}");
-
-                //添加之后将输入框置空
-                SuffixType = string.Empty;
-            });
-
-            //删除文件后缀
-            DeleteFileSuffixCommand = new DelegateCommand<string>(delegate(string fileSuffix)
-            {
-                FileSuffixCollection.Remove(fileSuffix);
-            });
-
-            GeneratorCodeCommand = new DelegateCommand(delegate
-            {
-                if (!_fileSuffixCollection.Any())
-                {
-                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                        {
-                            { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "请设置需要格式化的文件后缀" }
-                        },
-                        delegate { }
-                    );
-                    return;
-                }
-
-                //如果用户没有设置过保存路径，那就默认已登录账号桌面路径为保存文档的路径
-                if (string.IsNullOrEmpty(_outputFilePath))
-                {
-                    var current = WindowsIdentity.GetCurrent();
-                    var currentName = current.Name;
-                    var userName = currentName.Split('\\')[1];
-
-                    _outputFilePath = $@"C:\Users\{userName}\Desktop\软著代码";
-                }
-
-                //按照设置的文件后缀遍历文件
-                _generateFilePathCollection = new ObservableCollection<string>();
-
-                var files = _folderModel.FullPath.TraverseFolder();
-                foreach (var file in files.Where(file => _fileSuffixCollection.Contains(file.Extension)))
-                {
-                    _generateFilePathCollection.Add(file.FullName);
-                }
-
-                //启动文件处理后台线程
-                if (_backgroundWorker.IsBusy)
-                {
-                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                        {
-                            { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "当前正在处理文件中" }
-                        },
-                        delegate { }
-                    );
-                    return;
-                }
-
-                _backgroundWorker.RunWorkerAsync();
-            });
-
-            //选择文档保存的路径
-            SelectPathCommand = new DelegateCommand(delegate
-            {
-                var fileDialog = new SaveFileDialog();
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    _outputFilePath = fileDialog.FileName;
-                }
-            });
+            SelectFolderCommand = new DelegateCommand(SelectFolder);
+            MouseDoubleClickCommand = new DelegateCommand<string>(OpenFile);
+            DeleteFileCommand = new DelegateCommand<string>(DeleteFile);
+            AddFileSuffixTypeCommand = new DelegateCommand(AddFileSuffixType);
+            DeleteFileSuffixCommand = new DelegateCommand<string>(DeleteFileSuffix);
+            GeneratorCodeCommand = new DelegateCommand(GeneratorCode);
+            SelectPathCommand = new DelegateCommand(SelectDocSavePath);
         }
 
         /// <summary>
-        /// 更新中间区域文件九宫格
+        /// 选择文件夹
         /// </summary>
-        private void UpdateCenterGridView(FileInfo[] result)
+        private void SelectFolder()
         {
-            //每次选中文件夹都需要同步刷新中间九宫格文件以
-            if (FileNameCollection.Any())
+            var dialog = new FolderBrowserDialog { ShowNewFolderButton = false };
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                FileNameCollection.Clear();
+                FolderPath = dialog.SelectedPath;
+
+                if (_folderPath == null)
+                {
+                    return;
+                }
+
+                //遍历刚刚添加的文件夹
+                var traverseResult = _folderPath.TraverseFolder();
+                //更新中间区域文件九宫格
+                if (FileNameCollection.Any())
+                {
+                    FileNameCollection.Clear();
+                }
+
+                foreach (var file in traverseResult)
+                {
+                    FileNameCollection.Add(file.Name);
+                }
+
+                FileSuffixCollection.Clear();
+            }
+        }
+
+        /// <summary>
+        /// 双击打开文件
+        /// </summary>
+        /// <param name="selectedItem"></param>
+        private void OpenFile(string selectedItem)
+        {
+            var files = _folderPath.TraverseFolder();
+            foreach (var file in files)
+            {
+                if (selectedItem != null && file.FullName.Contains(selectedItem))
+                {
+                    //本机默认程序打开
+                    Process.Start(file.FullName);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="fileName"></param>
+        private void DeleteFile(string fileName)
+        {
+            FileNameCollection.Remove(fileName);
+        }
+
+        /// <summary>
+        /// 添加需要格式化的后缀
+        /// </summary>
+        private void AddFileSuffixType()
+        {
+            if (string.IsNullOrWhiteSpace(_suffixType))
+            {
+                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
+                    {
+                        { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型为空，无法添加" }
+                    },
+                    delegate { }
+                );
+                return;
             }
 
-            foreach (var file in result)
+            if (FileSuffixCollection.Contains($"*{_suffixType}") ||
+                FileSuffixCollection.Contains($"*.{_suffixType}"))
             {
-                FileNameCollection.Add(file.Name);
+                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
+                    {
+                        { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "文件类型已添加，请勿重复添加" }
+                    },
+                    delegate { }
+                );
+                return;
             }
 
-            FileSuffixCollection.Clear();
+            FileSuffixCollection.Add(_suffixType.Contains(".") ? $"*{_suffixType}" : $"*.{_suffixType}");
+
+            //添加之后将输入框置空
+            SuffixType = string.Empty;
+        }
+
+        /// <summary>
+        /// 删除后缀
+        /// </summary>
+        /// <param name="fileSuffix"></param>
+        private void DeleteFileSuffix(string fileSuffix)
+        {
+            FileSuffixCollection.Remove(fileSuffix);
+        }
+
+        /// <summary>
+        /// 生成格式化后的代码文档
+        /// </summary>
+        private void GeneratorCode()
+        {
+            if (!_fileSuffixCollection.Any())
+            {
+                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
+                    {
+                        { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "请设置需要格式化的文件后缀" }
+                    },
+                    delegate { }
+                );
+                return;
+            }
+
+            //如果用户没有设置过保存路径，那就默认已登录账号桌面路径为保存文档的路径
+            if (string.IsNullOrEmpty(_outputFilePath))
+            {
+                var current = WindowsIdentity.GetCurrent();
+                var currentName = current.Name;
+                var userName = currentName.Split('\\')[1];
+
+                _outputFilePath = $@"C:\Users\{userName}\Desktop\软著代码";
+            }
+
+            //如果没有设置代码页数，默认60页（前后各30页）
+            if (string.IsNullOrEmpty(_codePageLimit))
+            {
+                _effectiveCodeCount = 60 * 50;
+            }
+            else
+            {
+                if (!_codePageLimit.IsNumber())
+                {
+                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
+                        {
+                            { "AlertType", AlertType.Error }, { "Title", "温馨提示" }, { "Message", "页码格式不对，请输入数字" }
+                        },
+                        delegate { }
+                    );
+                    return;
+                }
+
+                _effectiveCodeCount = Convert.ToInt32(_codePageLimit) * 50;
+            }
+
+            //按照设置的文件后缀遍历文件
+            _generateFilePaths = new List<string>();
+
+            var files = _folderPath.TraverseFolder();
+            foreach (var file in files.Where(file => _fileSuffixCollection.Contains($"*{file.Extension}")))
+            {
+                _generateFilePaths.Add(file.FullName);
+            }
+
+            //启动文件处理后台线程
+            if (_backgroundWorker.IsBusy)
+            {
+                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
+                    {
+                        { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "当前正在处理文件中" }
+                    },
+                    delegate { }
+                );
+                return;
+            }
+
+            _backgroundWorker.RunWorkerAsync();
+        }
+
+        /// <summary>
+        /// 选择文档保存的路径
+        /// </summary>
+        private void SelectDocSavePath()
+        {
+            var fileDialog = new SaveFileDialog();
+            if (fileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _outputFilePath = fileDialog.FileName;
+            }
         }
 
         private void Worker_OnDoWork(object sender, DoWorkEventArgs e)
@@ -329,7 +343,7 @@ namespace CodeGenerator.ViewModels
             var codeContentArray = new List<string>();
             var effectiveCode = new List<string>();
             var i = 0;
-            foreach (var filePath in _generateFilePathCollection)
+            foreach (var filePath in _generateFilePaths)
             {
                 //读取源文件，跳过读取空白行
                 var lines = File.ReadAllLines(filePath);
@@ -337,7 +351,7 @@ namespace CodeGenerator.ViewModels
 
                 //更新处理进度
                 i++;
-                var percent = i / (float)_generateFilePathCollection.Count;
+                var percent = i / (float)_generateFilePaths.Count;
                 _backgroundWorker.ReportProgress((int)(percent * 100));
 
                 //此行代码根据情况可选择删除或者保留
@@ -345,19 +359,19 @@ namespace CodeGenerator.ViewModels
             }
 
             //筛选代码行区间
-            if (codeContentArray.Count <= RuntimeCache.EffectiveCodeCount)
+            if (codeContentArray.Count <= _effectiveCodeCount)
             {
                 effectiveCode = codeContentArray;
             }
             else
             {
                 //选择前后30页代码，写入Txt
-                for (var j = 0; j < RuntimeCache.EffectiveCodeCount / 2; j++)
+                for (var j = 0; j < _effectiveCodeCount / 2; j++)
                 {
                     effectiveCode.Add(codeContentArray[j]);
                 }
 
-                var end = codeContentArray.Count - RuntimeCache.EffectiveCodeCount / 2;
+                var end = codeContentArray.Count - _effectiveCodeCount / 2;
                 for (var k = end; k < codeContentArray.Count; k++)
                 {
                     effectiveCode.Add(codeContentArray[k]);

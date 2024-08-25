@@ -35,7 +35,7 @@
             Orientation="Vertical">
             <TextBlock
                 VerticalAlignment="Center"
-                FontFamily="黑体"
+                FontFamily="宋体"
                 FontSize="26"
                 Foreground="White"
                 Text="软著代码生成器" />
