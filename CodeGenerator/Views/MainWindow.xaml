@@ -13,7 +13,6 @@
     Height="600"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
     ResizeMode="CanMinimize"
-    Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
@@ -193,6 +192,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="0.5" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
@@ -221,7 +221,24 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="14"
-                            Text="文件后缀" />
+                            Text="代码文档字号" />
+
+                        <hc:TextBox
+                            Margin="0,10,0,0"
+                            hc:InfoElement.Placeholder="默认8号字体"
+                            hc:InfoElement.ShowClearButton="True"
+                            FontSize="14"
+                            Text="{Binding FontSize}" />
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Row="2"
+                        Margin="7"
+                        Orientation="Vertical">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Text="源码文件后缀" />
 
                         <Grid Margin="0,10,0,0">
                             <Grid.ColumnDefinitions>
@@ -268,11 +285,11 @@
                         </Grid>
                     </StackPanel>
 
-                    <Grid Grid.Row="2" Background="LightGray" />
+                    <Grid Grid.Row="3" Background="LightGray" />
 
                     <ListBox
                         x:Name="FileSuffixListBox"
-                        Grid.Row="3"
+                        Grid.Row="4"
                         BorderThickness="0"
                         ItemsSource="{Binding FileSuffixCollection}">
                         <ListBox.ItemTemplate>

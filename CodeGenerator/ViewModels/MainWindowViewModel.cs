@@ -48,6 +48,18 @@ namespace CodeGenerator.ViewModels
             }
         }
 
+        private string _fontSize;
+
+        public string FontSize
+        {
+            get => _fontSize;
+            set
+            {
+                _fontSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private string _suffixType;
 
         public string SuffixType
@@ -125,6 +137,7 @@ namespace CodeGenerator.ViewModels
         private readonly IDialogService _dialogService;
         private string _outputFilePath;
         private int _effectiveCodeCount;
+        private int _size;
         private readonly BackgroundWorker _backgroundWorker;
 
         /// <summary>
@@ -301,6 +314,27 @@ namespace CodeGenerator.ViewModels
                 _effectiveCodeCount = Convert.ToInt32(_codePageLimit) * 50;
             }
 
+            //如果没有设置字体，默认8号。软著要求每页50行代码，8号字体正好合适
+            if (string.IsNullOrEmpty(_fontSize))
+            {
+                _size = 8;
+            }
+            else
+            {
+                if (!_fontSize.IsNumber())
+                {
+                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
+                        {
+                            { "AlertType", AlertType.Error }, { "Title", "温馨提示" }, { "Message", "字体大小格式不对，请输入数字" }
+                        },
+                        delegate { }
+                    );
+                    return;
+                }
+
+                _size = Convert.ToInt32(_fontSize);
+            }
+
             //按照设置的文件后缀遍历文件
             _generateFilePaths = new List<string>();
 
@@ -391,7 +425,7 @@ namespace CodeGenerator.ViewModels
             var fmt = new Formatting
             {
                 FontFamily = new Font("微软雅黑"),
-                Size = 8 //软著要求每页50行代码，8号字体正好合适
+                Size = _size
             };
             paragraph.Append(text, fmt);
             try
