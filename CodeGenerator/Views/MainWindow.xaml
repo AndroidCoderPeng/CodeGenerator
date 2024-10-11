@@ -119,14 +119,13 @@
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="Button">
-                                                                <Border x:Name="ButtonContainerBorder" Padding="3">
+                                                                <Border x:Name="ButtonContainerBorder" Padding="2">
                                                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                                 </Border>
 
                                                                 <ControlTemplate.Triggers>
                                                                     <Trigger Property="IsMouseOver" Value="True">
                                                                         <Setter TargetName="ButtonContainerBorder" Property="Background" Value="Red" />
-                                                                        <Setter TargetName="ButtonContainerBorder" Property="TextBlock.Foreground" Value="White" />
                                                                     </Trigger>
                                                                 </ControlTemplate.Triggers>
                                                             </ControlTemplate>
@@ -305,6 +304,7 @@
                                         Padding="10,5"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
+                                        Background="{DynamicResource BackgroundBrush}"
                                         FontFamily="微软雅黑"
                                         FontSize="14"
                                         FontWeight="Bold"
@@ -314,7 +314,6 @@
                                     <Button
                                         x:Name="DeleteFileSuffixButton"
                                         Grid.Column="1"
-                                        Background="{StaticResource PrimaryBrush}"
                                         Command="{Binding DataContext.DeleteFileSuffixCommand, ElementName=FileSuffixListBox}"
                                         CommandParameter="{Binding Path=Tag, ElementName=DeleteFileSuffixButton}"
                                         Content="&#xe668;"
@@ -328,7 +327,7 @@
                                                         <ControlTemplate TargetType="Button">
                                                             <Border
                                                                 x:Name="ButtonContainerBorder"
-                                                                Padding="7,0"
+                                                                Padding="8,0"
                                                                 Background="{StaticResource PrimaryBrush}">
                                                                 <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                                             </Border>
@@ -361,10 +360,7 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                            <Border
-                                                x:Name="ListBoxItemBorder"
-                                                BorderBrush="{StaticResource PrimaryBrush}"
-                                                BorderThickness="1">
+                                            <Border x:Name="ListBoxItemBorder">
                                                 <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
                                             </Border>
                                         </ControlTemplate>

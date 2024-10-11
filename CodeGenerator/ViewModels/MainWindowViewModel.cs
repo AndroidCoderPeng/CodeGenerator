@@ -232,6 +232,12 @@ namespace CodeGenerator.ViewModels
                 return;
             }
 
+            if (_suffixType.Contains("*"))
+            {
+                MessageBox.Show("文件类型不用自带『*』", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (FileSuffixCollection.Contains($"*{_suffixType}") ||
                 FileSuffixCollection.Contains($"*.{_suffixType}"))
             {
