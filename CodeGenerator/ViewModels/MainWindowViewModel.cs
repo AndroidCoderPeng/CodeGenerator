@@ -7,16 +7,16 @@ using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
+using System.Windows;
 using System.Windows.Forms;
 using CodeGenerator.Utils;
 using HandyControl.Controls;
 using Prism.Commands;
 using Prism.Mvvm;
-using Prism.Services.Dialogs;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
-using DialogResult = System.Windows.Forms.DialogResult;
 using Formatting = Xceed.Document.NET.Formatting;
+using MessageBox = System.Windows.MessageBox;
 
 namespace CodeGenerator.ViewModels
 {
@@ -134,7 +134,6 @@ namespace CodeGenerator.ViewModels
 
         #endregion
 
-        private readonly IDialogService _dialogService;
         private string _outputFilePath;
         private int _effectiveCodeCount;
         private int _size;
@@ -145,10 +144,8 @@ namespace CodeGenerator.ViewModels
         /// </summary>
         private List<string> _generateFilePaths;
 
-        public MainWindowViewModel(IDialogService dialogService)
+        public MainWindowViewModel()
         {
-            _dialogService = dialogService;
-
             _backgroundWorker = new BackgroundWorker();
             _backgroundWorker.WorkerReportsProgress = true;
             _backgroundWorker.WorkerSupportsCancellation = true;
@@ -231,24 +228,14 @@ namespace CodeGenerator.ViewModels
         {
             if (string.IsNullOrWhiteSpace(_suffixType))
             {
-                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                    {
-                        { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型为空，无法添加" }
-                    },
-                    delegate { }
-                );
+                MessageBox.Show("文件类型为空，无法添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             if (FileSuffixCollection.Contains($"*{_suffixType}") ||
                 FileSuffixCollection.Contains($"*.{_suffixType}"))
             {
-                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                    {
-                        { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "文件类型已添加，请勿重复添加" }
-                    },
-                    delegate { }
-                );
+                MessageBox.Show("文件类型已添加，请勿重复添加", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -274,12 +261,7 @@ namespace CodeGenerator.ViewModels
         {
             if (!_fileSuffixCollection.Any())
             {
-                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                    {
-                        { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "请设置需要格式化的文件后缀" }
-                    },
-                    delegate { }
-                );
+                MessageBox.Show("请设置需要格式化的文件后缀", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -302,12 +284,7 @@ namespace CodeGenerator.ViewModels
             {
                 if (!_codePageLimit.IsNumber())
                 {
-                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                        {
-                            { "AlertType", AlertType.Error }, { "Title", "温馨提示" }, { "Message", "页码格式不对，请输入数字" }
-                        },
-                        delegate { }
-                    );
+                    MessageBox.Show("页码格式不对，请输入数字", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -323,12 +300,7 @@ namespace CodeGenerator.ViewModels
             {
                 if (!_fontSize.IsNumber())
                 {
-                    _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                        {
-                            { "AlertType", AlertType.Error }, { "Title", "温馨提示" }, { "Message", "字体大小格式不对，请输入数字" }
-                        },
-                        delegate { }
-                    );
+                    MessageBox.Show("字体大小格式不对，请输入数字", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -347,12 +319,7 @@ namespace CodeGenerator.ViewModels
             //启动文件处理后台线程
             if (_backgroundWorker.IsBusy)
             {
-                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                    {
-                        { "AlertType", AlertType.Warning }, { "Title", "温馨提示" }, { "Message", "当前正在处理文件中" }
-                    },
-                    delegate { }
-                );
+                MessageBox.Show("当前正在处理文件中", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -432,14 +399,9 @@ namespace CodeGenerator.ViewModels
             {
                 docX.Save();
             }
-            catch (ArgumentException)
+            catch (ArgumentException ex)
             {
-                _dialogService.ShowDialog("AlertMessageDialog", new DialogParameters
-                    {
-                        { "AlertType", AlertType.Error }, { "Title", "错误" }, { "Message", "文件类型错误，无法生成代码文件" }
-                    },
-                    delegate { }
-                );
+                MessageBox.Show(ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -217,16 +217,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\FileTypeConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
-    <Compile Include="Dialogs\AlertControlDialog.xaml.cs">
-      <DependentUpon>AlertControlDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\AlertMessageDialog.xaml.cs">
-      <DependentUpon>AlertMessageDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Utils\AlertType.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
-    <Compile Include="ViewModels\AlertControlDialogViewModel.cs" />
-    <Compile Include="ViewModels\AlertMessageDialogViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\StartupWindow.xaml.cs">
       <DependentUpon>StartupWindow.xaml</DependentUpon>
@@ -239,8 +230,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Dialogs\AlertControlDialog.xaml" />
-    <Page Include="Dialogs\AlertMessageDialog.xaml" />
     <Page Include="Views\StartupWindow.xaml" />
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
