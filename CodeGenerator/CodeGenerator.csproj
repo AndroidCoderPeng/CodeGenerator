@@ -217,6 +217,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\FileTypeConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Models\CodeFile.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\StartupWindow.xaml.cs">

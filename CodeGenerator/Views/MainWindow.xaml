@@ -78,7 +78,7 @@
                         Grid.Row="1"
                         Padding="2,2,0,3"
                         BorderThickness="0"
-                        ItemsSource="{Binding FileNameCollection}"
+                        ItemsSource="{Binding FileCollection}"
                         SelectedIndex="0">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="MouseDoubleClick">
@@ -88,7 +88,7 @@
 
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid Width="93" ToolTip="{Binding}">
+                                <Grid Width="93" ToolTip="{Binding FileName}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
                                         <RowDefinition />
@@ -102,18 +102,16 @@
                                             Width="50"
                                             Height="50"
                                             Margin="0,5"
-                                            Source="{Binding Converter={StaticResource FileTypeConverter}}" />
+                                            Source="{Binding FileSuffix, Converter={StaticResource FileTypeConverter}}" />
 
                                         <Button
-                                            x:Name="DeleteFileButton"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
                                             Command="{Binding DataContext.DeleteFileCommand, ElementName=FileListBox}"
-                                            CommandParameter="{Binding Path=Tag, ElementName=DeleteFileButton}"
+                                            CommandParameter="{Binding}"
                                             Content="&#xe668;"
                                             FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                            Foreground="White"
-                                            Tag="{Binding}">
+                                            Foreground="White">
                                             <Button.Style>
                                                 <Style TargetType="Button">
                                                     <Setter Property="Template">
@@ -140,7 +138,7 @@
                                         Grid.Row="1"
                                         Height="30"
                                         Margin="5,0,5,5"
-                                        Text="{Binding}"
+                                        Text="{Binding FileName}"
                                         TextAlignment="Center"
                                         TextWrapping="Wrap" />
                                 </Grid>

@@ -7,8 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using CodeGenerator.Models;
 using CodeGenerator.Utils;
 using HandyControl.Controls;
 using Prism.Commands;
@@ -32,6 +34,18 @@ namespace CodeGenerator.ViewModels
             set
             {
                 _folderPath = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _taskHasCompleted;
+
+        public bool TaskHasCompleted
+        {
+            get => _taskHasCompleted;
+            set
+            {
+                _taskHasCompleted = value;
                 RaisePropertyChanged();
             }
         }
@@ -84,14 +98,14 @@ namespace CodeGenerator.ViewModels
             }
         }
 
-        private ObservableCollection<string> _fileNameCollection = new ObservableCollection<string>();
+        private ObservableCollection<CodeFile> _fileCollection;
 
-        public ObservableCollection<string> FileNameCollection
+        public ObservableCollection<CodeFile> FileCollection
         {
-            get => _fileNameCollection;
+            get => _fileCollection;
             set
             {
-                _fileNameCollection = value;
+                _fileCollection = value;
                 RaisePropertyChanged();
             }
         }
@@ -125,8 +139,8 @@ namespace CodeGenerator.ViewModels
         #region DelegateCommand
 
         public DelegateCommand SelectFolderCommand { set; get; }
-        public DelegateCommand<string> MouseDoubleClickCommand { set; get; }
-        public DelegateCommand<string> DeleteFileCommand { set; get; }
+        public DelegateCommand<CodeFile> MouseDoubleClickCommand { set; get; }
+        public DelegateCommand<CodeFile> DeleteFileCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
         public DelegateCommand<string> DeleteFileSuffixCommand { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
@@ -154,8 +168,8 @@ namespace CodeGenerator.ViewModels
             _backgroundWorker.RunWorkerCompleted += Worker_OnRunWorkerCompleted;
 
             SelectFolderCommand = new DelegateCommand(SelectFolder);
-            MouseDoubleClickCommand = new DelegateCommand<string>(OpenFile);
-            DeleteFileCommand = new DelegateCommand<string>(DeleteFile);
+            MouseDoubleClickCommand = new DelegateCommand<CodeFile>(OpenFile);
+            DeleteFileCommand = new DelegateCommand<CodeFile>(DeleteFile);
             AddFileSuffixTypeCommand = new DelegateCommand(AddFileSuffixType);
             DeleteFileSuffixCommand = new DelegateCommand<string>(DeleteFileSuffix);
             GeneratorCodeCommand = new DelegateCommand(GeneratorCode);
@@ -165,7 +179,7 @@ namespace CodeGenerator.ViewModels
         /// <summary>
         /// 选择文件夹
         /// </summary>
-        private void SelectFolder()
+        private async void SelectFolder()
         {
             var dialog = new FolderBrowserDialog { ShowNewFolderButton = false };
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -174,22 +188,13 @@ namespace CodeGenerator.ViewModels
 
                 if (_folderPath == null)
                 {
+                    MessageBox.Show("文件夹为空", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
-                //遍历刚刚添加的文件夹
-                var traverseResult = _folderPath.TraverseFolder();
+                var totalFiles = await GetTotalCodeFilesAsync();
                 //更新中间区域文件九宫格
-                if (FileNameCollection.Any())
-                {
-                    FileNameCollection.Clear();
-                }
-
-                foreach (var file in traverseResult)
-                {
-                    FileNameCollection.Add(file.Name);
-                }
-
+                FileCollection = totalFiles.ToObservableCollection();
                 FileSuffixCollection.Clear();
             }
         }
@@ -197,28 +202,26 @@ namespace CodeGenerator.ViewModels
         /// <summary>
         /// 双击打开文件
         /// </summary>
-        /// <param name="selectedItem"></param>
-        private void OpenFile(string selectedItem)
+        /// <param name="codeFile"></param>
+        private void OpenFile(CodeFile codeFile)
         {
-            var files = _folderPath.TraverseFolder();
-            foreach (var file in files)
+            if (codeFile == null)
             {
-                if (selectedItem != null && file.FullName.Contains(selectedItem))
-                {
-                    //本机默认程序打开
-                    Process.Start(file.FullName);
-                    return;
-                }
+                MessageBox.Show("文件路径异常，无法删除", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
+
+            //本机默认程序打开
+            Process.Start(codeFile.FullPath);
         }
 
         /// <summary>
         /// 删除文件
         /// </summary>
-        /// <param name="fileName"></param>
-        private void DeleteFile(string fileName)
+        /// <param name="codeFile"></param>
+        private void DeleteFile(CodeFile codeFile)
         {
-            FileNameCollection.Remove(fileName);
+            FileCollection.Remove(codeFile);
         }
 
         /// <summary>
@@ -232,20 +235,19 @@ namespace CodeGenerator.ViewModels
                 return;
             }
 
-            if (_suffixType.Contains("*"))
+            if (_suffixType.StartsWith("*") || _suffixType.StartsWith("."))
             {
-                MessageBox.Show("文件类型不用自带『*』", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("直接输入文件类型即可", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (FileSuffixCollection.Contains($"*{_suffixType}") ||
-                FileSuffixCollection.Contains($"*.{_suffixType}"))
+            if (_fileSuffixCollection.Contains($".{_suffixType}"))
             {
                 MessageBox.Show("文件类型已添加，请勿重复添加", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            FileSuffixCollection.Add(_suffixType.Contains(".") ? $"*{_suffixType}" : $"*.{_suffixType}");
+            FileSuffixCollection.Add($".{_suffixType}");
 
             //添加之后将输入框置空
             SuffixType = string.Empty;
@@ -263,11 +265,17 @@ namespace CodeGenerator.ViewModels
         /// <summary>
         /// 生成格式化后的代码文档
         /// </summary>
-        private void GeneratorCode()
+        private async void GeneratorCode()
         {
+            if (string.IsNullOrWhiteSpace(_folderPath))
+            {
+                MessageBox.Show("请添加需要格式化的文件夹", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            
             if (!_fileSuffixCollection.Any())
             {
-                MessageBox.Show("请设置需要格式化的文件后缀", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("请设置需要格式化的文件后缀", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -315,11 +323,10 @@ namespace CodeGenerator.ViewModels
 
             //按照设置的文件后缀遍历文件
             _generateFilePaths = new List<string>();
-
-            var files = _folderPath.TraverseFolder();
-            foreach (var file in files.Where(file => _fileSuffixCollection.Contains($"*{file.Extension}")))
+            var files = await GetTotalCodeFilesAsync();
+            foreach (var file in files.Where(file => _fileSuffixCollection.Contains(file.FileSuffix)))
             {
-                _generateFilePaths.Add(file.FullName);
+                _generateFilePaths.Add(file.FullPath);
             }
 
             //启动文件处理后台线程
@@ -330,6 +337,19 @@ namespace CodeGenerator.ViewModels
             }
 
             _backgroundWorker.RunWorkerAsync();
+        }
+
+        /// <summary>
+        /// 异步遍历文件夹，防止卡主线程
+        /// </summary>
+        /// <returns></returns>
+        private async Task<List<CodeFile>> GetTotalCodeFilesAsync()
+        {
+            var codeFiles = new List<CodeFile>();
+
+            await Task.Run(() => _folderPath.TraverseFolder(codeFiles));
+            TaskHasCompleted = true;
+            return codeFiles.ToList();
         }
 
         /// <summary>
