@@ -38,18 +38,6 @@ namespace CodeGenerator.ViewModels
             }
         }
 
-        private bool _taskHasCompleted;
-
-        public bool TaskHasCompleted
-        {
-            get => _taskHasCompleted;
-            set
-            {
-                _taskHasCompleted = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private string _codePageLimit;
 
         public string CodePageLimit
@@ -193,7 +181,6 @@ namespace CodeGenerator.ViewModels
                 }
 
                 var totalFiles = await GetTotalCodeFilesAsync();
-                //更新中间区域文件九宫格
                 FileCollection = totalFiles.ToObservableCollection();
                 FileSuffixCollection.Clear();
             }
@@ -346,9 +333,7 @@ namespace CodeGenerator.ViewModels
         private async Task<List<CodeFile>> GetTotalCodeFilesAsync()
         {
             var codeFiles = new List<CodeFile>();
-
             await Task.Run(() => _folderPath.TraverseFolder(codeFiles));
-            TaskHasCompleted = true;
             return codeFiles.ToList();
         }
 
