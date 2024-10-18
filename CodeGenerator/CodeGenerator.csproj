@@ -215,6 +215,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\ContentViewConverter.cs" />
+    <Compile Include="Converters\EmptyViewConverter.cs" />
     <Compile Include="Converters\FileTypeConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Models\CodeFile.cs" />
@@ -259,9 +261,6 @@
     <Resource Include="Images\dir.png" />
     <Resource Include="Images\launcher.ico" />
     <Resource Include="Images\bg_launcher.png" />
-    <Resource Include="Images\bg_main_frame_1.jpg" />
-    <Resource Include="Images\bg_main_frame_2.jpg" />
-    <Resource Include="Images\bg_main_frame_3.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -295,6 +294,9 @@
     <Resource Include="Images\xml.png" />
     <Resource Include="Images\yml.png" />
     <Resource Include="Images\zip.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\empty_image.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
