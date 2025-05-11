@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace CodeGenerator.Utils
 {
@@ -20,6 +22,24 @@ namespace CodeGenerator.Utils
             catch (Exception ex) when (ex is UnauthorizedAccessException || ex is PathTooLongException)
             {
                 return Array.Empty<FileInfo>();
+            }
+        }
+
+        public static void TraverseFolder(this string path, ObservableCollection<FileInfo> result)
+        {
+            try
+            {
+                Parallel.ForEach(Directory.GetFiles(path), file => { result.Add(new FileInfo(file)); });
+
+                foreach (var dir in Directory.GetDirectories(path))
+                {
+                    TraverseFolder(dir, result);
+                }
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException || ex is IOException)
+            {
+                // 可选：记录无法访问的目录
+                Console.WriteLine($@"无法访问目录：{path}，原因：{ex.Message}");
             }
         }
 

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using CodeGenerator.Utils;
@@ -15,6 +16,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
+using Application = System.Windows.Application;
 using Formatting = Xceed.Document.NET.Formatting;
 using MessageBox = System.Windows.MessageBox;
 
@@ -72,26 +74,26 @@ namespace CodeGenerator.ViewModels
             }
         }
 
-        private ObservableCollection<string> _fileSuffixCollection = new ObservableCollection<string>();
+        private ObservableCollection<string> _suffixCollection = new ObservableCollection<string>();
 
-        public ObservableCollection<string> FileSuffixCollection
+        public ObservableCollection<string> SuffixCollection
         {
-            get => _fileSuffixCollection;
+            get => _suffixCollection;
             set
             {
-                _fileSuffixCollection = value;
+                _suffixCollection = value;
                 RaisePropertyChanged();
             }
         }
 
-        private ObservableCollection<string> _fileNameCollection = new ObservableCollection<string>();
+        private ObservableCollection<FileInfo> _fileCollection = new ObservableCollection<FileInfo>();
 
-        public ObservableCollection<string> FileNameCollection
+        public ObservableCollection<FileInfo> FileCollection
         {
-            get => _fileNameCollection;
+            get => _fileCollection;
             set
             {
-                _fileNameCollection = value;
+                _fileCollection = value;
                 RaisePropertyChanged();
             }
         }
@@ -125,8 +127,8 @@ namespace CodeGenerator.ViewModels
         #region DelegateCommand
 
         public DelegateCommand SelectFolderCommand { set; get; }
-        public DelegateCommand<string> MouseDoubleClickCommand { set; get; }
-        public DelegateCommand<string> DeleteFileCommand { set; get; }
+        public DelegateCommand<FileInfo> MouseDoubleClickCommand { set; get; }
+        public DelegateCommand<FileInfo> DeleteFileCommand { set; get; }
         public DelegateCommand AddFileSuffixTypeCommand { set; get; }
         public DelegateCommand<string> DeleteFileSuffixCommand { set; get; }
         public DelegateCommand GeneratorCodeCommand { set; get; }
@@ -154,8 +156,8 @@ namespace CodeGenerator.ViewModels
             _backgroundWorker.RunWorkerCompleted += Worker_OnRunWorkerCompleted;
 
             SelectFolderCommand = new DelegateCommand(SelectFolder);
-            MouseDoubleClickCommand = new DelegateCommand<string>(OpenFile);
-            DeleteFileCommand = new DelegateCommand<string>(DeleteFile);
+            MouseDoubleClickCommand = new DelegateCommand<FileInfo>(OpenFile);
+            DeleteFileCommand = new DelegateCommand<FileInfo>(DeleteFile);
             AddFileSuffixTypeCommand = new DelegateCommand(AddFileSuffixType);
             DeleteFileSuffixCommand = new DelegateCommand<string>(DeleteFileSuffix);
             GeneratorCodeCommand = new DelegateCommand(GeneratorCode);
@@ -175,52 +177,50 @@ namespace CodeGenerator.ViewModels
 
             FolderPath = dialog.SelectedPath;
 
-            //遍历刚刚添加的文件夹
-            var traverseResult = _folderPath.TraverseFolder();
-            if (!traverseResult.Any())
-            {
-                MessageBox.Show("文件夹为空", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            // 清空旧数据
+            FileCollection.Clear();
+            SuffixCollection.Clear();
 
-            if (FileNameCollection.Any())
+            Task.Run(async () =>
             {
-                FileNameCollection.Clear();
-            }
+                FileCollection = await GetFilesAsync();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (!_fileCollection.Any())
+                    {
+                        MessageBox.Show("文件夹为空", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                });
+            });
+        }
 
-            foreach (var file in traverseResult)
+        private async Task<ObservableCollection<FileInfo>> GetFilesAsync()
+        {
+            return await Task.Run(() =>
             {
-                FileNameCollection.Add(file.Name);
-            }
-
-            FileSuffixCollection.Clear();
+                var result = new ObservableCollection<FileInfo>();
+                _folderPath.TraverseFolder(result);
+                return result;
+            });
         }
 
         /// <summary>
         /// 双击打开文件
         /// </summary>
         /// <param name="selectedItem"></param>
-        private void OpenFile(string selectedItem)
+        private void OpenFile(FileInfo selectedItem)
         {
-            var files = _folderPath.TraverseFolder();
-            foreach (var file in files)
-            {
-                if (selectedItem != null && file.FullName.Contains(selectedItem))
-                {
-                    //本机默认程序打开
-                    Process.Start(file.FullName);
-                    return;
-                }
-            }
+            //本机默认程序打开
+            Process.Start(selectedItem.FullName);
         }
 
         /// <summary>
         /// 删除文件
         /// </summary>
-        /// <param name="fileName"></param>
-        private void DeleteFile(string fileName)
+        /// <param name="file"></param>
+        private void DeleteFile(FileInfo file)
         {
-            FileNameCollection.Remove(fileName);
+            FileCollection.Remove(file);
         }
 
         /// <summary>
@@ -236,18 +236,17 @@ namespace CodeGenerator.ViewModels
 
             if (_suffixType.Contains("*"))
             {
-                MessageBox.Show("文件类型不用自带『*』", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("文件类型不用自带『*』", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (FileSuffixCollection.Contains($"*{_suffixType}") ||
-                FileSuffixCollection.Contains($"*.{_suffixType}"))
+            if (SuffixCollection.Contains($"*{_suffixType}") || SuffixCollection.Contains($"*.{_suffixType}"))
             {
-                MessageBox.Show("文件类型已添加，请勿重复添加", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("文件类型已添加，请勿重复添加", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            FileSuffixCollection.Add(_suffixType.Contains(".") ? $"*{_suffixType}" : $"*.{_suffixType}");
+            SuffixCollection.Add(_suffixType.Contains(".") ? $"*{_suffixType}" : $"*.{_suffixType}");
 
             //添加之后将输入框置空
             SuffixType = string.Empty;
@@ -256,10 +255,10 @@ namespace CodeGenerator.ViewModels
         /// <summary>
         /// 删除后缀
         /// </summary>
-        /// <param name="fileSuffix"></param>
-        private void DeleteFileSuffix(string fileSuffix)
+        /// <param name="suffix"></param>
+        private void DeleteFileSuffix(string suffix)
         {
-            FileSuffixCollection.Remove(fileSuffix);
+            SuffixCollection.Remove(suffix);
         }
 
         /// <summary>
@@ -267,9 +266,9 @@ namespace CodeGenerator.ViewModels
         /// </summary>
         private void GeneratorCode()
         {
-            if (!_fileSuffixCollection.Any())
+            if (!_suffixCollection.Any())
             {
-                MessageBox.Show("请设置需要格式化的文件后缀", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("请设置需要格式化的文件后缀", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -292,7 +291,7 @@ namespace CodeGenerator.ViewModels
             {
                 if (!_codePageLimit.IsNumber())
                 {
-                    MessageBox.Show("页码格式不对，请输入数字", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("页码格式不对，请输入数字", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -308,7 +307,7 @@ namespace CodeGenerator.ViewModels
             {
                 if (!_fontSize.IsNumber())
                 {
-                    MessageBox.Show("字体大小格式不对，请输入数字", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("字体大小格式不对，请输入数字", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -319,7 +318,7 @@ namespace CodeGenerator.ViewModels
             _generateFilePaths = new List<string>();
 
             var files = _folderPath.TraverseFolder();
-            foreach (var file in files.Where(file => _fileSuffixCollection.Contains($"*{file.Extension}")))
+            foreach (var file in files.Where(file => _suffixCollection.Contains($"*{file.Extension}")))
             {
                 _generateFilePaths.Add(file.FullName);
             }
@@ -327,7 +326,7 @@ namespace CodeGenerator.ViewModels
             //启动文件处理后台线程
             if (_backgroundWorker.IsBusy)
             {
-                MessageBox.Show("当前正在处理文件中", "温馨提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("当前正在处理文件中", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
