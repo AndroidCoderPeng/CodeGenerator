@@ -19,6 +19,8 @@
     <Window.Resources>
         <cvt:VisibilityConverter x:Key="VisibilityConverter" />
         <cvt:FileTypeConverter x:Key="FileTypeConverter" />
+        <cvt:EmptyViewConverter x:Key="EmptyViewConverterKey" />
+        <cvt:ContentViewConverter x:Key="ContentViewConverterKey" />
     </Window.Resources>
 
     <Border BorderBrush="LightGray" BorderThickness="0,0.5,0,0">
@@ -73,116 +75,136 @@
                             Style="{StaticResource ButtonDashed}" />
                     </Grid>
 
-                    <ListBox
-                        x:Name="FileListBox"
-                        Grid.Row="1"
-                        Padding="2,2,0,3"
-                        BorderThickness="0"
-                        ItemsSource="{Binding FileNameCollection}"
-                        SelectedIndex="0">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="MouseDoubleClick">
-                                <b:InvokeCommandAction Command="{Binding MouseDoubleClickCommand}" CommandParameter="{Binding ElementName=FileListBox, Path=SelectedItem}" />
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
+                    <!--  文件九宫格区  -->
+                    <Grid Grid.Row="1">
+                        <Grid Visibility="{Binding FileNameCollection.Count, Converter={StaticResource EmptyViewConverterKey}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="100" />
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="100" />
+                            </Grid.RowDefinitions>
 
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Width="93" ToolTip="{Binding}">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
+                            <Image Grid.Row="1" Source="/CodeGenerator;component/Images/empty_image.png" />
 
-                                    <Grid
-                                        Grid.Row="0"
-                                        Width="93"
-                                        HorizontalAlignment="Center">
-                                        <Image
-                                            Width="50"
-                                            Height="50"
-                                            Margin="0,5"
-                                            Source="{Binding Converter={StaticResource FileTypeConverter}}" />
+                            <TextBlock
+                                Grid.Row="2"
+                                HorizontalAlignment="Center"
+                                FontSize="18"
+                                Text="这里什么都没有~" />
+                        </Grid>
 
-                                        <Button
-                                            x:Name="DeleteFileButton"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Command="{Binding DataContext.DeleteFileCommand, ElementName=FileListBox}"
-                                            CommandParameter="{Binding Path=Tag, ElementName=DeleteFileButton}"
-                                            Content="&#xe668;"
-                                            FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                            Foreground="White"
-                                            Tag="{Binding}">
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="Button">
-                                                                <Border x:Name="ButtonContainerBorder" Padding="2">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                                </Border>
+                        <ListBox
+                            x:Name="FileListBox"
+                            Padding="2,0,0,2"
+                            BorderThickness="0"
+                            ItemsSource="{Binding FileNameCollection}"
+                            SelectedIndex="0"
+                            Visibility="{Binding FileNameCollection.Count, Converter={StaticResource ContentViewConverterKey}}">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseDoubleClick">
+                                    <b:InvokeCommandAction Command="{Binding MouseDoubleClickCommand}" CommandParameter="{Binding ElementName=FileListBox, Path=SelectedItem}" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
 
-                                                                <ControlTemplate.Triggers>
-                                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="ButtonContainerBorder" Property="Background" Value="Red" />
-                                                                    </Trigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Width="93" ToolTip="{Binding}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid
+                                            Grid.Row="0"
+                                            Width="93"
+                                            HorizontalAlignment="Center">
+                                            <Image
+                                                Width="50"
+                                                Height="50"
+                                                Margin="0,5"
+                                                Source="{Binding Converter={StaticResource FileTypeConverter}}" />
+
+                                            <Button
+                                                x:Name="DeleteFileButton"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Top"
+                                                Command="{Binding DataContext.DeleteFileCommand, ElementName=FileListBox}"
+                                                CommandParameter="{Binding Path=Tag, ElementName=DeleteFileButton}"
+                                                Content="&#xe668;"
+                                                FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                                Foreground="White"
+                                                Tag="{Binding}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border x:Name="ButtonContainerBorder" Padding="2">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                    </Border>
+
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter TargetName="ButtonContainerBorder" Property="Background" Value="Red" />
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </Grid>
+
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            Height="30"
+                                            Margin="5,0,5,5"
+                                            Text="{Binding}"
+                                            TextAlignment="Center"
+                                            TextWrapping="Wrap" />
                                     </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
 
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Height="30"
-                                        Margin="5,0,5,5"
-                                        Text="{Binding}"
-                                        TextAlignment="Center"
-                                        TextWrapping="Wrap" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
+                            <!--  ListBox横排  -->
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
 
-                        <!--  ListBox横排  -->
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Margin" Value="1" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                <Border
+                                                    x:Name="ItemContainerBorder"
+                                                    BorderBrush="#F1F1F1"
+                                                    BorderThickness="1">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ItemContainerBorder" Property="Background" Value="#F8F8F8" />
+                                                        <Setter Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                                                    </Trigger>
 
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Margin" Value="1" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                            <Border
-                                                x:Name="ItemContainerBorder"
-                                                BorderBrush="#F1F1F1"
-                                                BorderThickness="1">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="ItemContainerBorder" Property="Background" Value="#F8F8F8" />
-                                                    <Setter Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
-                                                </Trigger>
-
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="ItemContainerBorder" Property="Background" Value="#E7F4FF" />
-                                                    <Setter TargetName="ItemContainerBorder" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="ItemContainerBorder" Property="Background" Value="#E7F4FF" />
+                                                        <Setter TargetName="ItemContainerBorder" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Grid>
                 </Grid>
 
                 <Grid Grid.Column="1" Background="LightGray" />

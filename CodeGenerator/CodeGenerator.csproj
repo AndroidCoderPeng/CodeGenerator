@@ -215,6 +215,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\ContentViewConverter.cs" />
+    <Compile Include="Converters\EmptyViewConverter.cs" />
     <Compile Include="Converters\FileTypeConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Utils\MethodExtensions.cs" />
@@ -261,6 +263,7 @@
     <Resource Include="Images\bg_main_frame_1.jpg" />
     <Resource Include="Images\bg_main_frame_2.jpg" />
     <Resource Include="Images\bg_main_frame_3.jpg" />
+    <Resource Include="Images\empty_image.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
