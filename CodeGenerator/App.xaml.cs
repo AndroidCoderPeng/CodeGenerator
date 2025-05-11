@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using CodeGenerator.DataService;
+using CodeGenerator.DataService.Impl;
 using CodeGenerator.Views;
 using Prism.DryIoc;
 using Prism.Ioc;
@@ -38,7 +40,8 @@ namespace CodeGenerator
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            
+            //Data
+            containerRegistry.RegisterSingleton<IAppDataService, AppDataServiceImpl>();
         }
     }
 }

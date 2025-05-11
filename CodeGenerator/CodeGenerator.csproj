@@ -219,6 +219,8 @@
     <Compile Include="Converters\EmptyViewConverter.cs" />
     <Compile Include="Converters\FileTypeConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="DataService\IAppDataService.cs"/>
+    <Compile Include="DataService\Impl\AppDataServiceImpl.cs"/>
     <Compile Include="Utils\MethodExtensions.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\StartupWindow.xaml.cs">
