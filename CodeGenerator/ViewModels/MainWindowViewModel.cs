@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -275,11 +274,8 @@ namespace CodeGenerator.ViewModels
             //如果用户没有设置过保存路径，那就默认已登录账号桌面路径为保存文档的路径
             if (string.IsNullOrEmpty(_outputFilePath))
             {
-                var current = WindowsIdentity.GetCurrent();
-                var currentName = current.Name;
-                var userName = currentName.Split('\\')[1];
-
-                _outputFilePath = $@"C:\Users\{userName}\Desktop\软著代码";
+                var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                _outputFilePath = Path.Combine(desktopPath, "软著代码");
             }
 
             //如果没有设置代码页数，默认60页（前后各30页）
@@ -315,12 +311,11 @@ namespace CodeGenerator.ViewModels
             }
 
             //按照设置的文件后缀遍历文件
-            _generateFilePaths = new List<string>();
-
-            var files = _folderPath.TraverseFolder();
-            foreach (var file in files.Where(file => _suffixCollection.Contains($"*{file.Extension}")))
+            _generateFilePaths = _folderPath.GetFilesBySuffix(_suffixCollection);
+            if (!_generateFilePaths.Any())
             {
-                _generateFilePaths.Add(file.FullName);
+                MessageBox.Show("没找检索到符合条件的代码源文件", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
             //启动文件处理后台线程
