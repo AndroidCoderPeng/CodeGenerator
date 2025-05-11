@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
@@ -17,65 +16,61 @@ namespace CodeGenerator.Converters
                 return new BitmapImage(new Uri("/CodeGenerator;component/Images/file.png", UriTypeKind));
             }
 
-            //判断文件类型
-            var split = value.ToString().Split('.');
-            var suffix = split.Last();
-
-            switch (suffix)
+            switch (value)
             {
-                case "class":
+                case ".class":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/class.png", UriTypeKind));
-                case "css":
+                case ".css":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/css.png", UriTypeKind));
-                case "doc":
+                case ".doc":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/doc.png", UriTypeKind));
-                case "dockerfile":
+                case ".dockerfile":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/dockerfile.png", UriTypeKind));
-                case "exe":
+                case ".exe":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/exe.png", UriTypeKind));
-                case "gitignore":
+                case ".gitignore":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/gitignore.png", UriTypeKind));
-                case "html":
+                case ".html":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/html.png", UriTypeKind));
-                case "iso":
+                case ".iso":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/iso.png", UriTypeKind));
-                case "jar":
+                case ".jar":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/jar.png", UriTypeKind));
-                case "java":
+                case ".java":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/java.png", UriTypeKind));
-                case "jpg":
+                case ".jpg":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/jpg.png", UriTypeKind));
-                case "js":
+                case ".js":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/js.png", UriTypeKind));
-                case "json":
+                case ".json":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/json.png", UriTypeKind));
-                case "md":
+                case ".md":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/md.png", UriTypeKind));
-                case "mp3":
+                case ".mp3":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/mp3.png", UriTypeKind));
-                case "mp4":
+                case ".mp4":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/mp4.png", UriTypeKind));
-                case "pdf":
+                case ".pdf":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/pdf.png", UriTypeKind));
-                case "png":
+                case ".png":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/png.png", UriTypeKind));
-                case "ppt":
+                case ".ppt":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/ppt.png", UriTypeKind));
-                case "py":
+                case ".py":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/py.png", UriTypeKind));
-                case "sql":
+                case ".sql":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/sql.png", UriTypeKind));
-                case "svg":
+                case ".svg":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/svg.png", UriTypeKind));
-                case "txt":
+                case ".txt":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/txt.png", UriTypeKind));
-                case "xls":
+                case ".xls":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/xls.png", UriTypeKind));
-                case "xml":
+                case ".xml":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/xml.png", UriTypeKind));
-                case "yml":
+                case ".yml":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/yml.png", UriTypeKind));
-                case "zip":
+                case ".zip":
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/zip.png", UriTypeKind));
                 default:
                     return new BitmapImage(new Uri("/CodeGenerator;component/Images/file.png", UriTypeKind));
