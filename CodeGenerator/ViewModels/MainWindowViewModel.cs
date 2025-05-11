@@ -168,30 +168,32 @@ namespace CodeGenerator.ViewModels
         private void SelectFolder()
         {
             var dialog = new FolderBrowserDialog { ShowNewFolderButton = false };
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() != DialogResult.OK)
             {
-                FolderPath = dialog.SelectedPath;
-
-                if (_folderPath == null)
-                {
-                    return;
-                }
-
-                //遍历刚刚添加的文件夹
-                var traverseResult = _folderPath.TraverseFolder();
-                //更新中间区域文件九宫格
-                if (FileNameCollection.Any())
-                {
-                    FileNameCollection.Clear();
-                }
-
-                foreach (var file in traverseResult)
-                {
-                    FileNameCollection.Add(file.Name);
-                }
-
-                FileSuffixCollection.Clear();
+                return;
             }
+
+            FolderPath = dialog.SelectedPath;
+
+            //遍历刚刚添加的文件夹
+            var traverseResult = _folderPath.TraverseFolder();
+            if (!traverseResult.Any())
+            {
+                MessageBox.Show("文件夹为空", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (FileNameCollection.Any())
+            {
+                FileNameCollection.Clear();
+            }
+
+            foreach (var file in traverseResult)
+            {
+                FileNameCollection.Add(file.Name);
+            }
+
+            FileSuffixCollection.Clear();
         }
 
         /// <summary>

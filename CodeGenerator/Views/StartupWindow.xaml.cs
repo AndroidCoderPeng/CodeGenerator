@@ -14,10 +14,8 @@ namespace CodeGenerator.Views
         public StartupWindow()
         {
             InitializeComponent();
-            Console.WriteLine(@"Start StartupWindow");
             _timer.Interval = _timerInterval;
             _timer.Tick += OnTimerTick;
-            Console.WriteLine(@"Init LoadingProgress");
             _timer.Start();
         }
 
@@ -40,7 +38,6 @@ namespace CodeGenerator.Views
             base.OnClosed(e);
             _timer.Stop();
             _timer.Tick -= OnTimerTick;
-            Console.WriteLine(@"Close StartupWindow");
         }
     }
 }
