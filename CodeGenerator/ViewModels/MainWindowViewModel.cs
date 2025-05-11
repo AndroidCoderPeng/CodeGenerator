@@ -348,17 +348,30 @@ namespace CodeGenerator.ViewModels
             var i = 0;
             foreach (var filePath in _generateFilePaths)
             {
-                //读取源文件，跳过读取空白行
-                var lines = File.ReadAllLines(filePath);
-                codeContentArray.AddRange(lines.Where(line => !string.IsNullOrWhiteSpace(line)));
+                // 逐行读取源文件，跳过空白行（避免一次性加载整个文件到内存）
+                var lines = new List<string>();
+                using (var reader = new StreamReader(filePath))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            lines.Add(line);
+                        }
+                    }
+                }
 
-                //更新处理进度
-                i++;
-                var percent = i / (float)_generateFilePaths.Count;
-                _backgroundWorker.ReportProgress((int)(percent * 100));
+                if (lines.Count > 0)
+                {
+                    codeContentArray.AddRange(lines);
+                    i++;
+                    var percent = i / (float)_generateFilePaths.Count;
+                    _backgroundWorker.ReportProgress((int)(percent * 100));
+                }
 
                 //此行代码根据情况可选择删除或者保留
-                Thread.Sleep(20);
+                Thread.Sleep(10);
             }
 
             //筛选代码行区间
@@ -368,12 +381,13 @@ namespace CodeGenerator.ViewModels
             }
             else
             {
-                //选择前后30页代码，写入Txt
+                //选择前30页代码
                 for (var j = 0; j < _effectiveCodeCount / 2; j++)
                 {
                     effectiveCode.Add(codeContentArray[j]);
                 }
 
+                //选择后30页代码
                 var end = codeContentArray.Count - _effectiveCodeCount / 2;
                 for (var k = end; k < codeContentArray.Count; k++)
                 {
