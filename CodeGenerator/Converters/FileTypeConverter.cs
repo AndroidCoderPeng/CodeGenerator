@@ -16,65 +16,144 @@ namespace CodeGenerator.Converters
                 return new BitmapImage(new Uri("/CodeGenerator;component/Images/file.png", UriTypeKind));
             }
 
-            switch (value)
+            var fileExtension = value.ToString().Trim().ToLower();
+
+            if (fileExtension.EndsWith(".class", StringComparison.OrdinalIgnoreCase))
             {
-                case ".class":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/class.png", UriTypeKind));
-                case ".css":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/css.png", UriTypeKind));
-                case ".doc":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/doc.png", UriTypeKind));
-                case ".dockerfile":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/dockerfile.png", UriTypeKind));
-                case ".exe":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/exe.png", UriTypeKind));
-                case ".gitignore":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/gitignore.png", UriTypeKind));
-                case ".html":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/html.png", UriTypeKind));
-                case ".iso":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/iso.png", UriTypeKind));
-                case ".jar":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/jar.png", UriTypeKind));
-                case ".java":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/java.png", UriTypeKind));
-                case ".jpg":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/jpg.png", UriTypeKind));
-                case ".js":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/js.png", UriTypeKind));
-                case ".json":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/json.png", UriTypeKind));
-                case ".md":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/md.png", UriTypeKind));
-                case ".mp3":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/mp3.png", UriTypeKind));
-                case ".mp4":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/mp4.png", UriTypeKind));
-                case ".pdf":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/pdf.png", UriTypeKind));
-                case ".png":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/png.png", UriTypeKind));
-                case ".ppt":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/ppt.png", UriTypeKind));
-                case ".py":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/py.png", UriTypeKind));
-                case ".sql":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/sql.png", UriTypeKind));
-                case ".svg":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/svg.png", UriTypeKind));
-                case ".txt":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/txt.png", UriTypeKind));
-                case ".xls":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/xls.png", UriTypeKind));
-                case ".xml":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/xml.png", UriTypeKind));
-                case ".yml":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/yml.png", UriTypeKind));
-                case ".zip":
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/zip.png", UriTypeKind));
-                default:
-                    return new BitmapImage(new Uri("/CodeGenerator;component/Images/file.png", UriTypeKind));
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/class.png", UriTypeKind));
             }
+
+            if (fileExtension.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/css.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".doc", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/doc.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".dockerfile", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/dockerfile.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/exe.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".gitignore", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/gitignore.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/html.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".iso", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/iso.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".jar", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/jar.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".java", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/java.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/jpg.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/js.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/json.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/md.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/mp3.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/mp4.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/pdf.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/png.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".ppt", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/ppt.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".py", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/py.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".sql", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/sql.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/svg.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/txt.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".xls", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/xls.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/xml.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".yml", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/yml.png", UriTypeKind));
+            }
+
+            if (fileExtension.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+            {
+                return new BitmapImage(new Uri("/CodeGenerator;component/Images/zip.png", UriTypeKind));
+            }
+
+            return new BitmapImage(new Uri("/CodeGenerator;component/Images/file.png", UriTypeKind));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
