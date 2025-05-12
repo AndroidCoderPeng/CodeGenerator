@@ -215,6 +215,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="0.5" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
@@ -309,71 +310,90 @@
                     <Grid Grid.Row="3" Background="LightGray" />
 
                     <ListBox
-                        x:Name="FileSuffixListBox"
                         Grid.Row="4"
+                        BorderThickness="0"
+                        ItemsSource="{Binding DefaultSuffixCollection}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox
+                                    Content="{Binding Suffix}"
+                                    FontFamily="微软雅黑"
+                                    FontSize="14"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                        <!--  ListBox横排  -->
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Margin" Value="5" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                            <Border x:Name="ListBoxItemBorder">
+                                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+
+                    <ListBox
+                        x:Name="FileSuffixListBox"
+                        Grid.Row="5"
                         BorderThickness="0"
                         ItemsSource="{Binding SuffixCollection}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid HorizontalAlignment="Stretch">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
+                                <Button
+                                    x:Name="DeleteFileSuffixButton"
+                                    HorizontalAlignment="Stretch"
+                                    hc:BorderElement.CornerRadius="14"
+                                    Background="{DynamicResource BackgroundBrush}"
+                                    BorderThickness="0"
+                                    Tag="{Binding}">
+                                    <Button.Content>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
 
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Padding="10,5"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Background="{DynamicResource BackgroundBrush}"
-                                        FontFamily="微软雅黑"
-                                        FontSize="14"
-                                        Foreground="{StaticResource PrimaryBrush}"
-                                        Text="{Binding}"
-                                        Visibility="Collapsed" />
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                Margin="5,0"
+                                                FontFamily="微软雅黑"
+                                                FontSize="14"
+                                                Foreground="{StaticResource PrimaryBrush}"
+                                                Text="{Binding}" />
 
-                                    <Button
-                                        x:Name="DeleteFileSuffixButton"
-                                        Grid.Column="1"
-                                        hc:BorderElement.CornerRadius="14"
-                                        Background="{DynamicResource BackgroundBrush}"
-                                        BorderThickness="0"
-                                        Tag="{Binding}">
-                                        <Button.Content>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-
-                                                <TextBlock
-                                                    Grid.Column="0"
-                                                    Margin="5,0"
-                                                    FontFamily="微软雅黑"
-                                                    FontSize="14"
-                                                    Foreground="{StaticResource PrimaryBrush}"
-                                                    Text="{Binding}" />
-
-                                                <Button
-                                                    Grid.Column="1"
-                                                    Width="18"
-                                                    Height="18"
-                                                    Margin="5,0,0,0"
-                                                    VerticalAlignment="Center"
-                                                    hc:BorderElement.CornerRadius="9"
-                                                    Background="{DynamicResource AccentBrush}"
-                                                    BorderThickness="0"
-                                                    Command="{Binding DataContext.DeleteFileSuffixCommand, ElementName=FileSuffixListBox}"
-                                                    CommandParameter="{Binding Path=Tag, ElementName=DeleteFileSuffixButton}"
-                                                    Content="&#xe668;"
-                                                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                                    Foreground="White"
-                                                    Style="{DynamicResource ButtonDanger.Small}" />
-                                            </Grid>
-                                        </Button.Content>
-                                    </Button>
-                                </Grid>
+                                            <Button
+                                                Grid.Column="1"
+                                                Width="18"
+                                                Height="18"
+                                                Margin="5,0,0,0"
+                                                VerticalAlignment="Center"
+                                                hc:BorderElement.CornerRadius="9"
+                                                Background="{DynamicResource AccentBrush}"
+                                                BorderThickness="0"
+                                                Command="{Binding DataContext.DeleteFileSuffixCommand, ElementName=FileSuffixListBox}"
+                                                CommandParameter="{Binding Path=Tag, ElementName=DeleteFileSuffixButton}"
+                                                Content="&#xe668;"
+                                                FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                                Foreground="White"
+                                                Style="{DynamicResource ButtonDanger.Small}" />
+                                        </Grid>
+                                    </Button.Content>
+                                </Button>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
 

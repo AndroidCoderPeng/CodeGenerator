@@ -15,7 +15,7 @@ namespace CodeGenerator.Utils
         /// <param name="path">路径一定是存在的，因为路径是系统Dialog返回的</param>
         /// <param name="suffixes">后缀集合</param>
         /// <returns></returns>
-        public static List<string> GetFilesBySuffix(this string path, ObservableCollection<string> suffixes)
+        public static List<string> GetFilesBySuffix(this string path, HashSet<string> suffixes)
         {
             var result = new List<string>();
             var directoryInfo = new DirectoryInfo(path);
@@ -49,6 +49,22 @@ namespace CodeGenerator.Utils
         public static bool IsNumber(this string value)
         {
             return int.TryParse(value, out _);
+        }
+        
+        /// <summary>
+        /// List 转 ObservableCollection
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static ObservableCollection<T> ToObservableCollection<T>(this List<T> list)
+        {
+            var collection = new ObservableCollection<T>();
+            foreach (var t in list)
+            {
+                collection.Add(t);
+            }
+
+            return collection;
         }
     }
 }

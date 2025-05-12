@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using CodeGenerator.DataService;
+using CodeGenerator.Models;
 using CodeGenerator.Utils;
 using HandyControl.Controls;
 using Prism.Commands;
@@ -69,6 +71,19 @@ namespace CodeGenerator.ViewModels
             set
             {
                 _suffixType = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<DefaultSuffix>
+            _defaultSuffixCollection = new ObservableCollection<DefaultSuffix>();
+
+        public ObservableCollection<DefaultSuffix> DefaultSuffixCollection
+        {
+            get => _defaultSuffixCollection;
+            set
+            {
+                _defaultSuffixCollection = value;
                 RaisePropertyChanged();
             }
         }
@@ -145,8 +160,10 @@ namespace CodeGenerator.ViewModels
         /// </summary>
         private List<string> _generateFilePaths;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IAppDataService dataService)
         {
+            DefaultSuffixCollection = dataService.GetCodeTypeList().ToObservableCollection();
+
             _backgroundWorker = new BackgroundWorker();
             _backgroundWorker.WorkerReportsProgress = true;
             _backgroundWorker.WorkerSupportsCancellation = true;
@@ -265,20 +282,36 @@ namespace CodeGenerator.ViewModels
         /// </summary>
         private void GeneratorCode()
         {
-            if (!_suffixCollection.Any())
+            var suffixSet = new HashSet<string>();
+            //添加默认文件后缀（如果有的话）
+            foreach (var item in _defaultSuffixCollection)
+            {
+                if (item.IsChecked)
+                {
+                    suffixSet.Add(item.Suffix);
+                }
+            }
+
+            //添加用户自定义的文件后缀（如果有的话）
+            foreach (var suffix in _suffixCollection)
+            {
+                suffixSet.Add(suffix);
+            }
+
+            if (!suffixSet.Any())
             {
                 MessageBox.Show("请设置需要格式化的文件后缀", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            //如果用户没有设置过保存路径，那就默认已登录账号桌面路径为保存文档的路径
+            // 如果用户没有设置过保存路径，那就默认已登录账号桌面路径为保存文档的路径
             if (string.IsNullOrEmpty(_outputFilePath))
             {
                 var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                 _outputFilePath = Path.Combine(desktopPath, "软著代码");
             }
 
-            //如果没有设置代码页数，默认60页（前后各30页）
+            // 如果没有设置代码页数，默认60页（前后各30页）
             if (string.IsNullOrEmpty(_codePageLimit))
             {
                 _effectiveCodeCount = 60 * 50;
@@ -311,20 +344,20 @@ namespace CodeGenerator.ViewModels
             }
 
             //按照设置的文件后缀遍历文件
-            _generateFilePaths = _folderPath.GetFilesBySuffix(_suffixCollection);
+            _generateFilePaths = _folderPath.GetFilesBySuffix(suffixSet);
             if (!_generateFilePaths.Any())
             {
                 MessageBox.Show("没找检索到符合条件的代码源文件", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
+            
             //启动文件处理后台线程
             if (_backgroundWorker.IsBusy)
             {
                 MessageBox.Show("当前正在处理文件中", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
+            
             _backgroundWorker.RunWorkerAsync();
         }
 
