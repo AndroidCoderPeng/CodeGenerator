@@ -90,7 +90,7 @@
                             <TextBlock
                                 Grid.Row="2"
                                 HorizontalAlignment="Center"
-                                FontSize="18"
+                                FontSize="16"
                                 Text="这里什么都没有~" />
                         </Grid>
 
@@ -329,41 +329,49 @@
                                         Background="{DynamicResource BackgroundBrush}"
                                         FontFamily="微软雅黑"
                                         FontSize="14"
-                                        FontWeight="Bold"
                                         Foreground="{StaticResource PrimaryBrush}"
-                                        Text="{Binding}" />
+                                        Text="{Binding}"
+                                        Visibility="Collapsed" />
 
                                     <Button
                                         x:Name="DeleteFileSuffixButton"
                                         Grid.Column="1"
-                                        Command="{Binding DataContext.DeleteFileSuffixCommand, ElementName=FileSuffixListBox}"
-                                        CommandParameter="{Binding Path=Tag, ElementName=DeleteFileSuffixButton}"
-                                        Content="&#xe668;"
-                                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                        Foreground="White"
+                                        hc:BorderElement.CornerRadius="14"
+                                        Background="{DynamicResource BackgroundBrush}"
+                                        BorderThickness="0"
                                         Tag="{Binding}">
-                                        <Button.Style>
-                                            <Style TargetType="Button">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="Button">
-                                                            <Border
-                                                                x:Name="ButtonContainerBorder"
-                                                                Padding="8,0"
-                                                                Background="{StaticResource PrimaryBrush}">
-                                                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                                                            </Border>
+                                        <Button.Content>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
 
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter TargetName="ButtonContainerBorder" Property="Background" Value="Red" />
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </Button.Style>
+                                                <TextBlock
+                                                    Grid.Column="0"
+                                                    Margin="5,0"
+                                                    FontFamily="微软雅黑"
+                                                    FontSize="14"
+                                                    Foreground="{StaticResource PrimaryBrush}"
+                                                    Text="{Binding}" />
+
+                                                <Button
+                                                    Grid.Column="1"
+                                                    Width="18"
+                                                    Height="18"
+                                                    Margin="5,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    hc:BorderElement.CornerRadius="9"
+                                                    Background="{DynamicResource AccentBrush}"
+                                                    BorderThickness="0"
+                                                    Command="{Binding DataContext.DeleteFileSuffixCommand, ElementName=FileSuffixListBox}"
+                                                    CommandParameter="{Binding Path=Tag, ElementName=DeleteFileSuffixButton}"
+                                                    Content="&#xe668;"
+                                                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                                    Foreground="White"
+                                                    Style="{DynamicResource ButtonDanger.Small}" />
+                                            </Grid>
+                                        </Button.Content>
                                     </Button>
                                 </Grid>
                             </DataTemplate>
