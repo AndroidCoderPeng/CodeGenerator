@@ -440,11 +440,12 @@ namespace CodeGenerator.ViewModels
             var text = File.ReadAllText($"{_outputFilePath}.txt");
             using (var document = DocX.Create(_outputFilePath))
             {
+                var font = new Font("微软雅黑");
                 //页眉
                 document.AddHeaders();
                 var header = document.Headers.Odd;
                 var headerParagraph = header.InsertParagraph("xxx软件 1.0");
-                headerParagraph.Font(new Font("微软雅黑"));
+                headerParagraph.Font(font);
                 headerParagraph.FontSize(_size);
                 headerParagraph.Alignment = Alignment.center;
                 headerParagraph.InsertHorizontalLine(HorizontalBorderPosition.bottom, BorderStyle.Tcbs_single, 1, 1,
@@ -454,16 +455,18 @@ namespace CodeGenerator.ViewModels
                 document.AddFooters();
                 var footer = document.Footers.Odd;
                 var footerParagraph = footer.InsertParagraph();
-                footerParagraph.Font(new Font("微软雅黑"));
+                footerParagraph.Font(font);
                 footerParagraph.FontSize(_size);
                 footerParagraph.AppendPageNumber(PageNumberFormat.normal);
                 footerParagraph.Alignment = Alignment.center;
 
                 //正文
                 var paragraph = document.InsertParagraph();
-                paragraph.Font(new Font("微软雅黑"));
-                paragraph.FontSize(_size);
-                paragraph.Append(text);
+                paragraph.Append(text, new Formatting
+                {
+                    FontFamily = font,
+                    Size = _size
+                });
                 document.Save();
             }
         }
