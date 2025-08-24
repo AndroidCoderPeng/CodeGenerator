@@ -18,7 +18,6 @@ using Prism.Mvvm;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 using Application = System.Windows.Application;
-using Formatting = Xceed.Document.NET.Formatting;
 using MessageBox = System.Windows.MessageBox;
 
 namespace CodeGenerator.ViewModels
@@ -350,14 +349,14 @@ namespace CodeGenerator.ViewModels
                 MessageBox.Show("没找检索到符合条件的代码源文件", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            
+
             //启动文件处理后台线程
             if (_backgroundWorker.IsBusy)
             {
                 MessageBox.Show("当前正在处理文件中", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            
+
             _backgroundWorker.RunWorkerAsync();
         }
 
@@ -436,21 +435,32 @@ namespace CodeGenerator.ViewModels
 
             //读取整篇格式化好了的Text写入word
             var text = File.ReadAllText($"{_outputFilePath}.txt");
-            var docX = DocX.Create(_outputFilePath);
-            var paragraph = docX.InsertParagraph();
-            var fmt = new Formatting
+            using (var document = DocX.Create(_outputFilePath))
             {
-                FontFamily = new Font("微软雅黑"),
-                Size = _size
-            };
-            paragraph.Append(text, fmt);
-            try
-            {
-                docX.Save();
-            }
-            catch (ArgumentException ex)
-            {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                //页眉
+                document.AddHeaders();
+                var header = document.Headers.Odd;
+                var headerParagraph = header.InsertParagraph("xxx软件 1.0");
+                headerParagraph.Font(new Font("微软雅黑"));
+                headerParagraph.FontSize(_size);
+                headerParagraph.Alignment = Alignment.center;
+                headerParagraph.InsertHorizontalLine(HorizontalBorderPosition.bottom, "single", 1, 1, "black");
+
+                //页码
+                document.AddFooters();
+                var footer = document.Footers.Odd;
+                var footerParagraph = footer.InsertParagraph();
+                footerParagraph.Font(new Font("微软雅黑"));
+                footerParagraph.FontSize(_size);
+                footerParagraph.AppendPageNumber(PageNumberFormat.normal);
+                footerParagraph.Alignment = Alignment.center;
+
+                //正文
+                var paragraph = document.InsertParagraph();
+                paragraph.Font(new Font("微软雅黑"));
+                paragraph.FontSize(_size);
+                paragraph.Append(text);
+                document.Save();
             }
         }
 
