@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -18,6 +19,8 @@ using Prism.Mvvm;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 using Application = System.Windows.Application;
+using BorderStyle = Xceed.Document.NET.BorderStyle;
+using Font = Xceed.Document.NET.Font;
 using MessageBox = System.Windows.MessageBox;
 
 namespace CodeGenerator.ViewModels
@@ -444,7 +447,8 @@ namespace CodeGenerator.ViewModels
                 headerParagraph.Font(new Font("微软雅黑"));
                 headerParagraph.FontSize(_size);
                 headerParagraph.Alignment = Alignment.center;
-                headerParagraph.InsertHorizontalLine(HorizontalBorderPosition.bottom, "single", 1, 1, "black");
+                headerParagraph.InsertHorizontalLine(HorizontalBorderPosition.bottom, BorderStyle.Tcbs_single, 1, 1,
+                    Color.Black);
 
                 //页码
                 document.AddFooters();
