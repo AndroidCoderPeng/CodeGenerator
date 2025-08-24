@@ -41,6 +41,30 @@ namespace CodeGenerator.ViewModels
             }
         }
 
+        private string _codeHeader;
+
+        public string CodeHeader
+        {
+            get => _codeHeader;
+            set
+            {
+                _codeHeader = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _softVersion;
+
+        public string SoftVersion
+        {
+            get => _softVersion;
+            set
+            {
+                _softVersion = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private string _codePageLimit;
 
         public string CodePageLimit
@@ -284,6 +308,18 @@ namespace CodeGenerator.ViewModels
         /// </summary>
         private void GeneratorCode()
         {
+            if (string.IsNullOrWhiteSpace(_codeHeader))
+            {
+                MessageBox.Show("请设置文档页眉", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(_softVersion))
+            {
+                MessageBox.Show("请设置文档页眉软件版本", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             var suffixSet = new HashSet<string>();
             //添加默认文件后缀（如果有的话）
             foreach (var item in _defaultSuffixCollection)
@@ -444,12 +480,13 @@ namespace CodeGenerator.ViewModels
                 //页眉
                 document.AddHeaders();
                 var header = document.Headers.Odd;
-                var headerParagraph = header.InsertParagraph("xxx软件 1.0");
+                var headerParagraph = header.InsertParagraph($"{_codeHeader} {_softVersion}");
                 headerParagraph.Font(font);
                 headerParagraph.FontSize(_size);
                 headerParagraph.Alignment = Alignment.center;
-                headerParagraph.InsertHorizontalLine(HorizontalBorderPosition.bottom, BorderStyle.Tcbs_single, 1, 1,
-                    Color.Black);
+                headerParagraph.InsertHorizontalLine(
+                    HorizontalBorderPosition.bottom, BorderStyle.Tcbs_single, 1, 1, Color.Black
+                );
 
                 //页码
                 document.AddFooters();

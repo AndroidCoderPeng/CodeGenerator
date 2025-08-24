@@ -16,7 +16,6 @@ namespace CodeGenerator.DataService.Impl
             "*.js", // JavaScript
             "*.go", // Go
             "*.vb", // Visual Basic
-            "*.sql", // SQL
             "*.vue", // Vue.js
             "*.html", //HTML
             "*.ts", // TypeScript
@@ -24,11 +23,7 @@ namespace CodeGenerator.DataService.Impl
             "*.rs", // Rust
             "*.swift", // Swift
             "*.kt", // Kotlin
-            "*.scala", // Scala
             "*.rb", // Ruby
-            "*.pl", // Perl
-            "*.cobol", // COBOL
-            "*.f90", // Fortran
             "*.sh", // Shell Script
             "*.m" // Object-c
         };
