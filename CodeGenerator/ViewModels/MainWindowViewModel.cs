@@ -381,8 +381,8 @@ namespace CodeGenerator.ViewModels
                 _size = Convert.ToInt32(_fontSize);
             }
 
-            //按照设置的文件后缀遍历文件
-            _generateFilePaths = _folderPath.GetFilesBySuffix(suffixSet);
+            //从用户筛选后的文件列表中，按照设置的文件后缀遍历文件
+            _generateFilePaths = FileCollection.Where(f => suffixSet.Contains(f.Extension)).Select(f => f.FullName).ToList();
             if (!_generateFilePaths.Any())
             {
                 MessageBox.Show("没找检索到符合条件的代码源文件", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
