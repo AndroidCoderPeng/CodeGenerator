@@ -6,8 +6,8 @@ namespace CodeGenerator.DataService.Impl
 {
     public class AppDataServiceImpl : IAppDataService
     {
-        private readonly List<string> _codeTypeList = new List<string>
-        {
+        private readonly List<string> _codeTypeList =
+        [
             "*.py", // Python
             "*.cpp", "*.hpp", // C++
             "*.c", "*.h", // C
@@ -26,7 +26,7 @@ namespace CodeGenerator.DataService.Impl
             "*.rb", // Ruby
             "*.sh", // Shell Script
             "*.m" // Object-c
-        };
+        ];
 
         public List<DefaultSuffix> GetCodeTypeList()
         {

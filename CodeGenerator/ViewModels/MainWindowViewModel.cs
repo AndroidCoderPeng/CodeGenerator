@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,19 +13,20 @@ using System.Windows.Forms;
 using CodeGenerator.DataService;
 using CodeGenerator.Models;
 using CodeGenerator.Utils;
-using Prism.Commands;
-using Prism.Mvvm;
-using Xceed.Document.NET;
-using Xceed.Words.NET;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Application = System.Windows.Application;
-using BorderStyle = Xceed.Document.NET.BorderStyle;
-using Font = Xceed.Document.NET.Font;
 using MessageBox = System.Windows.MessageBox;
 
 namespace CodeGenerator.ViewModels
 {
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : ObservableObject
     {
+        private void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            OnPropertyChanged(propertyName);
+        }
+
         #region VM
 
         private string _folderPath;
@@ -165,13 +166,13 @@ namespace CodeGenerator.ViewModels
 
         #region DelegateCommand
 
-        public DelegateCommand SelectFolderCommand { set; get; }
-        public DelegateCommand<FileInfo> MouseDoubleClickCommand { set; get; }
-        public DelegateCommand<FileInfo> DeleteFileCommand { set; get; }
-        public DelegateCommand AddFileSuffixTypeCommand { set; get; }
-        public DelegateCommand<string> DeleteFileSuffixCommand { set; get; }
-        public DelegateCommand GeneratorCodeCommand { set; get; }
-        public DelegateCommand SelectPathCommand { set; get; }
+        public RelayCommand SelectFolderCommand { set; get; }
+        public RelayCommand<FileInfo> MouseDoubleClickCommand { set; get; }
+        public RelayCommand<FileInfo> DeleteFileCommand { set; get; }
+        public RelayCommand AddFileSuffixTypeCommand { set; get; }
+        public RelayCommand<string> DeleteFileSuffixCommand { set; get; }
+        public RelayCommand GeneratorCodeCommand { set; get; }
+        public RelayCommand SelectPathCommand { set; get; }
 
         #endregion
 
@@ -196,13 +197,13 @@ namespace CodeGenerator.ViewModels
             _backgroundWorker.ProgressChanged += Worker_OnProgressChanged;
             _backgroundWorker.RunWorkerCompleted += Worker_OnRunWorkerCompleted;
 
-            SelectFolderCommand = new DelegateCommand(SelectFolder);
-            MouseDoubleClickCommand = new DelegateCommand<FileInfo>(OpenFile);
-            DeleteFileCommand = new DelegateCommand<FileInfo>(DeleteFile);
-            AddFileSuffixTypeCommand = new DelegateCommand(AddFileSuffixType);
-            DeleteFileSuffixCommand = new DelegateCommand<string>(DeleteFileSuffix);
-            GeneratorCodeCommand = new DelegateCommand(GeneratorCode);
-            SelectPathCommand = new DelegateCommand(SelectDocSavePath);
+            SelectFolderCommand = new RelayCommand(SelectFolder);
+            MouseDoubleClickCommand = new RelayCommand<FileInfo>(OpenFile);
+            DeleteFileCommand = new RelayCommand<FileInfo>(DeleteFile);
+            AddFileSuffixTypeCommand = new RelayCommand(AddFileSuffixType);
+            DeleteFileSuffixCommand = new RelayCommand<string>(DeleteFileSuffix);
+            GeneratorCodeCommand = new RelayCommand(GeneratorCode);
+            SelectPathCommand = new RelayCommand(SelectDocSavePath);
         }
 
         /// <summary>
@@ -381,7 +382,8 @@ namespace CodeGenerator.ViewModels
             }
 
             //从用户筛选后的文件列表中，按照设置的文件后缀遍历文件
-            _generateFilePaths = FileCollection.Where(f => suffixSet.Contains(f.Extension)).Select(f => f.FullName).ToList();
+            _generateFilePaths = FileCollection.Where(f => suffixSet.Contains(f.Extension)).Select(f => f.FullName)
+                .ToList();
             if (!_generateFilePaths.Any())
             {
                 MessageBox.Show("没找检索到符合条件的代码源文件", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -473,38 +475,38 @@ namespace CodeGenerator.ViewModels
 
             //读取整篇格式化好了的Text写入word
             var text = File.ReadAllText($"{_outputFilePath}.txt");
-            using (var document = DocX.Create(_outputFilePath))
-            {
-                var font = new Font("微软雅黑");
-                //页眉
-                document.AddHeaders();
-                var header = document.Headers.Odd;
-                var headerParagraph = header.InsertParagraph($"{_codeHeader} {_softVersion}");
-                headerParagraph.Font(font);
-                headerParagraph.FontSize(_size);
-                headerParagraph.Alignment = Alignment.center;
-                headerParagraph.InsertHorizontalLine(
-                    HorizontalBorderPosition.bottom, BorderStyle.Tcbs_single, 1, 1, Color.Black
-                );
-
-                //页码
-                document.AddFooters();
-                var footer = document.Footers.Odd;
-                var footerParagraph = footer.InsertParagraph();
-                footerParagraph.Font(font);
-                footerParagraph.FontSize(_size);
-                footerParagraph.AppendPageNumber(PageNumberFormat.normal);
-                footerParagraph.Alignment = Alignment.center;
-
-                //正文
-                var paragraph = document.InsertParagraph();
-                paragraph.Append(text, new Formatting
-                {
-                    FontFamily = font,
-                    Size = _size
-                });
-                document.Save();
-            }
+            // using (var document = DocX.Create(_outputFilePath))
+            // {
+            //     var font = new Font("微软雅黑");
+            //     //页眉
+            //     document.AddHeaders();
+            //     var header = document.Headers.Odd;
+            //     var headerParagraph = header.InsertParagraph($"{_codeHeader} {_softVersion}");
+            //     headerParagraph.Font(font);
+            //     headerParagraph.FontSize(_size);
+            //     headerParagraph.Alignment = Alignment.center;
+            //     headerParagraph.InsertHorizontalLine(
+            //         HorizontalBorderPosition.bottom, BorderStyle.Tcbs_single, 1, 1, Color.Black
+            //     );
+            //
+            //     //页码
+            //     document.AddFooters();
+            //     var footer = document.Footers.Odd;
+            //     var footerParagraph = footer.InsertParagraph();
+            //     footerParagraph.Font(font);
+            //     footerParagraph.FontSize(_size);
+            //     footerParagraph.AppendPageNumber(PageNumberFormat.normal);
+            //     footerParagraph.Alignment = Alignment.center;
+            //
+            //     //正文
+            //     var paragraph = document.InsertParagraph();
+            //     paragraph.Append(text, new Formatting
+            //     {
+            //         FontFamily = font,
+            //         Size = _size
+            //     });
+            //     document.Save();
+            // }
         }
 
         private void Worker_OnProgressChanged(object sender, ProgressChangedEventArgs e)
