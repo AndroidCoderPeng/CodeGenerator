@@ -8,9 +8,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
     Title="软著代码生成器(Software Copyright's Code Generator)"
-    Width="900"
-    Height="725"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
+    d:DesignHeight="768"
+    d:DesignWidth="1366"
+    Loaded="MainWindow_OnLoaded"
     ResizeMode="CanMinimize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
