@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,7 +52,10 @@ html[data-theme="light"] .aurora span{opacity:.32}
 
 /* ===================== 窗口外壳 ===================== */
 .app{
-  position:relative;z-index:1;width:1140px;height:712px;
+    position: relative;
+    z-index: 1;
+    width: 1140px;
+    height: 772px;
   max-height:calc(100vh - 108px);   /* 视口不足时整体收缩，底部操作栏始终完整可见 */
   background:var(--bg-1);border:1px solid var(--line);border-radius:22px;
   box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;
@@ -260,7 +263,7 @@ html[data-theme="light"] .theme-btn .moon{display:none}
   <button class="on" id="btnHas" onclick="setEmpty(false)">有文件</button>
   <button id="btnEmp" onclick="setEmpty(true)">空状态</button>
   <button onclick="runDemo()">进度动画</button>
-  <button id="btnTheme" onclick="toggleTheme()">切换深色</button>
+    <button id="btnTheme" onclick="toggleTheme()">切换浅色</button>
 </div>
 
 <div class="app">
@@ -274,7 +277,7 @@ html[data-theme="light"] .theme-btn .moon{display:none}
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
       选择文件夹
     </button>
-    <button class="theme-btn" id="themeBtn" title="切换深色主题" onclick="toggleTheme()">
+      <button class="theme-btn" id="themeBtn" title="切换浅色主题" onclick="toggleTheme()">
       <svg class="moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
       <svg class="sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
     </button>
