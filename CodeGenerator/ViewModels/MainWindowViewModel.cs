@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using CodeGenerator.DataService;
 using CodeGenerator.Models;
 using CodeGenerator.Utils;
-using HandyControl.Controls;
 using Prism.Commands;
 using Prism.Mvvm;
 using Xceed.Document.NET;
@@ -515,7 +514,7 @@ namespace CodeGenerator.ViewModels
 
         private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            Growl.Success($"软著代码生成完毕，保存在{_outputFilePath}");
+            // Growl.Success($"软著代码生成完毕，保存在{_outputFilePath}");
         }
     }
 }

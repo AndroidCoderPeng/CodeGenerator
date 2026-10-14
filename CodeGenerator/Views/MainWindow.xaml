@@ -5,7 +5,6 @@
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:cvt="clr-namespace:CodeGenerator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:hc="https://handyorg.github.io/handycontrol"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
     Title="软著代码生成器(Software Copyright's Code Generator)"
@@ -59,10 +58,9 @@
                             FontSize="14"
                             Text="源码文件路径" />
 
-                        <hc:TextBox
+                        <TextBox
                             Grid.Column="1"
                             VerticalAlignment="Center"
-                            hc:InfoElement.Placeholder="如：C:\Users\Administrator\Desktop"
                             FontSize="14"
                             IsEnabled="False"
                             Text="{Binding FolderPath}" />
@@ -71,8 +69,7 @@
                             Grid.Column="2"
                             Margin="10"
                             Command="{Binding SelectFolderCommand}"
-                            Content="选择文件夹"
-                            Style="{StaticResource ButtonDashed}" />
+                            Content="选择文件夹" />
                     </Grid>
 
                     <!--  文件九宫格区  -->
@@ -190,12 +187,12 @@
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="ItemContainerBorder" Property="Background" Value="#F8F8F8" />
-                                                        <Setter Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                                                        <!-- <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" /> -->
                                                     </Trigger>
 
                                                     <Trigger Property="IsSelected" Value="True">
                                                         <Setter TargetName="ItemContainerBorder" Property="Background" Value="#E7F4FF" />
-                                                        <Setter TargetName="ItemContainerBorder" Property="TextBlock.Foreground" Value="{StaticResource PrimaryBrush}" />
+                                                        <!-- <Setter TargetName="ItemContainerBorder" Property="Foreground" Value="{StaticResource PrimaryBrush}" /> -->
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -234,10 +231,8 @@
                                 Fill="Red" />
                         </StackPanel>
 
-                        <hc:TextBox
+                        <TextBox
                             Margin="0,7,0,0"
-                            hc:InfoElement.Placeholder="请输入"
-                            hc:InfoElement.ShowClearButton="True"
                             FontSize="14"
                             Text="{Binding CodeHeader}" />
                     </StackPanel>
@@ -255,10 +250,8 @@
                                 Fill="Red" />
                         </StackPanel>
 
-                        <hc:TextBox
+                        <TextBox
                             Margin="0,7,0,0"
-                            hc:InfoElement.Placeholder="请输入"
-                            hc:InfoElement.ShowClearButton="True"
                             FontSize="14"
                             Text="{Binding SoftVersion}" />
                     </StackPanel>
@@ -272,10 +265,8 @@
                             FontSize="14"
                             Text="代码页数" />
 
-                        <hc:TextBox
+                        <TextBox
                             Margin="0,7,0,0"
-                            hc:InfoElement.Placeholder="默认60页"
-                            hc:InfoElement.ShowClearButton="True"
                             FontSize="14"
                             Text="{Binding CodePageLimit}" />
                     </StackPanel>
@@ -289,10 +280,8 @@
                             FontSize="14"
                             Text="代码文档字号" />
 
-                        <hc:TextBox
+                        <TextBox
                             Margin="0,7,0,0"
-                            hc:InfoElement.Placeholder="默认8号字体"
-                            hc:InfoElement.ShowClearButton="True"
                             FontSize="14"
                             Text="{Binding FontSize}" />
                     </StackPanel>
@@ -312,10 +301,8 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <hc:TextBox
+                            <TextBox
                                 Grid.Column="0"
-                                hc:InfoElement.Placeholder="如：cs"
-                                hc:InfoElement.ShowClearButton="True"
                                 FontSize="14"
                                 Text="{Binding SuffixType}" />
 
@@ -326,7 +313,6 @@
                                 Content="&#xe604;"
                                 FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                 FontSize="30"
-                                Foreground="{StaticResource PrimaryBrush}"
                                 ToolTip="添加">
                                 <Button.Style>
                                     <Style TargetType="Button">
@@ -363,7 +349,6 @@
                                     Content="{Binding Suffix}"
                                     FontFamily="微软雅黑"
                                     FontSize="14"
-                                    Foreground="{StaticResource PrimaryBrush}"
                                     IsChecked="{Binding IsChecked, Mode=TwoWay}" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -401,7 +386,6 @@
                                 <Button
                                     x:Name="DeleteFileSuffixButton"
                                     HorizontalAlignment="Stretch"
-                                    hc:BorderElement.CornerRadius="14"
                                     Background="{DynamicResource BackgroundBrush}"
                                     BorderThickness="0"
                                     Tag="{Binding}">
@@ -417,7 +401,6 @@
                                                 Margin="5,0"
                                                 FontFamily="微软雅黑"
                                                 FontSize="14"
-                                                Foreground="{StaticResource PrimaryBrush}"
                                                 Text="{Binding}" />
 
                                             <Button
@@ -426,7 +409,6 @@
                                                 Height="18"
                                                 Margin="5,0,0,0"
                                                 VerticalAlignment="Center"
-                                                hc:BorderElement.CornerRadius="9"
                                                 Background="{DynamicResource AccentBrush}"
                                                 BorderThickness="0"
                                                 Command="{Binding DataContext.DeleteFileSuffixCommand, ElementName=FileSuffixListBox}"
@@ -496,23 +478,19 @@
                     Grid.Column="1"
                     Width="160"
                     Height="40"
-                    hc:BorderElement.CornerRadius="0"
                     Command="{Binding GeneratorCodeCommand}"
                     Content="生成文档"
-                    FontSize="16"
-                    Style="{StaticResource ButtonPrimary}" />
+                    FontSize="16" />
 
                 <Button
                     Grid.Column="2"
                     Width="40"
                     Height="40"
-                    hc:BorderElement.CornerRadius="0"
                     Command="{Binding SelectPathCommand}"
                     Content="&#xe6fb;"
                     FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                     FontSize="16"
                     Foreground="White"
-                    Style="{StaticResource ButtonPrimary}"
                     ToolTip="修改文档保存路径" />
             </Grid>
         </Grid>
