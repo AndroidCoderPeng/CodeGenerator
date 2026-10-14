@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,11 +30,13 @@ html[data-theme="light"]{
   --glass-blur:blur(18px) saturate(180%);
 }
 *{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
 body{
   font-family:"Inter","Segoe UI","Microsoft YaHei",system-ui,sans-serif;
   background:var(--bg-0);color:var(--t1);min-height:100vh;
-  display:flex;align-items:center;justify-content:center;padding:22px;
-  overflow:hidden;transition:background .4s,color .4s;
+  display:flex;align-items:center;justify-content:center;
+  /* 顶部预留演示条空间；视口不足时允许滚动，避免底部操作栏被裁切 */
+  padding:86px 22px 22px;overflow:auto;transition:background .4s,color .4s;
 }
 /* 极光背景 */
 .aurora{position:fixed;inset:0;z-index:0;overflow:hidden}
@@ -42,6 +44,7 @@ body{
 .aurora span:nth-child(1){width:520px;height:520px;background:var(--a1);top:-140px;left:-120px}
 .aurora span:nth-child(2){width:460px;height:460px;background:var(--a2);bottom:-160px;right:-100px;animation-delay:-6s}
 .aurora span:nth-child(3){width:380px;height:380px;background:var(--a3);top:38%;left:52%;animation-delay:-11s;opacity:.35}
+html[data-theme="light"] .aurora span{opacity:.32}
 @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-50px) scale(1.12)}66%{transform:translate(-50px,40px) scale(.92)}}
 .grid-bg{position:fixed;inset:0;z-index:0;opacity:.35;
   background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
@@ -50,6 +53,7 @@ body{
 /* ===================== 窗口外壳 ===================== */
 .app{
   position:relative;z-index:1;width:1140px;height:712px;
+  max-height:calc(100vh - 108px);   /* 视口不足时整体收缩，底部操作栏始终完整可见 */
   background:var(--bg-1);border:1px solid var(--line);border-radius:22px;
   box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;
   backdrop-filter:var(--glass-blur);
@@ -231,22 +235,33 @@ html[data-theme="light"] .theme-btn .moon{display:none}
 ::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:var(--t3)}
 
-/* 预览切换条 */
+/* 演示状态条（置于顶部，不再遮挡底部操作栏） */
 .demo{
-  position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;
-  display:flex;gap:6px;padding:6px;border-radius:99px;
+  position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:5;
+  display:flex;align-items:center;gap:6px;padding:6px;border-radius:99px;
   background:var(--panel-2);border:1px solid var(--line);backdrop-filter:blur(14px);box-shadow:var(--shadow);
 }
+.demo .tag{font-size:11px;color:var(--t3);padding-left:8px;letter-spacing:.5px}
 .demo button{
   border:none;background:transparent;color:var(--t2);font-size:12px;font-family:inherit;
   padding:6px 14px;border-radius:99px;cursor:pointer;transition:.2s;
 }
+.demo button:hover{background:var(--field);color:var(--t1)}
 .demo button.on{background:var(--grad);color:#fff;font-weight:600}
 </style>
 </head>
 <body>
 <div class="aurora"><span></span><span></span><span></span></div>
 <div class="grid-bg"></div>
+
+<!-- 演示状态切换（仅用于看效果，不属于程序界面） -->
+<div class="demo">
+  <span class="tag">演示</span>
+  <button class="on" id="btnHas" onclick="setEmpty(false)">有文件</button>
+  <button id="btnEmp" onclick="setEmpty(true)">空状态</button>
+  <button onclick="runDemo()">进度动画</button>
+  <button id="btnTheme" onclick="toggleTheme()">切换深色</button>
+</div>
 
 <div class="app">
   <!-- 路径行 -->
@@ -259,7 +274,7 @@ html[data-theme="light"] .theme-btn .moon{display:none}
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
       选择文件夹
     </button>
-    <button class="theme-btn" id="themeBtn" title="切换深 / 浅色主题" onclick="toggleTheme()">
+    <button class="theme-btn" id="themeBtn" title="切换深色主题" onclick="toggleTheme()">
       <svg class="moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
       <svg class="sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
     </button>
@@ -352,12 +367,6 @@ html[data-theme="light"] .theme-btn .moon{display:none}
   </div>
 </div>
 
-<div class="demo">
-  <button class="on" id="btnHas" onclick="setEmpty(false)">有文件</button>
-  <button id="btnEmp" onclick="setEmpty(true)">空状态</button>
-  <button onclick="runDemo()">进度动画</button>
-</div>
-
 <script>
 /* 文件类型：SVG 文档图标 + 主题色 */
 const TYPES={
@@ -424,6 +433,7 @@ function toggleTheme(){
   const dark=h.dataset.theme==='dark';
   h.dataset.theme=dark?'light':'dark';
   document.getElementById('themeBtn').title=dark?'切换深色主题':'切换浅色主题';
+  document.getElementById('btnTheme').textContent=dark?'切换深色':'切换浅色';
 }
 /* 模拟生成进度 */
 const STAGE=['正在遍历源码目录…','正在读取：MainWindowViewModel.cs','正在读取：MethodExtensions.cs','正在排版分页…','正在生成 Word 文档…'];
