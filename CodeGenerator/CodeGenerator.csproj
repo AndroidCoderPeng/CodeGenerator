@@ -22,4 +22,12 @@
         <Resource Include="IconFont\iconfont.ttf"/>
         <Resource Include="Images\**\*"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <Page Update="MainWindow.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+    </ItemGroup>
 </Project>

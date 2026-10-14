@@ -10,6 +10,14 @@
   --a1:#5B8CFF; --a2:#9B6BFF; --a3:#3FD9B4; --warn:#FF6B6B;
   --grad:linear-gradient(135deg,var(--a1),var(--a2));
   --r-lg:18px; --r-md:12px; --r-sm:9px;
+    /* macOS 交通灯：与 Resources/ColorBrushes.xaml 的 TrafficRed/Yellow/GreenBrush 对应 */
+    --tl-red: #FF5F57;
+    --tl-yellow: #FEBC2E;
+    --tl-green: #28C840;
+    /* 与 TrafficGlyphRed/Yellow/GreenBrush 对应（macOS 为深色符号，非白色） */
+    --tl-glyph-red: #5C0A00;
+    --tl-glyph-yellow: #6B4A00;
+    --tl-glyph-green: #0A4200;
 }
 html[data-theme="dark"]{
   --bg-0:#080B14; --bg-1:#0E1322;
@@ -19,6 +27,9 @@ html[data-theme="dark"]{
   --field:rgba(255,255,255,.05);
   --shadow:0 20px 60px rgba(0,0,0,.55);
   --glass-blur:blur(22px) saturate(160%);
+    /* macOS 交通灯：窗口未激活/未悬停时的灰点 */
+    --tl-idle: rgba(255, 255, 255, .22);
+    --tl-idle-h: rgba(255, 255, 255, .34);
 }
 html[data-theme="light"]{
   --bg-0:#EEF1F8; --bg-1:#F7F9FC;
@@ -28,6 +39,8 @@ html[data-theme="light"]{
   --field:rgba(255,255,255,.9);
   --shadow:0 20px 60px rgba(28,44,92,.16);
   --glass-blur:blur(18px) saturate(180%);
+    --tl-idle: rgba(20, 32, 70, .18);
+    --tl-idle-h: rgba(20, 32, 70, .28);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
@@ -55,7 +68,7 @@ html[data-theme="light"] .aurora span{opacity:.32}
     position: relative;
     z-index: 1;
     width: 1140px;
-    height: 772px;
+    height: 808px; /* 36px 自定义标题栏 + 772px 内容区 */
   max-height:calc(100vh - 108px);   /* 视口不足时整体收缩，底部操作栏始终完整可见 */
   background:var(--bg-1);border:1px solid var(--line);border-radius:22px;
   box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;
@@ -63,6 +76,140 @@ html[data-theme="light"] .aurora span{opacity:.32}
 }
 .app::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent)}
+
+/* 最小化演示态 */
+.app.minimized {
+    opacity: 0;
+    transform: translateY(16px) scale(.95);
+    pointer-events: none
+}
+
+/* ===================== macOS 风格标题栏 =====================
+   高度 36px，与 WPF 的 WindowChrome CaptionHeight 严格一致（该区由系统接管拖拽）。
+   三个辨识点：左侧红黄绿交通灯、标题真正居中、未悬停时是灰点，
+   悬停整组才显色并浮现符号——最后这条是 macOS 最容易被忽略的细节。 */
+.titlebar {
+    flex-shrink: 0;
+    height: 36px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-app-region: drag;
+    user-select: none;
+    transition: background .2s;
+}
+
+.titlebar:hover {
+    background: var(--panel-2)
+}
+
+/* 交通灯 */
+.traffic {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-left: 15px;
+    -webkit-app-region: no-drag
+}
+
+.tl {
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--tl-idle);
+    transition: background .18s, box-shadow .18s;
+}
+
+.tl svg {
+    width: 8px;
+    height: 8px;
+    opacity: 0;
+    transition: opacity .14s
+}
+
+.tl svg path {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round
+}
+
+.traffic:hover .tl svg, .tl:hover svg {
+    opacity: 1
+}
+
+.traffic:hover .tl.close {
+    background: var(--tl-red)
+}
+
+.traffic:hover .tl.min {
+    background: var(--tl-yellow)
+}
+
+.traffic:hover .tl.zoom {
+    background: var(--tl-green)
+}
+
+.tl:hover {
+    background: var(--tl-idle-h);
+    box-shadow: 0 0 0 4px rgba(127, 127, 127, .14)
+}
+
+.traffic:hover .tl:hover {
+    box-shadow: 0 0 0 4px rgba(127, 127, 127, .18)
+}
+
+.tl.close svg path {
+    stroke: var(--tl-glyph-red)
+}
+
+.tl.min svg path {
+    stroke: var(--tl-glyph-yellow)
+}
+
+.tl.zoom svg path {
+    stroke: var(--tl-glyph-green)
+}
+
+/* 标题：用 left/right 归零的绝对定位做真正居中，不受左侧按钮组宽度影响 */
+.app-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 0 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--t2);
+    letter-spacing: .2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+    transition: color .2s;
+}
+
+.titlebar:hover .app-title {
+    color: var(--t1)
+}
+
+/* 绿灯 zoom 演示态 */
+.app.zoomed {
+    width: min(1240px, calc(100vw - 64px));
+    height: calc(100vh - 120px)
+}
 
 /* ===================== 路径行 ===================== */
 .path{display:flex;gap:12px;padding:22px 22px 4px;flex-shrink:0}
@@ -263,11 +410,34 @@ html[data-theme="light"] .theme-btn .moon{display:none}
   <button class="on" id="btnHas" onclick="setEmpty(false)">有文件</button>
   <button id="btnEmp" onclick="setEmpty(true)">空状态</button>
   <button onclick="runDemo()">进度动画</button>
+    <button id="btnMin" onclick="minWin()">最小化</button>
     <button id="btnTheme" onclick="toggleTheme()">切换浅色</button>
 </div>
 
-<div class="app">
-  <!-- 路径行 -->
+<div class="app" id="app">
+    <!-- macOS 风格标题栏（36px，与 WPF WindowChrome.CaptionHeight 对齐；本区域可拖拽窗口） -->
+    <div class="titlebar">
+        <div class="traffic">
+            <button class="tl close" title="关闭" onclick="closeWin()">
+                <svg viewBox="0 0 6 6">
+                    <path d="M0.9,0.9 L5.1,5.1 M5.1,0.9 L0.9,5.1"/>
+                </svg>
+            </button>
+            <button class="tl min" title="最小化" onclick="minWin()">
+                <svg viewBox="0 0 6 6">
+                    <path d="M0.8,3 H5.2"/>
+                </svg>
+            </button>
+            <button class="tl zoom" title="最大化" onclick="zoomWin()">
+                <svg viewBox="0 0 6 6">
+                    <path d="M3,0.9 V5.1 M0.9,3 H5.1"/>
+                </svg>
+            </button>
+        </div>
+        <div class="app-title">软著代码生成器</div>
+    </div>
+
+    <!-- 路径行 -->
   <div class="path">
     <div class="path-box">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
@@ -456,6 +626,22 @@ function runDemo(){
   },260);
 }
 function demoPick(){alert('演示：选择文件夹后递归遍历源码文件并展示在网格中')}
+
+/* 标题栏窗口按钮（视觉稿演示） */
+function minWin() {
+    const app = document.getElementById('app'), btn = document.getElementById('btnMin');
+    const hidden = app.classList.toggle('minimized');
+    btn.classList.toggle('on', hidden);
+    btn.textContent = hidden ? '还原窗口' : '最小化';
+}
+
+function closeWin() {
+    alert('演示稿：真实程序中此处调用 Close()')
+}
+
+function zoomWin() {
+    document.getElementById('app').classList.toggle('zoomed')
+}
 renderFiles();renderChips();renderLangs();
 </script>
 </body>

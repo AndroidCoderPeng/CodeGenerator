@@ -1,17 +1,13 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- 软著代码生成器 V3.0 配色
-         本文件存放原始 Color 与主题无关的画刷。
-         深色 / 浅色的语义画刷见 DarkStyle.xaml 与 LightStyle.xaml。 -->
-
-    <!-- 基础调色板 -->
+    <!--  基础调色板  -->
     <Color x:Key="PaletteBlue">#5B8CFF</Color>
     <Color x:Key="PalettePurple">#9B6BFF</Color>
     <Color x:Key="PaletteTeal">#3FD9B4</Color>
     <Color x:Key="PaletteRed">#FF6B6B</Color>
 
-    <!-- 深色主题原始色 -->
+    <!--  深色主题原始色  -->
     <Color x:Key="DarkBgLevel0Color">#080B14</Color>
     <Color x:Key="DarkBgLevel1Color">#0E1322</Color>
     <Color x:Key="DarkPanelColor">#0CFFFFFF</Color>
@@ -24,7 +20,7 @@
     <Color x:Key="DarkTextSecondaryColor">#9BA6C4</Color>
     <Color x:Key="DarkTextTertiaryColor">#66708C</Color>
 
-    <!-- 浅色主题原始色 -->
+    <!--  浅色主题原始色  -->
     <Color x:Key="LightBgLevel0Color">#EEF1F8</Color>
     <Color x:Key="LightBgLevel1Color">#F7F9FC</Color>
     <Color x:Key="LightPanelColor">#C7FFFFFF</Color>
@@ -37,33 +33,33 @@
     <Color x:Key="LightTextSecondaryColor">#5A6480</Color>
     <Color x:Key="LightTextTertiaryColor">#98A1B8</Color>
 
-    <!-- 强调色（主题无关，界面直接引用） -->
+    <!--  强调色（主题无关，界面直接引用）  -->
     <SolidColorBrush x:Key="AccentBrush" Color="#5B8CFF" />
     <SolidColorBrush x:Key="AccentPurpleBrush" Color="#9B6BFF" />
     <SolidColorBrush x:Key="AccentTealBrush" Color="#3FD9B4" />
     <SolidColorBrush x:Key="DangerBrush" Color="#FF6B6B" />
 
-    <!-- 主按钮 / Logo 渐变（135 度） -->
+    <!--  主按钮 / Logo 渐变（135 度）  -->
     <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="#5B8CFF" Offset="0" />
-        <GradientStop Color="#9B6BFF" Offset="1" />
+        <GradientStop Offset="0" Color="#5B8CFF" />
+        <GradientStop Offset="1" Color="#9B6BFF" />
     </LinearGradientBrush>
 
-    <!-- 进度条渐变：蓝 紫 青 -->
+    <!--  进度条渐变：蓝 紫 青  -->
     <LinearGradientBrush x:Key="ProgressGradientBrush" StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="#5B8CFF" Offset="0" />
-        <GradientStop Color="#9B6BFF" Offset="0.6" />
-        <GradientStop Color="#3FD9B4" Offset="1" />
+        <GradientStop Offset="0" Color="#5B8CFF" />
+        <GradientStop Offset="0.6" Color="#9B6BFF" />
+        <GradientStop Offset="1" Color="#3FD9B4" />
     </LinearGradientBrush>
 
-    <!-- 徽标 / 指标卡图标底色 -->
+    <!--  徽标 / 指标卡图标底色  -->
     <SolidColorBrush x:Key="AccentSoftBrush" Color="#215B8CFF" />
     <SolidColorBrush x:Key="AccentSoftBorderBrush" Color="#345B8CFF" />
     <SolidColorBrush x:Key="TealSoftBrush" Color="#243FD9B4" />
     <SolidColorBrush x:Key="PurpleSoftBrush" Color="#249B6BFF" />
     <SolidColorBrush x:Key="DangerSoftBrush" Color="#2EFF6B6B" />
 
-    <!-- 文件类型图标色（主题无关，界面直接引用） -->
+    <!--  文件类型图标色（主题无关，界面直接引用）  -->
     <SolidColorBrush x:Key="FileCsBrush" Color="#7B4FE0" />
     <SolidColorBrush x:Key="FilePyBrush" Color="#4B8BBE" />
     <SolidColorBrush x:Key="FileJavaBrush" Color="#E76F00" />
@@ -81,5 +77,19 @@
     <SolidColorBrush x:Key="FileJsonBrush" Color="#8BC9FF" />
     <SolidColorBrush x:Key="FileXamlBrush" Color="#2FA8E0" />
     <SolidColorBrush x:Key="FileDefaultBrush" Color="#7C8AA5" />
+
+    <SolidColorBrush x:Key="TrafficRedBrush" Color="#FF5F57" />
+    <SolidColorBrush x:Key="TrafficYellowBrush" Color="#FEBC2E" />
+    <SolidColorBrush x:Key="TrafficGreenBrush" Color="#28C840" />
+
+    <SolidColorBrush x:Key="TrafficGlyphRedBrush" Color="#5C0A00" />
+    <SolidColorBrush x:Key="TrafficGlyphYellowBrush" Color="#6B4A00" />
+    <SolidColorBrush x:Key="TrafficGlyphGreenBrush" Color="#0A4200" />
+
+    <!--  交通灯闲置态（未悬停时的灰点）：随主题变化，语义画刷见 DarkStyle / LightStyle  -->
+    <Color x:Key="DarkTrafficIdleColor">#38FFFFFF</Color>
+    <Color x:Key="DarkTrafficIdleHoverColor">#57FFFFFF</Color>
+    <Color x:Key="LightTrafficIdleColor">#2E142046</Color>
+    <Color x:Key="LightTrafficIdleHoverColor">#47142046</Color>
 
 </ResourceDictionary>
