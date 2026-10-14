@@ -236,6 +236,18 @@
             <DependentUpon>MainWindow.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Page Include="Resources\ColorBrushes.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\DarkStyle.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Include="Resources\LightStyle.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+        </Page>
         <Page Include="Views\StartupWindow.xaml"/>
         <Page Include="Views\MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>

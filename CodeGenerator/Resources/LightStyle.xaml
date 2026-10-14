@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- 背景 -->
+    <StaticResource x:Key="BackgroundBrush" ResourceKey="LightBgLevel0Brush" />
+    <StaticResource x:Key="WindowBrush" ResourceKey="LightBgLevel1Brush" />
+
+    <!-- 面板 / 卡片（玻璃拟态层） -->
+    <StaticResource x:Key="PanelBrush" ResourceKey="LightPanelBrush" />
+    <StaticResource x:Key="PanelStrongBrush" ResourceKey="LightPanelStrongBrush" />
+
+    <!-- 描边 / 分隔线 -->
+    <StaticResource x:Key="BorderBrush" ResourceKey="LightBorderBrush" />
+    <StaticResource x:Key="BorderStrongBrush" ResourceKey="LightBorderStrongBrush" />
+
+    <!-- 输入框底 / 悬停底 -->
+    <StaticResource x:Key="FieldBrush" ResourceKey="LightFieldBrush" />
+    <StaticResource x:Key="HoverBrush" ResourceKey="LightHoverBrush" />
+
+    <!-- 文本三级 -->
+    <StaticResource x:Key="TextPrimaryBrush" ResourceKey="LightTextPrimaryBrush" />
+    <StaticResource x:Key="TextSecondaryBrush" ResourceKey="LightTextSecondaryBrush" />
+    <StaticResource x:Key="TextTertiaryBrush" ResourceKey="LightTextTertiaryBrush" />
+
+    <!-- 浅色下投影更淡 -->
+    <Color x:Key="GlowColor">#2A5B8CFF</Color>
+
+</ResourceDictionary>

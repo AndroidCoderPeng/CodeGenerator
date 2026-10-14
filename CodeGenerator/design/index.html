@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>软著代码生成器 3.0 · 视觉稿</title>
+<style>
+/* ===================== 设计变量 ===================== */
+:root{
+  --a1:#5B8CFF; --a2:#9B6BFF; --a3:#3FD9B4; --warn:#FF6B6B;
+  --grad:linear-gradient(135deg,var(--a1),var(--a2));
+  --r-lg:18px; --r-md:12px; --r-sm:9px;
+}
+html[data-theme="dark"]{
+  --bg-0:#080B14; --bg-1:#0E1322;
+  --panel:rgba(255,255,255,.045); --panel-2:rgba(255,255,255,.07);
+  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.14);
+  --t1:#EEF2FF; --t2:#9BA6C4; --t3:#66708C;
+  --field:rgba(255,255,255,.05);
+  --shadow:0 20px 60px rgba(0,0,0,.55);
+  --glass-blur:blur(22px) saturate(160%);
+}
+html[data-theme="light"]{
+  --bg-0:#EEF1F8; --bg-1:#F7F9FC;
+  --panel:rgba(255,255,255,.78); --panel-2:#FFFFFF;
+  --line:rgba(20,32,70,.09); --line-2:rgba(20,32,70,.14);
+  --t1:#111A2E; --t2:#5A6480; --t3:#98A1B8;
+  --field:rgba(255,255,255,.9);
+  --shadow:0 20px 60px rgba(28,44,92,.16);
+  --glass-blur:blur(18px) saturate(180%);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:"Inter","Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  background:var(--bg-0);color:var(--t1);min-height:100vh;
+  display:flex;align-items:center;justify-content:center;padding:22px;
+  overflow:hidden;transition:background .4s,color .4s;
+}
+/* 极光背景 */
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden}
+.aurora span{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;animation:float 18s ease-in-out infinite}
+.aurora span:nth-child(1){width:520px;height:520px;background:var(--a1);top:-140px;left:-120px}
+.aurora span:nth-child(2){width:460px;height:460px;background:var(--a2);bottom:-160px;right:-100px;animation-delay:-6s}
+.aurora span:nth-child(3){width:380px;height:380px;background:var(--a3);top:38%;left:52%;animation-delay:-11s;opacity:.35}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-50px) scale(1.12)}66%{transform:translate(-50px,40px) scale(.92)}}
+.grid-bg{position:fixed;inset:0;z-index:0;opacity:.35;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:radial-gradient(circle at 50% 40%,#000,transparent 78%)}
+
+/* ===================== 窗口外壳 ===================== */
+.app{
+  position:relative;z-index:1;width:1140px;height:712px;
+  background:var(--bg-1);border:1px solid var(--line);border-radius:22px;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;
+  backdrop-filter:var(--glass-blur);
+}
+.app::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent)}
+
+/* ===================== 路径行 ===================== */
+.path{display:flex;gap:12px;padding:22px 22px 4px;flex-shrink:0}
+.path-box{
+  flex:1;height:46px;display:flex;align-items:center;gap:11px;padding:0 15px;
+  background:var(--field);border:1px solid var(--line);border-radius:var(--r-md);transition:.25s;
+}
+.path-box:focus-within{border-color:var(--a1);box-shadow:0 0 0 4px rgba(91,140,255,.16);background:var(--panel-2)}
+.path-box svg{color:var(--t3);flex-shrink:0}
+.path-box input{flex:1;border:none;outline:none;background:transparent;color:var(--t1);font-size:13.5px;font-family:inherit}
+.path-box input::placeholder{color:var(--t3)}
+.btn-solid{
+  height:46px;padding:0 22px;border:none;border-radius:var(--r-md);flex-shrink:0;
+  background:var(--grad);color:#fff;font-size:13.5px;font-weight:600;font-family:inherit;
+  display:flex;align-items:center;gap:8px;cursor:pointer;transition:.25s;
+  box-shadow:0 8px 22px rgba(91,140,255,.35);
+}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(91,140,255,.5)}
+.btn-solid:active{transform:none}
+/* 主题切换开关 */
+.theme-btn{
+  width:46px;height:46px;flex-shrink:0;border-radius:var(--r-md);cursor:pointer;
+  background:var(--field);border:1px solid var(--line);color:var(--t2);
+  display:flex;align-items:center;justify-content:center;transition:.25s;position:relative;overflow:hidden;
+}
+.theme-btn:hover{color:var(--a1);border-color:var(--a1);background:rgba(91,140,255,.12)}
+.theme-btn svg{transition:transform .5s cubic-bezier(.4,1.6,.5,1),opacity .3s}
+.theme-btn:hover svg{transform:rotate(-25deg) scale(1.1)}
+.theme-btn .sun{display:none}
+html[data-theme="light"] .theme-btn .sun{display:block}
+html[data-theme="light"] .theme-btn .moon{display:none}
+
+/* ===================== 指标卡 ===================== */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:14px 22px 0;flex-shrink:0}
+.stat{
+  padding:12px 16px;border-radius:var(--r-md);background:var(--panel);
+  border:1px solid var(--line);display:flex;align-items:center;gap:12px;
+}
+.stat .ic{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.stat .k{font-size:11.5px;color:var(--t3);margin-bottom:3px}
+.stat .v{font-size:19px;font-weight:700;letter-spacing:-.3px}
+.stat .v small{font-size:11px;font-weight:500;color:var(--t3);margin-left:3px}
+
+/* ===================== 主体 ===================== */
+.body{flex:1;display:flex;gap:16px;padding:16px 22px 0;min-height:0}
+
+/* 左：文件区 */
+.files{flex:1;display:flex;flex-direction:column;min-width:0;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.f-head{display:flex;align-items:center;gap:10px;padding:14px 18px 10px;border-bottom:1px solid var(--line)}
+.f-head h3{font-size:14px;font-weight:650}
+.f-pill{font-size:11.5px;font-weight:600;color:var(--a1);padding:3px 10px;border-radius:99px;background:rgba(91,140,255,.14)}
+.f-head .hint{font-size:11.5px;color:var(--t3);margin-left:auto}
+.f-body{flex:1;overflow-y:auto;padding:12px;min-height:0}
+.f-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:11px}
+.f-card{
+  position:relative;padding:15px 10px 12px;border-radius:var(--r-md);
+  background:var(--panel-2);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;
+  transition:.22s cubic-bezier(.34,1.4,.5,1);
+}
+.f-card:hover{transform:translateY(-4px);border-color:rgba(91,140,255,.5);box-shadow:0 12px 26px rgba(0,0,0,.28)}
+.f-ico{
+  width:46px;height:54px;position:relative;flex-shrink:0;
+  filter:drop-shadow(0 5px 10px rgba(0,0,0,.35));transition:transform .22s;
+}
+.f-card:hover .f-ico{transform:scale(1.08) rotate(-2deg)}
+.f-name{font-size:11.5px;color:var(--t2);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.f-size{font-size:10px;color:var(--t3)}
+.f-del{
+  position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;
+  background:var(--warn);color:#fff;border:2px solid var(--bg-1);font-size:13px;line-height:1;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:scale(.6);transition:.2s;
+}
+.f-card:hover .f-del{opacity:1;transform:scale(1)}
+/* 空状态 */
+.empty{flex:1;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.empty .orb{
+  width:104px;height:104px;border-radius:30px;background:var(--panel-2);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;animation:bob 3.2s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.empty p{font-size:13px;color:var(--t2)}
+.empty span{font-size:11.5px;color:var(--t3)}
+.is-empty .f-grid{display:none}
+.is-empty .empty{display:flex}
+
+/* 右：参数面板 */
+.panel{
+  width:300px;flex-shrink:0;background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r-lg);padding:18px;overflow-y:auto;
+}
+.panel h3{font-size:14px;font-weight:650;display:flex;align-items:center;gap:9px;margin-bottom:16px}
+.panel h3::before{content:"";width:4px;height:15px;border-radius:3px;background:var(--grad)}
+.sec{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:1px;margin:18px 0 10px;text-transform:uppercase}
+.sec:first-of-type{margin-top:0}
+.fld{margin-bottom:13px}
+.fld label{display:block;font-size:12px;color:var(--t2);margin-bottom:6px}
+.fld label .req{color:var(--warn);margin-right:3px;font-weight:700}
+.inp{
+  width:100%;height:38px;padding:0 13px;font-size:13px;color:var(--t1);font-family:inherit;
+  background:var(--field);border:1px solid var(--line);border-radius:var(--r-sm);outline:none;transition:.22s;
+}
+.inp::placeholder{color:var(--t3)}
+.inp:focus{border-color:var(--a1);box-shadow:0 0 0 4px rgba(91,140,255,.16)}
+.two{display:flex;gap:10px}.two>*{flex:1}
+.add{display:flex;gap:8px}
+.add .inp{flex:1}
+.add button{
+  width:38px;height:38px;flex-shrink:0;border:none;border-radius:var(--r-sm);
+  background:var(--grad);color:#fff;font-size:19px;line-height:1;cursor:pointer;transition:.22s;
+}
+.add button:hover{transform:rotate(90deg) scale(1.06)}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;padding:5px 6px 5px 12px;border-radius:99px;
+  background:rgba(91,140,255,.13);border:1px solid rgba(91,140,255,.32);
+  font-size:12px;font-family:"JetBrains Mono",Consolas,monospace;color:var(--t1);
+  animation:pop .25s cubic-bezier(.34,1.5,.5,1);
+}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.chip i{
+  width:16px;height:16px;border-radius:50%;background:rgba(255,107,107,.18);color:var(--warn);
+  font-size:11px;font-style:normal;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s;
+}
+.chip i:hover{background:var(--warn);color:#fff}
+.langs{display:flex;flex-wrap:wrap;gap:7px}
+.lang{
+  padding:6px 12px;border-radius:99px;font-size:11.5px;font-family:Consolas,monospace;cursor:pointer;
+  background:var(--field);border:1px solid var(--line);color:var(--t2);transition:.2s;user-select:none;
+}
+.lang:hover{border-color:var(--line-2);color:var(--t1)}
+.lang.on{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(91,140,255,.35)}
+
+/* ===================== 底部 ===================== */
+.foot{
+  flex-shrink:0;height:84px;display:flex;align-items:center;gap:18px;padding:0 22px;
+  border-top:1px solid var(--line);background:var(--panel);
+}
+.pwrap{flex:1;min-width:0}
+.ptop{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--t2);margin-bottom:9px}
+.ptop b{font-size:12.5px;font-weight:700;color:var(--a3)}
+.pbar{height:9px;border-radius:99px;background:var(--field);border:1px solid var(--line);overflow:hidden;position:relative}
+.pfill{
+  height:100%;width:0;border-radius:99px;transition:width .4s ease;
+  background:linear-gradient(90deg,var(--a1),var(--a2) 60%,var(--a3));
+  background-size:200% 100%;animation:slide 2.4s linear infinite;
+}
+@keyframes slide{to{background-position:-200% 0}}
+.pfill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:sheen 1.8s infinite}
+@keyframes sheen{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.btn-go{
+  height:48px;padding:0 32px;border:none;border-radius:14px;flex-shrink:0;cursor:pointer;
+  background:var(--grad);color:#fff;font-size:14.5px;font-weight:700;font-family:inherit;
+  display:flex;align-items:center;gap:9px;transition:.25s;position:relative;overflow:hidden;
+  box-shadow:0 10px 28px rgba(91,140,255,.45);
+}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(91,140,255,.6)}
+.btn-go::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);animation:sweep 3.2s infinite}
+@keyframes sweep{0%{left:-60%}60%,100%{left:130%}}
+.icon-btn{
+  width:48px;height:48px;flex-shrink:0;border-radius:14px;cursor:pointer;
+  background:var(--field);border:1px solid var(--line);color:var(--t2);
+  display:flex;align-items:center;justify-content:center;transition:.22s;
+}
+.icon-btn:hover{color:var(--a1);border-color:var(--a1);background:rgba(91,140,255,.12);transform:translateY(-2px)}
+
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--t3)}
+
+/* 预览切换条 */
+.demo{
+  position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;
+  display:flex;gap:6px;padding:6px;border-radius:99px;
+  background:var(--panel-2);border:1px solid var(--line);backdrop-filter:blur(14px);box-shadow:var(--shadow);
+}
+.demo button{
+  border:none;background:transparent;color:var(--t2);font-size:12px;font-family:inherit;
+  padding:6px 14px;border-radius:99px;cursor:pointer;transition:.2s;
+}
+.demo button.on{background:var(--grad);color:#fff;font-weight:600}
+</style>
+</head>
+<body>
+<div class="aurora"><span></span><span></span><span></span></div>
+<div class="grid-bg"></div>
+
+<div class="app">
+  <!-- 路径行 -->
+  <div class="path">
+    <div class="path-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <input placeholder="选择源码文件夹，如：C:\Users\Administrator\Desktop\MyProject">
+    </div>
+    <button class="btn-solid" onclick="demoPick()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      选择文件夹
+    </button>
+    <button class="theme-btn" id="themeBtn" title="切换深 / 浅色主题" onclick="toggleTheme()">
+      <svg class="moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+    </button>
+  </div>
+
+  <!-- 指标卡 -->
+  <div class="stats">
+    <div class="stat">
+      <div class="ic" style="background:rgba(91,140,255,.15);color:var(--a1)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      </div>
+      <div><div class="k">已选源码文件</div><div class="v" id="stFiles">12<small>个</small></div></div>
+    </div>
+    <div class="stat">
+      <div class="ic" style="background:rgba(63,217,180,.15);color:var(--a3)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      </div>
+      <div><div class="k">有效代码</div><div class="v" id="stLines">4 860<small>行</small></div></div>
+    </div>
+    <div class="stat">
+      <div class="ic" style="background:rgba(155,107,255,.15);color:var(--a2)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div><div class="k">预计生成</div><div class="v">60<small>页 · 8号字</small></div></div>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="body" id="body">
+    <section class="files">
+      <div class="f-head">
+        <h3>源码文件</h3>
+        <span class="f-pill" id="fPill">12 个</span>
+        <span class="hint">双击打开 · 悬停移除</span>
+      </div>
+      <div class="f-body">
+        <div class="f-grid" id="fGrid"></div>
+        <div class="empty">
+          <div class="orb">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--t3)"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          </div>
+          <p>这里什么都没有~</p>
+          <span>先选择一个源码文件夹吧</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h3>文档设置</h3>
+      <div class="sec">必填信息</div>
+      <div class="fld">
+        <label><span class="req">*</span>页眉</label>
+        <input class="inp" value="软著代码生成器">
+      </div>
+      <div class="fld">
+        <label><span class="req">*</span>软件版本号</label>
+        <input class="inp" placeholder="如：V1.0.0">
+      </div>
+      <div class="sec">排版参数</div>
+      <div class="two">
+        <div class="fld"><label>代码页数</label><input class="inp" placeholder="默认 60"></div>
+        <div class="fld"><label>文档字号</label><input class="inp" placeholder="默认 8"></div>
+      </div>
+      <div class="sec">源码文件后缀</div>
+      <div class="fld">
+        <div class="add">
+          <input class="inp" id="sfxInput" placeholder="如：cs">
+          <button onclick="addSfx()">+</button>
+        </div>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="sec" style="margin-top:16px">常用语言</div>
+      <div class="langs" id="langs"></div>
+    </aside>
+  </div>
+
+  <!-- 底部 -->
+  <div class="foot">
+    <div class="pwrap">
+      <div class="ptop"><span id="pTxt">正在读取：MainWindowViewModel.cs</span><b id="pPct">64%</b></div>
+      <div class="pbar"><div class="pfill" id="pFill" style="width:64%"></div></div>
+    </div>
+    <button class="btn-go" onclick="runDemo()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+      生成文档
+    </button>
+    <button class="icon-btn" title="修改文档保存路径">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="demo">
+  <button class="on" id="btnHas" onclick="setEmpty(false)">有文件</button>
+  <button id="btnEmp" onclick="setEmpty(true)">空状态</button>
+  <button onclick="runDemo()">进度动画</button>
+</div>
+
+<script>
+/* 文件类型：SVG 文档图标 + 主题色 */
+const TYPES={
+  cs:{c:'#7B4FE0',t:'C#'},py:{c:'#4B8BBE',t:'PY'},java:{c:'#E76F00',t:'JAVA'},js:{c:'#EFD81D',t:'JS'},
+  ts:{c:'#3178C6',t:'TS'},html:{c:'#E44D26',t:'HTML'},css:{c:'#563D7C',t:'CSS'},go:{c:'#29BEB0',t:'GO'},
+  cpp:{c:'#F34B7D',t:'CPP'},vue:{c:'#41B883',t:'VUE'},rs:{c:'#DEA584',t:'RS'},kt:{c:'#A97BFF',t:'KT'},
+  php:{c:'#777BB4',t:'PHP'},md:{c:'#519ABA',t:'MD'},json:{c:'#8BC9FF',t:'{}'},xaml:{c:'#2FA8E0',t:'XAML'}
+};
+const FILES=[
+  ['MainWindowViewModel.cs','cs','18 KB'],['App.xaml.cs','cs','2 KB'],['MethodExtensions.cs','cs','6 KB'],
+  ['AppDataServiceImpl.cs','cs','3 KB'],['DefaultSuffix.cs','cs','1 KB'],['MainWindow.xaml','xaml','21 KB'],
+  ['App.xaml','xaml','1 KB'],['index.html','html','32 KB'],['style.css','css','14 KB'],
+  ['main.go','go','9 KB'],['utils.py','py','12 KB'],['UserService.java','java','15 KB']
+];
+const LANGS=['py','cpp','c','java','cs','js','go','vue','html','ts','php','rs','swift','kt','rb','sh','m'];
+const ON=['cs','xaml'];
+let sfx=['cs','xaml'];
+
+function docIcon(e){
+  const T=TYPES[e]||{c:'#7C8AA5',t:e.slice(0,4).toUpperCase()};
+  return `<svg class="f-ico" viewBox="0 0 46 54">
+    <path d="M4 3a3 3 0 0 1 3-3h20l15 15v36a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z" fill="${T.c}" opacity=".16"/>
+    <path d="M27 0l15 15H27z" fill="${T.c}" opacity=".45"/>
+    <path d="M4 3a3 3 0 0 1 3-3h20l15 15v36a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z" fill="none" stroke="${T.c}" stroke-width="2"/>
+    <path d="M27 0l15 15H27z" fill="none" stroke="${T.c}" stroke-width="2"/>
+    <rect x="10" y="24" width="26" height="12" rx="6" fill="${T.c}"/>
+    <text x="23" y="33" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="Consolas">${T.t}</text>
+  </svg>`;
+}
+function renderFiles(){
+  document.getElementById('fGrid').innerHTML=FILES.map((f,i)=>`
+    <div class="f-card" title="${f[0]}">
+      <div class="f-del" onclick="delFile(${i})">×</div>
+      ${docIcon(f[1])}
+      <div class="f-name">${f[0]}</div>
+      <div class="f-size">${f[2]}</div>
+    </div>`).join('');
+  document.getElementById('fPill').textContent=FILES.length+' 个';
+  document.getElementById('stFiles').innerHTML=FILES.length+'<small>个</small>';
+}
+function delFile(i){FILES.splice(i,1);renderFiles()}
+function renderChips(){
+  document.getElementById('chips').innerHTML=sfx.map((s,i)=>
+    `<span class="chip">.${s}<i onclick="delSfx(${i})">×</i></span>`).join('');
+}
+function addSfx(){
+  const el=document.getElementById('sfxInput');
+  const v=el.value.trim().replace(/^[*.\s]+/,'');
+  if(v&&!sfx.includes(v)){sfx.push(v);renderChips()}
+  el.value='';
+}
+function delSfx(i){sfx.splice(i,1);renderChips()}
+function renderLangs(){
+  document.getElementById('langs').innerHTML=LANGS.map(l=>
+    `<span class="lang${ON.includes(l)?' on':''}" onclick="this.classList.toggle('on')">.${l}</span>`).join('');
+}
+function setEmpty(v){
+  document.getElementById('body').classList.toggle('is-empty',v);
+  document.getElementById('btnEmp').classList.toggle('on',v);
+  document.getElementById('btnHas').classList.toggle('on',!v);
+}
+function toggleTheme(){
+  const h=document.documentElement;
+  const dark=h.dataset.theme==='dark';
+  h.dataset.theme=dark?'light':'dark';
+  document.getElementById('themeBtn').title=dark?'切换深色主题':'切换浅色主题';
+}
+/* 模拟生成进度 */
+const STAGE=['正在遍历源码目录…','正在读取：MainWindowViewModel.cs','正在读取：MethodExtensions.cs','正在排版分页…','正在生成 Word 文档…'];
+let timer=null;
+function runDemo(){
+  clearInterval(timer);let p=0,i=0;
+  const fill=document.getElementById('pFill'),txt=document.getElementById('pTxt'),pct=document.getElementById('pPct');
+  timer=setInterval(()=>{
+    p+=Math.random()*7+3;if(p>=100)p=100;
+    fill.style.width=p+'%';pct.textContent=Math.round(p)+'%';
+    txt.textContent=STAGE[Math.min(i,STAGE.length-1)];
+    if(p>20*(i+1))i++;
+    if(p>=100){
+      clearInterval(timer);
+      txt.innerHTML='<span style="color:var(--a3)">✓ 代码文档已生成，有效代码共 4 860 行</span>';
+    }
+  },260);
+}
+function demoPick(){alert('演示：选择文件夹后递归遍历源码文件并展示在网格中')}
+renderFiles();renderChips();renderLangs();
+</script>
+</body>
+</html>
