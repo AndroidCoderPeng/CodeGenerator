@@ -99,6 +99,72 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <!--
+            「选择文件夹」主按钮
+            对应视觉稿 .btn-solid：46px 高、12px 圆角、蓝紫 135° 渐变、蓝色柔光投影；
+            悬停上移 2px 且投影加深，按下复位，禁用时整体半透明。
+        -->
+        <Style x:Key="SelectFolderButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="46" />
+            <Setter Property="Padding" Value="22,0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="13.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="{StaticResource AccentGradientBrush}" />
+            <!--  自定义 Template 后关掉系统焦点虚线，改由背景变化表达焦点  -->
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bd"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="12"
+                            SnapsToDevicePixels="True">
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    x:Name="Shadow"
+                                    BlurRadius="22"
+                                    Direction="90"
+                                    Opacity="0.35"
+                                    ShadowDepth="8"
+                                    Color="#5B8CFF" />
+                            </Border.Effect>
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!--  悬停：投影 28/12、透明度 .5，与视觉稿 hover 态一致  -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Shadow" Property="BlurRadius" Value="28" />
+                                <Setter TargetName="Shadow" Property="ShadowDepth" Value="12" />
+                                <Setter TargetName="Shadow" Property="Opacity" Value="0.5" />
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform Y="-2" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <!--  按下：回到原位  -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.45" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
