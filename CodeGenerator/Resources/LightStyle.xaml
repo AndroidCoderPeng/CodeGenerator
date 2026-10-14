@@ -2,25 +2,25 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- 背景 -->
-    <StaticResource x:Key="BackgroundBrush" ResourceKey="LightBgLevel0Brush" />
-    <StaticResource x:Key="WindowBrush" ResourceKey="LightBgLevel1Brush" />
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource LightBgLevel0Color}" />
+    <SolidColorBrush x:Key="WindowBrush" Color="{StaticResource LightBgLevel1Color}" />
 
-    <!-- 面板 / 卡片（玻璃拟态层） -->
-    <StaticResource x:Key="PanelBrush" ResourceKey="LightPanelBrush" />
-    <StaticResource x:Key="PanelStrongBrush" ResourceKey="LightPanelStrongBrush" />
+    <!-- 面板与卡片 -->
+    <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource LightPanelColor}" />
+    <SolidColorBrush x:Key="PanelStrongBrush" Color="{StaticResource LightPanelStrongColor}" />
 
-    <!-- 描边 / 分隔线 -->
-    <StaticResource x:Key="BorderBrush" ResourceKey="LightBorderBrush" />
-    <StaticResource x:Key="BorderStrongBrush" ResourceKey="LightBorderStrongBrush" />
+    <!-- 描边与分隔线 -->
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource LightBorderColor}" />
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="{StaticResource LightBorderStrongColor}" />
 
-    <!-- 输入框底 / 悬停底 -->
-    <StaticResource x:Key="FieldBrush" ResourceKey="LightFieldBrush" />
-    <StaticResource x:Key="HoverBrush" ResourceKey="LightHoverBrush" />
+    <!-- 输入框底与悬停底 -->
+    <SolidColorBrush x:Key="FieldBrush" Color="{StaticResource LightFieldColor}" />
+    <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource LightHoverColor}" />
 
     <!-- 文本三级 -->
-    <StaticResource x:Key="TextPrimaryBrush" ResourceKey="LightTextPrimaryBrush" />
-    <StaticResource x:Key="TextSecondaryBrush" ResourceKey="LightTextSecondaryBrush" />
-    <StaticResource x:Key="TextTertiaryBrush" ResourceKey="LightTextTertiaryBrush" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource LightTextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource LightTextSecondaryColor}" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="{StaticResource LightTextTertiaryColor}" />
 
     <!-- 浅色下投影更淡 -->
     <Color x:Key="GlowColor">#2A5B8CFF</Color>

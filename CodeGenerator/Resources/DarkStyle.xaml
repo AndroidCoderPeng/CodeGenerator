@@ -2,25 +2,25 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- 背景 -->
-    <StaticResource x:Key="BackgroundBrush" ResourceKey="DarkBgLevel0Brush" />
-    <StaticResource x:Key="WindowBrush" ResourceKey="DarkBgLevel1Brush" />
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource DarkBgLevel0Color}" />
+    <SolidColorBrush x:Key="WindowBrush" Color="{StaticResource DarkBgLevel1Color}" />
 
-    <!-- 面板 / 卡片（玻璃拟态层） -->
-    <StaticResource x:Key="PanelBrush" ResourceKey="DarkPanelBrush" />
-    <StaticResource x:Key="PanelStrongBrush" ResourceKey="DarkPanelStrongBrush" />
+    <!-- 面板与卡片 -->
+    <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource DarkPanelColor}" />
+    <SolidColorBrush x:Key="PanelStrongBrush" Color="{StaticResource DarkPanelStrongColor}" />
 
-    <!-- 描边 / 分隔线 -->
-    <StaticResource x:Key="BorderBrush" ResourceKey="DarkBorderBrush" />
-    <StaticResource x:Key="BorderStrongBrush" ResourceKey="DarkBorderStrongBrush" />
+    <!-- 描边与分隔线 -->
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource DarkBorderColor}" />
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="{StaticResource DarkBorderStrongColor}" />
 
-    <!-- 输入框底 / 悬停底 -->
-    <StaticResource x:Key="FieldBrush" ResourceKey="DarkFieldBrush" />
-    <StaticResource x:Key="HoverBrush" ResourceKey="DarkHoverBrush" />
+    <!-- 输入框底与悬停底 -->
+    <SolidColorBrush x:Key="FieldBrush" Color="{StaticResource DarkFieldColor}" />
+    <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource DarkHoverColor}" />
 
     <!-- 文本三级 -->
-    <StaticResource x:Key="TextPrimaryBrush" ResourceKey="DarkTextPrimaryBrush" />
-    <StaticResource x:Key="TextSecondaryBrush" ResourceKey="DarkTextSecondaryBrush" />
-    <StaticResource x:Key="TextTertiaryBrush" ResourceKey="DarkTextTertiaryBrush" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource DarkTextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource DarkTextSecondaryColor}" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="{StaticResource DarkTextTertiaryColor}" />
 
     <!-- 按钮投影色 -->
     <Color x:Key="GlowColor">#595B8CFF</Color>

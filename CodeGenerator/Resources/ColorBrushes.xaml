@@ -1,68 +1,69 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- ========== 1. 基础调色板 ========== -->
+    <!-- 软著代码生成器 V3.0 配色
+         本文件存放原始 Color 与主题无关的画刷。
+         深色 / 浅色的语义画刷见 DarkStyle.xaml 与 LightStyle.xaml。 -->
+
+    <!-- 基础调色板 -->
     <Color x:Key="PaletteBlue">#5B8CFF</Color>
     <Color x:Key="PalettePurple">#9B6BFF</Color>
     <Color x:Key="PaletteTeal">#3FD9B4</Color>
     <Color x:Key="PaletteRed">#FF6B6B</Color>
 
-    <!-- ========== 2. 深色主题原始色 ========== -->
-    <SolidColorBrush x:Key="DarkBgLevel0Brush" Color="#080B14" />
-    <SolidColorBrush x:Key="DarkBgLevel1Brush" Color="#0E1322" />
-    <SolidColorBrush x:Key="DarkPanelBrush" Color="#0CFFFFFF" />
-    <SolidColorBrush x:Key="DarkPanelStrongBrush" Color="#12FFFFFF" />
-    <SolidColorBrush x:Key="DarkBorderBrush" Color="#17FFFFFF" />
-    <SolidColorBrush x:Key="DarkBorderStrongBrush" Color="#24FFFFFF" />
-    <SolidColorBrush x:Key="DarkFieldBrush" Color="#0DFFFFFF" />
-    <SolidColorBrush x:Key="DarkHoverBrush" Color="#215B8CFF" />
-    <SolidColorBrush x:Key="DarkTextPrimaryBrush" Color="#EEF2FF" />
-    <SolidColorBrush x:Key="DarkTextSecondaryBrush" Color="#9BA6C4" />
-    <SolidColorBrush x:Key="DarkTextTertiaryBrush" Color="#66708C" />
+    <!-- 深色主题原始色 -->
+    <Color x:Key="DarkBgLevel0Color">#080B14</Color>
+    <Color x:Key="DarkBgLevel1Color">#0E1322</Color>
+    <Color x:Key="DarkPanelColor">#0CFFFFFF</Color>
+    <Color x:Key="DarkPanelStrongColor">#12FFFFFF</Color>
+    <Color x:Key="DarkBorderColor">#17FFFFFF</Color>
+    <Color x:Key="DarkBorderStrongColor">#24FFFFFF</Color>
+    <Color x:Key="DarkFieldColor">#0DFFFFFF</Color>
+    <Color x:Key="DarkHoverColor">#215B8CFF</Color>
+    <Color x:Key="DarkTextPrimaryColor">#EEF2FF</Color>
+    <Color x:Key="DarkTextSecondaryColor">#9BA6C4</Color>
+    <Color x:Key="DarkTextTertiaryColor">#66708C</Color>
 
-    <!-- ========== 3. 浅色主题原始色 ========== -->
-    <SolidColorBrush x:Key="LightBgLevel0Brush" Color="#EEF1F8" />
-    <SolidColorBrush x:Key="LightBgLevel1Brush" Color="#F7F9FC" />
-    <SolidColorBrush x:Key="LightPanelBrush" Color="#C7FFFFFF" />
-    <SolidColorBrush x:Key="LightPanelStrongBrush" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="LightBorderBrush" Color="#17142046" />
-    <SolidColorBrush x:Key="LightBorderStrongBrush" Color="#24142046" />
-    <SolidColorBrush x:Key="LightFieldBrush" Color="#E6FFFFFF" />
-    <SolidColorBrush x:Key="LightHoverBrush" Color="#215B8CFF" />
-    <SolidColorBrush x:Key="LightTextPrimaryBrush" Color="#111A2E" />
-    <SolidColorBrush x:Key="LightTextSecondaryBrush" Color="#5A6480" />
-    <SolidColorBrush x:Key="LightTextTertiaryBrush" Color="#98A1B8" />
+    <!-- 浅色主题原始色 -->
+    <Color x:Key="LightBgLevel0Color">#EEF1F8</Color>
+    <Color x:Key="LightBgLevel1Color">#F7F9FC</Color>
+    <Color x:Key="LightPanelColor">#C7FFFFFF</Color>
+    <Color x:Key="LightPanelStrongColor">#FFFFFFFF</Color>
+    <Color x:Key="LightBorderColor">#17142046</Color>
+    <Color x:Key="LightBorderStrongColor">#24142046</Color>
+    <Color x:Key="LightFieldColor">#E6FFFFFF</Color>
+    <Color x:Key="LightHoverColor">#215B8CFF</Color>
+    <Color x:Key="LightTextPrimaryColor">#111A2E</Color>
+    <Color x:Key="LightTextSecondaryColor">#5A6480</Color>
+    <Color x:Key="LightTextTertiaryColor">#98A1B8</Color>
 
-    <!-- ========== 4. 强调色 / 渐变（主题无关，界面直接引用） ========== -->
-    <SolidColorBrush x:Key="AccentBlueBrush" Color="#5B8CFF" />
+    <!-- 强调色（主题无关，界面直接引用） -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#5B8CFF" />
     <SolidColorBrush x:Key="AccentPurpleBrush" Color="#9B6BFF" />
     <SolidColorBrush x:Key="AccentTealBrush" Color="#3FD9B4" />
     <SolidColorBrush x:Key="DangerBrush" Color="#FF6B6B" />
 
-    <!-- 主按钮 / Logo 渐变（135°） -->
+    <!-- 主按钮 / Logo 渐变（135 度） -->
     <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#5B8CFF" Offset="0" />
         <GradientStop Color="#9B6BFF" Offset="1" />
     </LinearGradientBrush>
 
-    <!-- 进度条渐变：蓝 → 紫 → 青 -->
+    <!-- 进度条渐变：蓝 紫 青 -->
     <LinearGradientBrush x:Key="ProgressGradientBrush" StartPoint="0,0" EndPoint="1,0">
         <GradientStop Color="#5B8CFF" Offset="0" />
         <GradientStop Color="#9B6BFF" Offset="0.6" />
         <GradientStop Color="#3FD9B4" Offset="1" />
     </LinearGradientBrush>
 
-    <!-- 标签 / 徽标 / 指标卡图标底色 -->
+    <!-- 徽标 / 指标卡图标底色 -->
     <SolidColorBrush x:Key="AccentSoftBrush" Color="#215B8CFF" />
     <SolidColorBrush x:Key="AccentSoftBorderBrush" Color="#345B8CFF" />
     <SolidColorBrush x:Key="TealSoftBrush" Color="#243FD9B4" />
     <SolidColorBrush x:Key="PurpleSoftBrush" Color="#249B6BFF" />
     <SolidColorBrush x:Key="DangerSoftBrush" Color="#2EFF6B6B" />
 
-    <!-- 按钮投影色（供 DropShadowEffect 使用） -->
-    <Color x:Key="AccentGlowColor">#595B8CFF</Color>
-
-    <!-- ========== 5. 文件类型图标色（主题无关，界面直接引用） ========== -->
+    <!-- 文件类型图标色（主题无关，界面直接引用） -->
     <SolidColorBrush x:Key="FileCsBrush" Color="#7B4FE0" />
     <SolidColorBrush x:Key="FilePyBrush" Color="#4B8BBE" />
     <SolidColorBrush x:Key="FileJavaBrush" Color="#E76F00" />
@@ -79,7 +80,6 @@
     <SolidColorBrush x:Key="FileMarkdownBrush" Color="#519ABA" />
     <SolidColorBrush x:Key="FileJsonBrush" Color="#8BC9FF" />
     <SolidColorBrush x:Key="FileXamlBrush" Color="#2FA8E0" />
-    <!-- 未知类型的默认色 -->
     <SolidColorBrush x:Key="FileDefaultBrush" Color="#7C8AA5" />
 
 </ResourceDictionary>

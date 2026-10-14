@@ -17,27 +17,6 @@ namespace CodeGenerator
             return Container.Resolve<MainWindow>();
         }
 
-        protected override void InitializeShell(Window shell)
-        {
-            //可以实现登录
-            var startupWindow = Container.Resolve<StartupWindow>();
-            var result = startupWindow.ShowDialog();
-            if (result == null)
-            {
-                Current.Shutdown();
-                return;
-            }
-
-            if (result.Value)
-            {
-                base.OnInitialized();
-            }
-            else
-            {
-                Current.Shutdown();
-            }
-        }
-
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             //Data

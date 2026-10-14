@@ -221,7 +221,6 @@
         <Compile Include="DataService\Impl\AppDataServiceImpl.cs"/>
         <Compile Include="Utils\MethodExtensions.cs"/>
         <Compile Include="ViewModels\MainWindowViewModel.cs"/>
-        <Compile Include="Views\StartupWindow.xaml.cs"/>
         <Compile Include="Models\DefaultSuffix.cs">
             <DependentUpon>StartupWindow.xaml</DependentUpon>
         </Compile>
@@ -245,7 +244,6 @@
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
         </Page>
-        <Page Include="Views\StartupWindow.xaml"/>
         <Page Include="Views\MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
