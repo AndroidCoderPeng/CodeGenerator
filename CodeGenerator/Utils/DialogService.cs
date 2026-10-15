@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using CodeGenerator.Dialog;
+﻿using CodeGenerator.Dialog;
 using CodeGenerator.ViewModels;
+using System.Windows;
 
 namespace CodeGenerator.Utils;
 
