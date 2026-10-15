@@ -34,16 +34,11 @@
                     <ControlTemplate TargetType="Button">
                         <Grid>
                             <Border
-                                x:Name="Dot"
                                 Width="14"
                                 Height="14"
                                 Background="{StaticResource TrafficRedBrush}"
                                 CornerRadius="7" />
-                            <ContentPresenter
-                                x:Name="Glyph"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Opacity="1" />
+                            <ContentPresenter />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -59,16 +54,11 @@
                     <ControlTemplate TargetType="Button">
                         <Grid>
                             <Border
-                                x:Name="Dot"
                                 Width="14"
                                 Height="14"
                                 Background="{StaticResource TrafficYellowBrush}"
                                 CornerRadius="7" />
-                            <ContentPresenter
-                                x:Name="Glyph"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Opacity="1" />
+                            <ContentPresenter />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -84,81 +74,79 @@
                     <ControlTemplate TargetType="Button">
                         <Grid>
                             <Border
-                                x:Name="Dot"
                                 Width="14"
                                 Height="14"
                                 Background="{StaticResource TrafficGreenBrush}"
                                 CornerRadius="7" />
-                            <ContentPresenter
-                                x:Name="Glyph"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Opacity="1" />
+                            <ContentPresenter />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-        <!--
-            「选择文件夹」主按钮
-            对应视觉稿 .btn-solid：46px 高、12px 圆角、蓝紫 135° 渐变、蓝色柔光投影；
-            悬停上移 2px 且投影加深，按下复位，禁用时整体半透明。
-        -->
-        <Style x:Key="SelectFolderButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="46" />
-            <Setter Property="Padding" Value="22,0" />
-            <Setter Property="Foreground" Value="White" />
-            <Setter Property="FontSize" Value="13.5" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Cursor" Value="Hand" />
+
+        <!--  主按钮：蓝底白字  -->
+        <Style x:Key="PrimaryCompactButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="48" />
+            <Setter Property="Padding" Value="24,0" />
             <Setter Property="Background" Value="{StaticResource AccentGradientBrush}" />
-            <!--  自定义 Template 后关掉系统焦点虚线，改由背景变化表达焦点  -->
-            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border
-                            x:Name="Bd"
                             Padding="{TemplateBinding Padding}"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="12"
-                            SnapsToDevicePixels="True">
-                            <Border.Effect>
-                                <DropShadowEffect
-                                    x:Name="Shadow"
-                                    BlurRadius="22"
-                                    Direction="90"
-                                    Opacity="0.35"
-                                    ShadowDepth="8"
-                                    Color="#5B8CFF" />
-                            </Border.Effect>
-                            <ContentPresenter
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                RecognizesAccessKey="True" />
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
-                            <!--  悬停：投影 28/12、透明度 .5，与视觉稿 hover 态一致  -->
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Shadow" Property="BlurRadius" Value="28" />
-                                <Setter TargetName="Shadow" Property="ShadowDepth" Value="12" />
-                                <Setter TargetName="Shadow" Property="Opacity" Value="0.5" />
-                                <Setter Property="RenderTransform">
-                                    <Setter.Value>
-                                        <TranslateTransform Y="-2" />
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter Property="Opacity" Value="0.95" />
                             </Trigger>
-                            <!--  按下：回到原位  -->
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="RenderTransform">
-                                    <Setter.Value>
-                                        <TranslateTransform />
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter Property="Opacity" Value="0.75" />
                             </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="Bd" Property="Opacity" Value="0.45" />
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  普通按钮：白底灰框，hover 蓝  -->
+        <Style x:Key="CompactButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="48" />
+            <Setter Property="Padding" Value="14,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderStrongBrush}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="ButtonContainerBorder"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonContainerBorder" Property="Background" Value="{StaticResource AccentSoftBrush}" />
+                                <Setter TargetName="ButtonContainerBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonContainerBorder" Property="Background" Value="{StaticResource AccentPressedSoftBrush}" />
+                                <Setter Property="Opacity" Value="0.75" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -197,51 +185,21 @@
                         shell:WindowChrome.IsHitTestVisibleInChrome="True"
                         Click="OnCloseClick"
                         Style="{StaticResource CloseButtonStyle}"
-                        ToolTip="关闭">
-                        <Path
-                            Width="8"
-                            Height="8"
-                            Data="M0.9,0.9 L5.1,5.1 M5.1,0.9 L0.9,5.1"
-                            Stretch="Uniform"
-                            Stroke="{StaticResource TrafficGlyphRedBrush}"
-                            StrokeEndLineCap="Round"
-                            StrokeStartLineCap="Round"
-                            StrokeThickness="1" />
-                    </Button>
+                        ToolTip="关闭" />
 
                     <Button
                         Margin="8,0,0,0"
                         shell:WindowChrome.IsHitTestVisibleInChrome="True"
                         Click="OnMinimizeClick"
                         Style="{StaticResource MinButtonStyle}"
-                        ToolTip="最小化">
-                        <Path
-                            Width="8"
-                            Height="8"
-                            Data="M0.8,3 H5.2"
-                            Stretch="Uniform"
-                            Stroke="{StaticResource TrafficGlyphYellowBrush}"
-                            StrokeEndLineCap="Round"
-                            StrokeStartLineCap="Round"
-                            StrokeThickness="1" />
-                    </Button>
+                        ToolTip="最小化" />
 
                     <Button
                         Margin="8,0,0,0"
                         shell:WindowChrome.IsHitTestVisibleInChrome="True"
                         Click="OnZoomClick"
                         Style="{StaticResource ZoomButtonStyle}"
-                        ToolTip="最大化">
-                        <Path
-                            Width="8"
-                            Height="8"
-                            Data="M3,0.9 V5.1 M0.9,3 H5.1"
-                            Stretch="Uniform"
-                            Stroke="{StaticResource TrafficGlyphGreenBrush}"
-                            StrokeEndLineCap="Round"
-                            StrokeStartLineCap="Round"
-                            StrokeThickness="1" />
-                    </Button>
+                        ToolTip="最大化" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -263,8 +221,8 @@
 
             <Border
                 Grid.Row="1"
-                BorderBrush="{StaticResource BorderBrush}"
-                BorderThickness="0,1,0,0">
+                BorderBrush="{StaticResource BorderStrongBrush}"
+                BorderThickness="0,2,0,0">
                 <Grid Margin="16,24">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -284,19 +242,69 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column="0" Text="{Binding CurrentFile, StringFormat={}正在读取：{0}}" />
+                            <TextBlock
+                                Grid.Column="0"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="{Binding CurrentFile, StringFormat={}正在读取：{0}, FallbackValue=正在读取：}" />
 
-                            <TextBlock Grid.Column="1" Text="{Binding CurrentProgress}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource AccentTealBrush}"
+                                Text="{Binding CurrentProgress, FallbackValue=0%}" />
                         </Grid>
 
-                        <ProgressBar Grid.Row="1" />
+                        <ProgressBar
+                            Grid.Row="1"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            BorderBrush="{DynamicResource BorderStrongBrush}"
+                            BorderThickness="1.5"
+                            Foreground="{StaticResource ProgressGradientBrush}"
+                            Value="{Binding CurrentProgress}">
+                            <ProgressBar.Style>
+                                <Style TargetType="ProgressBar">
+                                    <Setter Property="Height" Value="12" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ProgressBar">
+                                                <Grid>
+                                                    <Border
+                                                        x:Name="PART_Track"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="6" />
+                                                    <Border
+                                                        x:Name="PART_Indicator"
+                                                        Margin="2"
+                                                        HorizontalAlignment="Left"
+                                                        Background="{TemplateBinding Foreground}"
+                                                        CornerRadius="4" />
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ProgressBar.Style>
+                        </ProgressBar>
                     </Grid>
 
-                    <Button Grid.Column="1" Margin="16,0">
+                    <Button
+                        Grid.Column="1"
+                        Margin="16,0"
+                        Command="{Binding GeneratorCodeCommand}"
+                        Style="{StaticResource PrimaryCompactButtonStyle}">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock />
                                 <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                    FontSize="16"
+                                    Text="&#xe60c;" />
+                                <TextBlock
+                                    Margin="8,0,0,0"
                                     FontSize="16"
                                     FontWeight="SemiBold"
                                     Text="生成文档" />
@@ -304,7 +312,13 @@
                         </Button.Content>
                     </Button>
 
-                    <Button Grid.Column="2" />
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding SaveDocumentCommand}"
+                        Content="&#xe6ca;"
+                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                        FontSize="20"
+                        Style="{StaticResource CompactButtonStyle}" />
                 </Grid>
             </Border>
         </Grid>

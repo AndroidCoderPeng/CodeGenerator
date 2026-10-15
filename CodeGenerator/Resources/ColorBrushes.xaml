@@ -16,6 +16,10 @@
     <Color x:Key="DarkBorderStrongColor">#24FFFFFF</Color>
     <Color x:Key="DarkFieldColor">#0DFFFFFF</Color>
     <Color x:Key="DarkHoverColor">#215B8CFF</Color>
+    <!--  强调色交互态：hover 压暗 8 个亮度点、pressed 再压 10 点（往白提亮既看不出又掉白字对比度）  -->
+    <Color x:Key="AccentDarkHoverColor">#3374FF</Color>
+    <Color x:Key="AccentDarkPressedColor">#1F5FE0</Color>
+    <Color x:Key="AccentDarkPressedSoftColor">#385B8CFF</Color>
     <Color x:Key="DarkTextPrimaryColor">#EEF2FF</Color>
     <Color x:Key="DarkTextSecondaryColor">#9BA6C4</Color>
     <Color x:Key="DarkTextTertiaryColor">#66708C</Color>
@@ -29,6 +33,10 @@
     <Color x:Key="LightBorderStrongColor">#24142046</Color>
     <Color x:Key="LightFieldColor">#E6FFFFFF</Color>
     <Color x:Key="LightHoverColor">#215B8CFF</Color>
+    <!--  同上（实色填充与主题无关）  -->
+    <Color x:Key="AccentLightHoverColor">#3374FF</Color>
+    <Color x:Key="AccentLightPressedColor">#1F5FE0</Color>
+    <Color x:Key="AccentLightPressedSoftColor">#335B8CFF</Color>
     <Color x:Key="LightTextPrimaryColor">#111A2E</Color>
     <Color x:Key="LightTextSecondaryColor">#5A6480</Color>
     <Color x:Key="LightTextTertiaryColor">#98A1B8</Color>

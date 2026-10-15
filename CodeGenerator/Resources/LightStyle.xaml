@@ -17,6 +17,11 @@
     <SolidColorBrush x:Key="FieldBrush" Color="{StaticResource LightFieldColor}" />
     <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource LightHoverColor}" />
 
+    <!--  强调悬停色  -->
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="{StaticResource AccentLightHoverColor}" />
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="{StaticResource AccentLightPressedColor}" />
+    <SolidColorBrush x:Key="AccentPressedSoftBrush" Color="{StaticResource AccentLightPressedSoftColor}" />
+    
     <!--  文本三级  -->
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource LightTextPrimaryColor}" />
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource LightTextSecondaryColor}" />

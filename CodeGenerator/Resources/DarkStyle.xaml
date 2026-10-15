@@ -16,6 +16,11 @@
     <!--  输入框底与悬停底  -->
     <SolidColorBrush x:Key="FieldBrush" Color="{StaticResource DarkFieldColor}" />
     <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource DarkHoverColor}" />
+    
+    <!--  强调悬停色  -->
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="{StaticResource AccentDarkHoverColor}" />
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="{StaticResource AccentDarkPressedColor}" />
+    <SolidColorBrush x:Key="AccentPressedSoftBrush" Color="{StaticResource AccentDarkPressedSoftColor}" />
 
     <!--  文本三级  -->
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource DarkTextPrimaryColor}" />
