@@ -242,6 +242,32 @@ html[data-theme="light"] .aurora span{opacity:.32}
 html[data-theme="light"] .theme-btn .sun{display:block}
 html[data-theme="light"] .theme-btn .moon{display:none}
 
+/* 遍历范围条：紧贴路径行下方，规则默认生效且一眼可见 */
+.range{
+  display:flex;align-items:center;gap:12px;margin:10px 22px 0;padding:9px 12px;
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;
+}
+.rg-badge{
+  display:inline-flex;align-items:center;gap:6px;flex-shrink:0;
+  font-size:12px;font-weight:650;color:var(--a1);
+  padding:4px 10px;border-radius:8px;background:rgba(91,140,255,.12);
+}
+.rg-tags{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.rg-tag{
+  font-size:11.5px;color:var(--t2);padding:4px 9px;border-radius:7px;
+  background:var(--field);border:1px solid var(--line);white-space:nowrap;
+}
+.rg-tag b{color:var(--t1);font-weight:700}
+.rg-tag.off{color:var(--t3);text-decoration:line-through;text-decoration-color:var(--line-2)}
+.rg-edit{
+  margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:6px;
+  padding:6px 12px;border-radius:99px;cursor:pointer;font-size:11.5px;font-weight:600;
+  background:var(--field);border:1px solid var(--line);color:var(--t2);font-family:inherit;transition:.2s;
+}
+.rg-edit:hover{color:var(--a1);border-color:var(--a1);background:rgba(91,140,255,.12)}
+.rg-edit svg{transition:transform .6s cubic-bezier(.4,1.5,.5,1)}
+.rg-edit:hover svg{transform:rotate(60deg)}
+
 /* ===================== 指标卡 ===================== */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:14px 22px 0;flex-shrink:0}
 .stat{
@@ -263,6 +289,24 @@ html[data-theme="light"] .theme-btn .moon{display:none}
 .files{flex:1;display:flex;flex-direction:column;min-width:0;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
 .f-head{display:flex;align-items:center;gap:10px;padding:14px 18px 10px;border-bottom:1px solid var(--line)}
+/* 扫描中：后台流式枚举，结果边扫边出，界面不卡死 */
+.scan{
+  display:none;align-items:center;gap:10px;margin-bottom:12px;padding:9px 12px;
+  border-radius:10px;background:rgba(91,140,255,.1);border:1px solid rgba(91,140,255,.28);
+}
+.scan.show{display:flex}
+.scan-spin{
+  width:15px;height:15px;flex-shrink:0;border-radius:50%;
+  border:2px solid rgba(91,140,255,.25);border-top-color:var(--a1);animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scan-txt{font-size:11.5px;color:var(--t2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scan-txt b{color:var(--t1);font-weight:700}
+.scan-stop{
+  flex-shrink:0;padding:4px 11px;border-radius:99px;cursor:pointer;font-size:11px;font-weight:600;
+  background:transparent;border:1px solid var(--line-2);color:var(--t2);font-family:inherit;transition:.18s;
+}
+.scan-stop:hover{color:var(--warn);border-color:var(--warn);background:rgba(255,107,107,.1)}
 .f-head h3{font-size:14px;font-weight:650}
 .f-pill{font-size:11.5px;font-weight:600;color:var(--a1);padding:3px 10px;border-radius:99px;background:rgba(91,140,255,.14)}
 .f-head .hint{font-size:11.5px;color:var(--t3);margin-left:auto}
@@ -475,6 +519,7 @@ html[data-theme="light"] .theme-btn .moon{display:none}
   <button class="on" id="btnHas" onclick="setEmpty(false)">有文件</button>
   <button id="btnEmp" onclick="setEmpty(true)">空状态</button>
   <button onclick="runDemo()">进度动画</button>
+    <button id="btnScan" onclick="runScan()">模拟扫描</button>
     <button id="btnMin" onclick="minWin()">最小化</button>
     <button id="btnTheme" onclick="toggleTheme()">切换浅色</button>
 </div>
@@ -518,6 +563,25 @@ html[data-theme="light"] .theme-btn .moon{display:none}
     </button>
   </div>
 
+  <!-- 遍历范围（默认规则明示：新用户选根目录前就能看到保护已生效） -->
+  <div class="range">
+    <span class="rg-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      遍历范围
+    </span>
+    <span class="rg-tags">
+      <span class="rg-tag">白名单 <b id="tagSfx">2</b> 类后缀</span>
+      <span class="rg-tag">跳过 <b id="tagDir">34</b> 类目录</span>
+      <span class="rg-tag">排除 <b id="tagPat">6</b> 类文件</span>
+      <span class="rg-tag">单文件 ≤ <b id="tagSize">2</b>MB</span>
+      <span class="rg-tag off" id="tagHidden">隐藏/链接已排除</span>
+    </span>
+    <button class="rg-edit" onclick="openRule()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.3a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.7 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.6.9 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      编辑规则
+    </button>
+  </div>
+
   <!-- 指标卡 -->
   <div class="stats">
     <div class="stat">
@@ -549,6 +613,11 @@ html[data-theme="light"] .theme-btn .moon{display:none}
         <span class="hint">双击打开 · 悬停移除</span>
       </div>
       <div class="f-body">
+        <div class="scan" id="scanBar">
+          <div class="scan-spin"></div>
+          <span class="scan-txt">正在扫描 <b>MyProject</b> · 已找到 <b id="scanFound">0</b> 个源码文件，跳过 <b id="scanSkip">0</b> 个目录</span>
+          <button class="scan-stop" onclick="stopScan()">停止扫描</button>
+        </div>
         <div class="f-grid" id="fGrid"></div>
         <div class="empty">
           <div class="orb">
@@ -561,14 +630,7 @@ html[data-theme="light"] .theme-btn .moon{display:none}
     </section>
 
     <aside class="panel">
-      <h3>
-        文档设置
-        <button class="gear" onclick="openRule()" title="配置遍历规则">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.3a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.7 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.6.9 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-          遍历规则
-          <span class="n" id="ruleCount">15</span>
-        </button>
-      </h3>
+      <h3>文档设置</h3>
       <div class="sec">必填信息</div>
       <div class="fld">
         <label><span class="req">*</span>页眉</label>
@@ -761,7 +823,7 @@ function delDir(i){ruleDirs.splice(i,1);renderDirs()}
 function addPat(){const el=document.getElementById('patInput');
   const v=el.value.trim().replace(/^[*\s]+/,'');if(v&&!rulePats.includes(v)){rulePats.push(v);renderPats()}el.value='';}
 function delPat(i){rulePats.splice(i,1);renderPats()}
-function countRule(){document.getElementById('ruleCount').textContent=ruleDirs.length+rulePats.length}
+function countRule(){applyRuleTags()}
 function openRule(){
   document.getElementById('ruleModal').classList.add('show');
   document.getElementById('tgHidden').classList.toggle('on',ruleHidden);
@@ -794,6 +856,44 @@ document.getElementById('ruleModal').addEventListener('click',function(e){
   if(e.target===this)closeRule();
 });
 ruleDirs=DEF_DIRS.slice();rulePats=DEF_PATS.slice();renderDirs();renderPats();countRule();
+
+/* ---------- 扫描过程演示 ----------
+   说明真实的遍进行为：后台流式枚举、结果 Incremental 呈现、随时可停止，
+   因此即便用户直接选择了庞大的源码根目录，界面也不会卡死。 */
+let scanTimer=null;
+function applyRuleTags(){
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  set('tagSfx',sfx.length);set('tagDir',ruleDirs.length);set('tagPat',rulePats.length);
+  set('tagSize',(document.getElementById('rgSize')||{}).value||2);
+  const th=document.getElementById('tagHidden');
+  if(th)th.classList.toggle('off',!(ruleHidden&&ruleLink));
+}
+function runScan(){
+  const bar=document.getElementById('scanBar');
+  const found=document.getElementById('scanFound');
+  const skipped=document.getElementById('scanSkip');
+  if(!bar)return;
+  stopScan();
+  setEmpty(false);
+  document.getElementById('btnScan').classList.add('on');
+  bar.classList.add('show');
+  let f=0,s=0;found.textContent=0;skipped.textContent=0;
+  scanTimer=setInterval(()=>{
+    f+=Math.floor(Math.random()*9)+2;
+    s+=Math.random()<.35?1:0;
+    found.textContent=f;skipped.textContent=s;
+    if(f>=(sfx.length?120:60)){
+      stopScan();
+      bar.querySelector('.scan-txt').innerHTML=
+        `扫描完成 · 命中规则保留 <b>${found.textContent}</b> 个源码文件，<b>${skipped.textContent}</b> 个目录已被跳过`;
+      bar.classList.add('show');
+      document.getElementById('btnScan').classList.remove('on');
+      setTimeout(()=>{bar.classList.remove('show')},2600);
+    }
+  },180);
+}
+function stopScan(){if(scanTimer){clearInterval(scanTimer);scanTimer=null}}
+applyRuleTags();
 
 function toggleTheme(){
   const h=document.documentElement;
