@@ -3,12 +3,15 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Versioning;
+using System.Windows.Forms;
 using CodeGenerator.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace CodeGenerator.ViewModels
 {
+    [SupportedOSPlatform("windows6.1")]
     public partial class MainWindowViewModel : ObservableObject
     {
         #region VM
@@ -58,6 +61,11 @@ namespace CodeGenerator.ViewModels
         [RelayCommand]
         private void SelectCodeFolder()
         {
+            using var dialog = new FolderBrowserDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                CodeFolder = dialog.SelectedPath;
+            }
         }
 
         [RelayCommand]

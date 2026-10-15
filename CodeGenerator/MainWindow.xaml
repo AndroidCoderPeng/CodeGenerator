@@ -312,6 +312,7 @@
                             <Grid Grid.Column="1">
                                 <TextBox
                                     x:Name="CodeFolderTextBox"
+                                    Margin="8,0,0,0"
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Background="Transparent"
@@ -770,7 +771,7 @@
 
                                 <ListBox
                                     Grid.Row="12"
-                                    Margin="16"
+                                    Margin="16,8"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     ItemsSource="{Binding DefaultFileSuffixTypes}"
