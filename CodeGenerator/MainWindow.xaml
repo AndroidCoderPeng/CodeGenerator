@@ -217,6 +217,118 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border
+                        Grid.Column="0"
+                        Height="48"
+                        Background="Transparent"
+                        BorderThickness="2"
+                        CornerRadius="8">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsKeyboardFocused, ElementName=CodeFolderTextBox}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                        <Setter Property="Effect">
+                                            <Setter.Value>
+                                                <DropShadowEffect
+                                                    BlurRadius="6"
+                                                    Opacity="0.18"
+                                                    ShadowDepth="0"
+                                                    Color="#5B8CFF" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <Grid Margin="12,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  搜索图标  -->
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                FontSize="18"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="&#xe680;" />
+
+                            <!--  输入框 + placeholder  -->
+                            <Grid Grid.Column="1">
+                                <TextBox
+                                    x:Name="CodeFolderTextBox"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    FontSize="14"
+                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                    Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
+                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                    IsHitTestVisible="False"
+                                    Text="选择源码文件夹，如：D:\Pengxh\Code\CodeGenerator\CodeGenerator">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=CodeFolderTextBox}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <Button
+                        Grid.Column="1"
+                        Margin="16,0"
+                        Command="{Binding SelctCodeFolderCommand}"
+                        Style="{StaticResource PrimaryCompactButtonStyle}">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                    FontSize="16"
+                                    Text="&#xe680;" />
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="选择文件夹" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+
+                    <Button
+                        Grid.Column="2"
+                        Command="{Binding ChangeThemeCommand}"
+                        Content="&#xe71f;"
+                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                        FontSize="20"
+                        Style="{StaticResource CompactButtonStyle}" />
+                </Grid>
             </Grid>
 
             <Border
