@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using CodeGenerator.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Application = System.Windows.Application;
 
 namespace CodeGenerator.ViewModels
 {
@@ -18,6 +22,7 @@ namespace CodeGenerator.ViewModels
         #region VM
 
         [ObservableProperty] private string _codeFolder;
+        [ObservableProperty] private bool _isDarkTheme;
         [ObservableProperty] private ObservableCollection<FileInfo> _selectedFiles = [];
         [ObservableProperty] private ObservableCollection<string> _effectiveCodeLines = [];
         [ObservableProperty] private int _expectedCodePages;
@@ -67,7 +72,7 @@ namespace CodeGenerator.ViewModels
             {
                 CodeFolder = dialog.SelectedPath;
             }
-            
+
             _ = TraverseFolderAsync();
         }
 
@@ -76,12 +81,30 @@ namespace CodeGenerator.ViewModels
         /// </summary>
         private async Task TraverseFolderAsync()
         {
-            
         }
 
         [RelayCommand]
         private void ChangeTheme()
         {
+            IsDarkTheme = !IsDarkTheme;
+
+            var resources = Application.Current.Resources.MergedDictionaries;
+            var themeDictionary = resources.FirstOrDefault(dictionary =>
+                dictionary.Source?.OriginalString.EndsWith("LightStyle.xaml", StringComparison.OrdinalIgnoreCase) ==
+                true ||
+                dictionary.Source?.OriginalString.EndsWith("DarkStyle.xaml", StringComparison.OrdinalIgnoreCase) ==
+                true);
+
+            if (themeDictionary != null)
+            {
+                resources.Remove(themeDictionary);
+            }
+
+            resources.Add(new ResourceDictionary
+            {
+                Source = new Uri(IsDarkTheme ? "Resources/DarkStyle.xaml" : "Resources/LightStyle.xaml",
+                    UriKind.Relative)
+            });
         }
 
         [RelayCommand]

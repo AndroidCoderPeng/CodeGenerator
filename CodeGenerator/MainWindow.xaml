@@ -353,8 +353,18 @@
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                    FontSize="16"
-                                    Text="&#xe680;" />
+                                    FontSize="16">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="&#xe680;" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDarkTheme}" Value="False">
+                                                    <Setter Property="Text" Value="&#xe713;" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                                 <TextBlock
                                     Margin="8,0,0,0"
                                     FontSize="16"
