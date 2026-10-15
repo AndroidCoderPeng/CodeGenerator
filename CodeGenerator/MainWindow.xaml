@@ -164,6 +164,38 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!--  圆角输入框  -->
+        <Style x:Key="FieldTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#9BA6C4" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="#242836" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border
+                            x:Name="FieldBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8"
+                            SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="FieldBorder" Property="BorderBrush" Value="#5B8CFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -490,6 +522,252 @@
                         </Grid>
                     </Border>
                 </UniformGrid>
+
+                <Grid Grid.Row="2" Margin="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="384" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border
+                        Grid.Column="0"
+                        BorderBrush="#242836"
+                        BorderThickness="1.5"
+                        CornerRadius="12">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="1.5" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    Grid.Column="0"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Foreground="White"
+                                    Text="源码文件" />
+
+                                <Border
+                                    Grid.Column="1"
+                                    Margin="16,0"
+                                    Background="#232E4C"
+                                    CornerRadius="12">
+                                    <TextBlock
+                                        Margin="12,4"
+                                        FontSize="14"
+                                        Foreground="#5B8CFF"
+                                        Text="{Binding SelectedFiles.Count, StringFormat={}{0} 个, FallbackValue=0 个}" />
+                                </Border>
+
+                                <TextBlock
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Foreground="#9BA6C4"
+                                    Text="双击打开 · 悬停移除" />
+                            </Grid>
+
+                            <Border
+                                Grid.Row="1"
+                                BorderBrush="#242836"
+                                BorderThickness="0,0,0,1.5" />
+
+                            <ListBox
+                                Grid.Row="2"
+                                Margin="16"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                ItemsSource="{Binding SelectedFiles}"
+                                ScrollViewer.CanContentScroll="False" />
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Grid.Column="1"
+                        Margin="16,0,0,0"
+                        BorderBrush="#242836"
+                        BorderThickness="1.5"
+                        CornerRadius="12">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel
+                                    Grid.Row="0"
+                                    Margin="16"
+                                    Orientation="Horizontal">
+                                    <Border
+                                        Margin="0,2"
+                                        BorderBrush="{StaticResource AccentGradientBrush}"
+                                        BorderThickness="3"
+                                        CornerRadius="1.5" />
+
+                                    <TextBlock
+                                        Margin="10,0,0,0"
+                                        FontSize="18"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="文档设置" />
+                                </StackPanel>
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Margin="16,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="#9BA6C4"
+                                    Text="必填信息" />
+
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Margin="16,16,16,8"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        FontSize="14"
+                                        Foreground="#FF5F57"
+                                        Text="*" />
+
+                                    <TextBlock
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="#9BA6C4"
+                                        Text="页眉" />
+                                </StackPanel>
+
+                                <TextBox
+                                    Grid.Row="3"
+                                    Margin="16,0"
+                                    Style="{StaticResource FieldTextBoxStyle}"
+                                    Text="{Binding DocumentHeader}" />
+
+                                <StackPanel
+                                    Grid.Row="4"
+                                    Margin="16,16,16,8"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        FontSize="14"
+                                        Foreground="#FF5F57"
+                                        Text="*" />
+
+                                    <TextBlock
+                                        Margin="4,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="#9BA6C4"
+                                        Text="软件版本号" />
+                                </StackPanel>
+
+                                <TextBox
+                                    Grid.Row="5"
+                                    Margin="16,0"
+                                    Style="{StaticResource FieldTextBoxStyle}"
+                                    Text="{Binding SoftwareVersion, FallbackValue=V1.0.0}" />
+
+                                <TextBlock
+                                    Grid.Row="6"
+                                    Margin="16"
+                                    Foreground="#9BA6C4"
+                                    Text="排版参数" />
+
+                                <UniformGrid Grid.Row="7" Rows="1">
+                                    <StackPanel Margin="16,0,8,0" Orientation="Vertical">
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Foreground="#9BA6C4"
+                                            Text="代码页数" />
+
+                                        <TextBox
+                                            Margin="0,8,0,0"
+                                            Style="{StaticResource FieldTextBoxStyle}"
+                                            Text="{Binding DocumentPage, FallbackValue=60}" />
+                                    </StackPanel>
+
+                                    <StackPanel Margin="8,0,16,0" Orientation="Vertical">
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Foreground="#9BA6C4"
+                                            Text="文档字号" />
+
+                                        <TextBox
+                                            Margin="0,8,0,0"
+                                            Style="{StaticResource FieldTextBoxStyle}"
+                                            Text="{Binding DocFontSize, FallbackValue=8}" />
+                                    </StackPanel>
+                                </UniformGrid>
+
+                                <TextBlock
+                                    Grid.Row="8"
+                                    Margin="16,16,16,8"
+                                    Foreground="#9BA6C4"
+                                    Text="源码文件后缀" />
+
+                                <Grid Grid.Row="9" Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0" Style="{StaticResource FieldTextBoxStyle}" />
+
+                                    <Button
+                                        Grid.Column="1"
+                                        Height="40"
+                                        Margin="16,0,0,0"
+                                        Padding="12,0"
+                                        Command="{Binding AddFileSuffixTypeCommand}"
+                                        Content="&#xe605;"
+                                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                        FontSize="16"
+                                        Style="{StaticResource PrimaryCompactButtonStyle}" />
+                                </Grid>
+
+                                <ListBox
+                                    Grid.Row="10"
+                                    Margin="16"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    ItemsSource="{Binding FileSuffixTypes}"
+                                    ScrollViewer.CanContentScroll="False" />
+
+                                <TextBlock
+                                    Grid.Row="11"
+                                    Margin="16,0"
+                                    Foreground="#9BA6C4"
+                                    Text="常用语言" />
+
+                                <ListBox
+                                    Grid.Row="12"
+                                    Margin="16"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    ItemsSource="{Binding DefaultFileSuffixTypes}"
+                                    ScrollViewer.CanContentScroll="False" />
+                            </Grid>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
             </Grid>
 
             <Border
@@ -532,7 +810,7 @@
                             Grid.Row="1"
                             VerticalAlignment="Center"
                             Background="Transparent"
-                            BorderBrush="{DynamicResource BorderStrongBrush}"
+                            BorderBrush="#242836"
                             BorderThickness="1.5"
                             Foreground="{StaticResource ProgressGradientBrush}"
                             Value="{Binding CurrentProgress}">
