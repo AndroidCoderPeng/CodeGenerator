@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeGenerator.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -66,6 +67,16 @@ namespace CodeGenerator.ViewModels
             {
                 CodeFolder = dialog.SelectedPath;
             }
+            
+            _ = TraverseFolderAsync();
+        }
+
+        /// <summary>
+        /// 遍历文件夹，获取所有文件
+        /// </summary>
+        private async Task TraverseFolderAsync()
+        {
+            
         }
 
         [RelayCommand]
