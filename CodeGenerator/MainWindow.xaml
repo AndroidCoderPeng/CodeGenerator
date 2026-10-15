@@ -319,7 +319,7 @@
                                     BorderThickness="0"
                                     FontSize="14"
                                     Foreground="#9BA6C4"
-                                    Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" />
+                                    Text="{Binding CodeFolder, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <TextBlock
                                     Margin="8,0,0,0"
@@ -346,7 +346,7 @@
                     <Button
                         Grid.Column="1"
                         Margin="16,0"
-                        Command="{Binding SelctCodeFolderCommand}"
+                        Command="{Binding SelectCodeFolderCommand}"
                         Style="{StaticResource PrimaryCompactButtonStyle}">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
@@ -460,7 +460,7 @@
                                         FontSize="24"
                                         FontWeight="SemiBold"
                                         Foreground="White"
-                                        Text="{Binding EffectiveCodeLines.Length, FallbackValue=0}" />
+                                        Text="{Binding EffectiveCodeLines.Count, FallbackValue=0}" />
 
                                     <TextBlock
                                         Margin="4,0,0,4"
@@ -504,7 +504,7 @@
                                         FontSize="24"
                                         FontWeight="SemiBold"
                                         Foreground="White"
-                                        Text="{Binding ExpectedCodePages.Length, FallbackValue=0}" />
+                                        Text="{Binding ExpectedCodePages, FallbackValue=0}" />
 
                                     <TextBlock
                                         Margin="4,0,0,4"
@@ -526,7 +526,7 @@
                 <Grid Grid.Row="2" Margin="16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
-                        <ColumnDefinition Width="384" />
+                        <ColumnDefinition Width="376" />
                     </Grid.ColumnDefinitions>
 
                     <Border
@@ -763,7 +763,70 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     ItemsSource="{Binding DefaultFileSuffixTypes}"
-                                    ScrollViewer.CanContentScroll="False" />
+                                    ScrollViewer.CanContentScroll="False"
+                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Margin" Value="0,0,8,8" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <ContentPresenter />
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <ToggleButton Content="{Binding}">
+                                                <ToggleButton.Style>
+                                                    <Style TargetType="ToggleButton">
+                                                        <Setter Property="Foreground" Value="#9BA6C4" />
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <Setter Property="FontFamily" Value="Consolas" />
+                                                        <Setter Property="FontSize" Value="14" />
+                                                        <Setter Property="BorderThickness" Value="1.5" />
+                                                        <Setter Property="BorderBrush" Value="#242836" />
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="ToggleButton">
+                                                                    <Border
+                                                                        x:Name="CardBorder"
+                                                                        Padding="14,10"
+                                                                        Background="{TemplateBinding Background}"
+                                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                                        CornerRadius="18">
+                                                                        <ContentPresenter />
+                                                                    </Border>
+
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsChecked" Value="True">
+                                                                            <Setter TargetName="CardBorder" Property="BorderBrush" Value="Transparent" />
+                                                                            <Setter TargetName="CardBorder" Property="Background" Value="{StaticResource AccentGradientBrush}" />
+                                                                            <Setter Property="Foreground" Value="White" />
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </ToggleButton.Style>
+                                            </ToggleButton>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </Grid>
                         </ScrollViewer>
                     </Border>

@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using CodeGenerator.DataService;
 using CodeGenerator.ViewModels;
 
 namespace CodeGenerator
@@ -13,7 +12,7 @@ namespace CodeGenerator
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel(new AppDataServiceImpl());
+            DataContext = new MainWindowViewModel();
         }
 
         /// <summary>
