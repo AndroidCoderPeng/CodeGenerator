@@ -265,7 +265,6 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <Border
@@ -346,7 +345,7 @@
 
                     <Button
                         Grid.Column="1"
-                        Margin="16,0"
+                        Margin="16,0,0,0"
                         Command="{Binding SelectCodeFolderCommand}"
                         Style="{StaticResource PrimaryCompactButtonStyle}">
                         <Button.Content>
@@ -363,23 +362,6 @@
                                     Text="选择文件夹" />
                             </StackPanel>
                         </Button.Content>
-                    </Button>
-
-                    <Button
-                        Grid.Column="2"
-                        Command="{Binding ChangeThemeCommand}"
-                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                        FontSize="20">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource CompactButtonStyle}" TargetType="Button">
-                                <Setter Property="Content" Value="&#xe71f;" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsDarkTheme}" Value="False">
-                                        <Setter Property="Content" Value="&#xe713;" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
                     </Button>
                 </Grid>
 

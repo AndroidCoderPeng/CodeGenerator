@@ -1,10 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--
-        主题无关的画刷资源（暗色/亮色主题下取值相同）。
-        主题相关的资源请见 DarkStyle.xaml / LightStyle.xaml，二者使用相同的 Key，
-        通过替换 App.xaml 中合并的资源字典即可完成主题切换。
-    -->
+    <!--  强调色、渐变与交通灯画刷  -->
 
     <!--  强调色  -->
     <SolidColorBrush x:Key="AccentBlueBrush" Color="#5B8CFF" />

@@ -1,11 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--
-        亮色主题资源。Key 与 DarkStyle.xaml 一一对应，
-        运行时替换 App.xaml 合并字典中的 DarkStyle/LightStyle 即可切换主题。
-        颜色来源：design/index.html 的 html[data-theme="light"] 变量及等效换算
-        （半透明色已按 #F7F9FC 底色折算为不透明 HEX）。
-    -->
+    <!--  亮色界面画刷；半透明色已按 #F7F9FC 底色折算为不透明 HEX。  -->
 
     <!--  背景  -->
     <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F7F9FC" />

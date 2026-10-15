@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,28 +10,14 @@
   --a1:#5B8CFF; --a2:#9B6BFF; --a3:#3FD9B4; --warn:#FF6B6B;
   --grad:linear-gradient(135deg,var(--a1),var(--a2));
   --r-lg:18px; --r-md:12px; --r-sm:9px;
-    /* macOS 交通灯：与 Resources/ColorBrushes.xaml 的 TrafficRed/Yellow/GreenBrush 对应 */
-    --tl-red: #FF5F57;
-    --tl-yellow: #FEBC2E;
-    --tl-green: #28C840;
-    /* 与 TrafficGlyphRed/Yellow/GreenBrush 对应（macOS 为深色符号，非白色） */
-    --tl-glyph-red: #5C0A00;
-    --tl-glyph-yellow: #6B4A00;
-    --tl-glyph-green: #0A4200;
-}
-html[data-theme="dark"]{
-  --bg-0:#080B14; --bg-1:#0E1322;
-  --panel:rgba(255,255,255,.045); --panel-2:rgba(255,255,255,.07);
-  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.14);
-  --t1:#EEF2FF; --t2:#9BA6C4; --t3:#66708C;
-  --field:rgba(255,255,255,.05);
-  --shadow:0 20px 60px rgba(0,0,0,.55);
-  --glass-blur:blur(22px) saturate(160%);
-    /* macOS 交通灯：窗口未激活/未悬停时的灰点 */
-    --tl-idle: rgba(255, 255, 255, .22);
-    --tl-idle-h: rgba(255, 255, 255, .34);
-}
-html[data-theme="light"]{
+  /* macOS 交通灯：与 Resources/ColorBrushes.xaml 的 TrafficRed/Yellow/GreenBrush 对应 */
+  --tl-red: #FF5F57;
+  --tl-yellow: #FEBC2E;
+  --tl-green: #28C840;
+  /* 与 TrafficGlyphRed/Yellow/GreenBrush 对应（macOS 为深色符号，非白色） */
+  --tl-glyph-red: #5C0A00;
+  --tl-glyph-yellow: #6B4A00;
+  --tl-glyph-green: #0A4200;
   --bg-0:#EEF1F8; --bg-1:#F7F9FC;
   --panel:rgba(255,255,255,.78); --panel-2:#FFFFFF;
   --line:rgba(20,32,70,.09); --line-2:rgba(20,32,70,.14);
@@ -39,8 +25,8 @@ html[data-theme="light"]{
   --field:rgba(255,255,255,.9);
   --shadow:0 20px 60px rgba(28,44,92,.16);
   --glass-blur:blur(18px) saturate(180%);
-    --tl-idle: rgba(20, 32, 70, .18);
-    --tl-idle-h: rgba(20, 32, 70, .28);
+  --tl-idle: rgba(20, 32, 70, .18);
+  --tl-idle-h: rgba(20, 32, 70, .28);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%}
@@ -57,7 +43,7 @@ body{
 .aurora span:nth-child(1){width:520px;height:520px;background:var(--a1);top:-140px;left:-120px}
 .aurora span:nth-child(2){width:460px;height:460px;background:var(--a2);bottom:-160px;right:-100px;animation-delay:-6s}
 .aurora span:nth-child(3){width:380px;height:380px;background:var(--a3);top:38%;left:52%;animation-delay:-11s;opacity:.35}
-html[data-theme="light"] .aurora span{opacity:.32}
+.aurora span{opacity:.32}
 @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-50px) scale(1.12)}66%{transform:translate(-50px,40px) scale(.92)}}
 .grid-bg{position:fixed;inset:0;z-index:0;opacity:.35;
   background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
@@ -229,19 +215,6 @@ html[data-theme="light"] .aurora span{opacity:.32}
 }
 .btn-solid:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(91,140,255,.5)}
 .btn-solid:active{transform:none}
-/* 主题切换开关 */
-.theme-btn{
-  width:46px;height:46px;flex-shrink:0;border-radius:var(--r-md);cursor:pointer;
-  background:var(--field);border:1px solid var(--line);color:var(--t2);
-  display:flex;align-items:center;justify-content:center;transition:.25s;position:relative;overflow:hidden;
-}
-.theme-btn:hover{color:var(--a1);border-color:var(--a1);background:rgba(91,140,255,.12)}
-.theme-btn svg{transition:transform .5s cubic-bezier(.4,1.6,.5,1),opacity .3s}
-.theme-btn:hover svg{transform:rotate(-25deg) scale(1.1)}
-.theme-btn .sun{display:none}
-html[data-theme="light"] .theme-btn .sun{display:block}
-html[data-theme="light"] .theme-btn .moon{display:none}
-
 /* 遍历范围条：紧贴路径行下方，规则默认生效且一眼可见 */
 .range{
   display:flex;align-items:center;gap:12px;margin:10px 22px 0;padding:9px 12px;
@@ -521,7 +494,6 @@ html[data-theme="light"] .theme-btn .moon{display:none}
   <button onclick="runDemo()">进度动画</button>
     <button id="btnScan" onclick="runScan()">模拟扫描</button>
     <button id="btnMin" onclick="minWin()">最小化</button>
-    <button id="btnTheme" onclick="toggleTheme()">切换浅色</button>
 </div>
 
 <div class="app" id="app">
@@ -556,10 +528,6 @@ html[data-theme="light"] .theme-btn .moon{display:none}
     <button class="btn-solid" onclick="demoPick()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
       选择文件夹
-    </button>
-      <button class="theme-btn" id="themeBtn" title="切换浅色主题" onclick="toggleTheme()">
-      <svg class="moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-      <svg class="sun" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
     </button>
   </div>
 
@@ -895,13 +863,6 @@ function runScan(){
 function stopScan(){if(scanTimer){clearInterval(scanTimer);scanTimer=null}}
 applyRuleTags();
 
-function toggleTheme(){
-  const h=document.documentElement;
-  const dark=h.dataset.theme==='dark';
-  h.dataset.theme=dark?'light':'dark';
-  document.getElementById('themeBtn').title=dark?'切换深色主题':'切换浅色主题';
-  document.getElementById('btnTheme').textContent=dark?'切换深色':'切换浅色';
-}
 /* 模拟生成进度 */
 const STAGE=['正在遍历源码目录…','正在读取：MainWindowViewModel.cs','正在读取：MethodExtensions.cs','正在排版分页…','正在生成 Word 文档…'];
 let timer=null;
