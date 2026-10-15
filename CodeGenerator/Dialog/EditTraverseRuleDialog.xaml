@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
     Title="遍历规则配置"
     Width="560"
@@ -15,14 +14,6 @@
     ShowInTaskbar="False"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
-
-    <shell:WindowChrome.WindowChrome>
-        <shell:WindowChrome
-            CaptionHeight="40"
-            GlassFrameThickness="0"
-            ResizeBorderThickness="6"
-            UseAeroCaptionButtons="False" />
-    </shell:WindowChrome.WindowChrome>
 
     <Window.Resources>
         <Style x:Key="CompactButtonStyle" TargetType="Button">
@@ -94,15 +85,70 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border
+        <ScrollViewer
             Grid.Row="0"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <ScrollViewer.Resources>
+                <Style TargetType="ScrollBar">
+                    <Setter Property="Width" Value="8" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Grid Background="Transparent">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton
+                                                Command="ScrollBar.PageUpCommand"
+                                                Focusable="False"
+                                                Opacity="0" />
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb Focusable="False">
+                                                <Thumb.Template>
+                                                    <ControlTemplate TargetType="Thumb">
+                                                        <Border
+                                                            x:Name="ThumbBorder"
+                                                            Margin="2"
+                                                            Background="{DynamicResource ScrollBarThumbBrush}"
+                                                            CornerRadius="6" />
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsDragging" Value="True">
+                                                                <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Thumb.Template>
+                                            </Thumb>
+                                        </Track.Thumb>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton
+                                                Command="ScrollBar.PageDownCommand"
+                                                Focusable="False"
+                                                Opacity="0" />
+                                        </Track.IncreaseRepeatButton>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ScrollViewer.Resources>
+        </ScrollViewer>
+
+        <Border
+            Grid.Row="1"
             Background="{DynamicResource TitleBarBackgroundBrush}"
             BorderBrush="{DynamicResource CardBorderBrush}"
-            BorderThickness="0,0,0,1">
+            BorderThickness="0,1,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -110,48 +156,18 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel
-                    Grid.Column="0"
-                    Margin="16"
-                    Orientation="Horizontal">
-                    <Border
-                        Margin="0,2"
-                        BorderBrush="{StaticResource AccentGradientBrush}"
-                        BorderThickness="3"
-                        CornerRadius="1.5" />
-
-                    <TextBlock
-                        Margin="10,0,0,0"
-                        FontSize="18"
-                        FontWeight="SemiBold"
-                        Foreground="{DynamicResource TextPrimaryBrush}"
-                        Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" />
-                </StackPanel>
-
-                <TextBlock
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Foreground="{DynamicResource TextSecondaryBrush}"
-                    IsHitTestVisible="False"
-                    Text="仅在命中白名单后缀的文件中收集" />
-
                 <Button
-                    Grid.Column="2"
-                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
-                    Command="{Binding DismissDialogCommand}"
-                    Foreground="{DynamicResource TextSecondaryBrush}"
-                    ToolTip="关闭">
+                    Grid.Column="0"
+                    Command="{Binding ResetRuleCommand}"
+                    Content="恢复默认">
                     <Button.Style>
                         <Style TargetType="Button">
-                            <Setter Property="FontSize" Value="16" />
-                            <Setter Property="FontFamily" Value="/CodeGenerator;component/IconFont/#iconfont" />
+                            <Setter Property="FontSize" Value="14" />
                             <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
-                            <Setter Property="Content" Value="&#xe668;" />
                             <Setter Property="HorizontalAlignment" Value="Right" />
                             <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Padding" Value="8" />
-                            <Setter Property="Margin" Value="12,0,16,0" />
+                            <Setter Property="Padding" Value="16,10" />
+                            <Setter Property="Margin" Value="16,0" />
                             <Setter Property="BorderThickness" Value="0" />
                             <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
                             <Setter Property="Template">
@@ -168,8 +184,8 @@
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ButtonContainerBorder" Property="Background" Value="Black" />
-                                                <Setter Property="Foreground" Value="White" />
+                                                <Setter TargetName="ButtonContainerBorder" Property="Background" Value="{StaticResource IconBadgeBlueBrush}" />
+                                                <Setter Property="Foreground" Value="{StaticResource AccentBlueBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsPressed" Value="True">
                                                 <Setter Property="Opacity" Value="0.75" />
@@ -181,144 +197,26 @@
                         </Style>
                     </Button.Style>
                 </Button>
+
+                <Button
+                    Grid.Column="1"
+                    Padding="24,0"
+                    HorizontalAlignment="Right"
+                    Command="{Binding DismissDialogCommand}"
+                    Content="取消"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Style="{StaticResource CompactButtonStyle}" />
+
+                <Button
+                    Grid.Column="2"
+                    Margin="16"
+                    Command="{Binding SaveRuleCommand}"
+                    Content="保存规则"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Style="{StaticResource PrimaryCompactButtonStyle}" />
             </Grid>
         </Border>
-
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <ScrollViewer
-                Grid.Row="0"
-                HorizontalScrollBarVisibility="Disabled"
-                VerticalScrollBarVisibility="Auto">
-                <ScrollViewer.Resources>
-                    <Style TargetType="ScrollBar">
-                        <Setter Property="Width" Value="8" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ScrollBar">
-                                    <Grid Background="Transparent">
-                                        <Track x:Name="PART_Track" IsDirectionReversed="True">
-                                            <Track.DecreaseRepeatButton>
-                                                <RepeatButton
-                                                    Command="ScrollBar.PageUpCommand"
-                                                    Focusable="False"
-                                                    Opacity="0" />
-                                            </Track.DecreaseRepeatButton>
-                                            <Track.Thumb>
-                                                <Thumb Focusable="False">
-                                                    <Thumb.Template>
-                                                        <ControlTemplate TargetType="Thumb">
-                                                            <Border
-                                                                x:Name="ThumbBorder"
-                                                                Margin="2"
-                                                                Background="{DynamicResource ScrollBarThumbBrush}"
-                                                                CornerRadius="6" />
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}" />
-                                                                </Trigger>
-                                                                <Trigger Property="IsDragging" Value="True">
-                                                                    <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}" />
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Thumb.Template>
-                                                </Thumb>
-                                            </Track.Thumb>
-                                            <Track.IncreaseRepeatButton>
-                                                <RepeatButton
-                                                    Command="ScrollBar.PageDownCommand"
-                                                    Focusable="False"
-                                                    Opacity="0" />
-                                            </Track.IncreaseRepeatButton>
-                                        </Track>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ScrollViewer.Resources>
-            </ScrollViewer>
-
-            <Border
-                Grid.Row="1"
-                Background="{DynamicResource TitleBarBackgroundBrush}"
-                BorderBrush="{DynamicResource CardBorderBrush}"
-                BorderThickness="0,1,0,0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Button
-                        Grid.Column="0"
-                        Command="{Binding ResetRuleCommand}"
-                        Content="恢复默认">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="FontSize" Value="14" />
-                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
-                                <Setter Property="HorizontalAlignment" Value="Right" />
-                                <Setter Property="VerticalAlignment" Value="Center" />
-                                <Setter Property="Padding" Value="16,10" />
-                                <Setter Property="Margin" Value="16,0" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border
-                                                x:Name="ButtonContainerBorder"
-                                                Padding="{TemplateBinding Padding}"
-                                                Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                CornerRadius="8">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="ButtonContainerBorder" Property="Background" Value="{StaticResource IconBadgeBlueBrush}" />
-                                                    <Setter Property="Foreground" Value="{StaticResource AccentBlueBrush}" />
-                                                </Trigger>
-                                                <Trigger Property="IsPressed" Value="True">
-                                                    <Setter Property="Opacity" Value="0.75" />
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <Button
-                        Grid.Column="1"
-                        Padding="24,0"
-                        HorizontalAlignment="Right"
-                        Command="{Binding DismissDialogCommand}"
-                        Content="取消"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Style="{StaticResource CompactButtonStyle}" />
-
-                    <Button
-                        Grid.Column="2"
-                        Margin="16"
-                        Command="{Binding SaveRuleCommand}"
-                        Content="保存规则"
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Style="{StaticResource PrimaryCompactButtonStyle}" />
-                </Grid>
-            </Border>
-        </Grid>
     </Grid>
 </Window>
