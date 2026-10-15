@@ -10,7 +10,7 @@
     Width="1366"
     Height="768"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
-    Background="{StaticResource WindowBrush}"
+    Background="#0E1322"
     ResizeMode="CanResize"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
@@ -25,6 +25,19 @@
     </shell:WindowChrome.WindowChrome>
 
     <Window.Resources>
+        <!--  主按钮 / Logo 渐变（135 度）  -->
+        <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0" Color="#5B8CFF" />
+            <GradientStop Offset="1" Color="#9B6BFF" />
+        </LinearGradientBrush>
+
+        <!--  进度条渐变：蓝 紫 青  -->
+        <LinearGradientBrush x:Key="ProgressGradientBrush" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Offset="0" Color="#5B8CFF" />
+            <GradientStop Offset="0.6" Color="#9B6BFF" />
+            <GradientStop Offset="1" Color="#3FD9B4" />
+        </LinearGradientBrush>
+
         <Style x:Key="CloseButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="14" />
             <Setter Property="Height" Value="14" />
@@ -36,7 +49,7 @@
                             <Border
                                 Width="14"
                                 Height="14"
-                                Background="{StaticResource TrafficRedBrush}"
+                                Background="#FF5F57"
                                 CornerRadius="7" />
                             <ContentPresenter />
                         </Grid>
@@ -56,7 +69,7 @@
                             <Border
                                 Width="14"
                                 Height="14"
-                                Background="{StaticResource TrafficYellowBrush}"
+                                Background="#FEBC2E"
                                 CornerRadius="7" />
                             <ContentPresenter />
                         </Grid>
@@ -76,7 +89,7 @@
                             <Border
                                 Width="14"
                                 Height="14"
-                                Background="{StaticResource TrafficGreenBrush}"
+                                Background="#28C840"
                                 CornerRadius="7" />
                             <ContentPresenter />
                         </Grid>
@@ -122,9 +135,9 @@
             <Setter Property="Height" Value="48" />
             <Setter Property="Padding" Value="14,0" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="{StaticResource BorderStrongBrush}" />
-            <Setter Property="BorderThickness" Value="2" />
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="BorderBrush" Value="#242836" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Foreground" Value="#9BA6C4" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -140,12 +153,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonContainerBorder" Property="Background" Value="{StaticResource AccentSoftBrush}" />
-                                <Setter TargetName="ButtonContainerBorder" Property="BorderBrush" Value="{StaticResource AccentBrush}" />
-                                <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+                                <Setter TargetName="ButtonContainerBorder" Property="BorderBrush" Value="#5B8CFF" />
+                                <Setter Property="Foreground" Value="#5B8CFF" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonContainerBorder" Property="Background" Value="{StaticResource AccentPressedSoftBrush}" />
                                 <Setter Property="Opacity" Value="0.75" />
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -163,17 +174,17 @@
 
         <Border
             Grid.Row="0"
-            Background="{StaticResource WindowBrush}"
-            BorderBrush="{StaticResource BorderBrush}"
+            Background="#131926"
+            BorderBrush="#242836"
             BorderThickness="0,0,0,1"
             MouseLeftButtonDown="OnTitleBarMouseLeftButtonDown">
             <Grid>
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    FontSize="13"
+                    FontSize="16"
                     FontWeight="SemiBold"
-                    Foreground="{StaticResource TextSecondaryBrush}"
+                    Foreground="#9BA6C4"
                     Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" />
 
                 <StackPanel
@@ -229,14 +240,14 @@
                         Grid.Column="0"
                         Height="48"
                         Background="Transparent"
-                        BorderThickness="2"
+                        BorderThickness="1.5"
                         CornerRadius="8">
                         <Border.Style>
                             <Style TargetType="Border">
-                                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                                <Setter Property="BorderBrush" Value="#242836" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsKeyboardFocused, ElementName=CodeFolderTextBox}" Value="True">
-                                        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                                        <Setter Property="BorderBrush" Value="#5B8CFF" />
                                         <Setter Property="Effect">
                                             <Setter.Value>
                                                 <DropShadowEffect
@@ -263,7 +274,7 @@
                                 VerticalAlignment="Center"
                                 FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                 FontSize="18"
-                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Foreground="#9BA6C4"
                                 Text="&#xe680;" />
 
                             <!--  输入框 + placeholder  -->
@@ -275,14 +286,14 @@
                                     Background="Transparent"
                                     BorderThickness="0"
                                     FontSize="14"
-                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                    Foreground="#9BA6C4"
                                     Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <TextBlock
                                     Margin="8,0,0,0"
                                     VerticalAlignment="Center"
                                     FontSize="14"
-                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                    Foreground="#9BA6C4"
                                     IsHitTestVisible="False"
                                     Text="选择源码文件夹，如：D:\Pengxh\Code\CodeGenerator\CodeGenerator">
                                     <TextBlock.Style>
@@ -329,11 +340,161 @@
                         FontSize="20"
                         Style="{StaticResource CompactButtonStyle}" />
                 </Grid>
+
+                <UniformGrid
+                    Grid.Row="1"
+                    Margin="16,0"
+                    Columns="3"
+                    Rows="1">
+                    <Border
+                        BorderBrush="#242836"
+                        BorderThickness="1.5"
+                        CornerRadius="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                Grid.Column="0"
+                                Margin="16"
+                                Background="#232E4C"
+                                CornerRadius="12">
+                                <TextBlock
+                                    Margin="12"
+                                    VerticalAlignment="Center"
+                                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                    FontSize="20"
+                                    Foreground="#5B8CFF"
+                                    Text="&#xe652;" />
+                            </Border>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
+                                <TextBlock Foreground="#9BA6C4" Text="已选源码文件" />
+
+                                <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontSize="24"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="{Binding SelectedFiles.Count, FallbackValue=0}" />
+
+                                    <TextBlock
+                                        Margin="4,0,0,4"
+                                        VerticalAlignment="Bottom"
+                                        Foreground="#9BA6C4"
+                                        Text="个" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border
+                        Margin="16,0"
+                        BorderBrush="#242836"
+                        BorderThickness="1.5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                Grid.Column="0"
+                                Margin="16"
+                                Background="#203A40"
+                                CornerRadius="12">
+                                <TextBlock
+                                    Margin="12"
+                                    VerticalAlignment="Center"
+                                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                    FontSize="20"
+                                    Foreground="#3FD9B4"
+                                    Text="&#xe71a;" />
+                            </Border>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
+                                <TextBlock Foreground="#9BA6C4" Text="有效代码" />
+
+                                <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontSize="24"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="{Binding EffectiveCodeLines.Length, FallbackValue=0}" />
+
+                                    <TextBlock
+                                        Margin="4,0,0,4"
+                                        VerticalAlignment="Bottom"
+                                        Foreground="#9BA6C4"
+                                        Text="行" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border BorderBrush="#242836" BorderThickness="1.5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                Grid.Column="0"
+                                Margin="16"
+                                Background="#26244E"
+                                CornerRadius="12">
+                                <TextBlock
+                                    Margin="12"
+                                    VerticalAlignment="Center"
+                                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                    FontSize="20"
+                                    Foreground="#9B6BFF"
+                                    Text="&#xe6f0;" />
+                            </Border>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
+                                <TextBlock Foreground="#9BA6C4" Text="预计生成" />
+
+                                <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                                    <TextBlock
+                                        FontSize="24"
+                                        FontWeight="SemiBold"
+                                        Foreground="White"
+                                        Text="{Binding ExpectedCodePages.Length, FallbackValue=0}" />
+
+                                    <TextBlock
+                                        Margin="4,0,0,4"
+                                        VerticalAlignment="Bottom"
+                                        Foreground="#9BA6C4"
+                                        Text="页 · " />
+
+                                    <TextBlock
+                                        Margin="4,0,0,4"
+                                        VerticalAlignment="Bottom"
+                                        Foreground="#9BA6C4"
+                                        Text="{Binding DocFontSize, StringFormat={}{0}号字, FallbackValue=8号字}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </UniformGrid>
             </Grid>
 
             <Border
                 Grid.Row="1"
-                BorderBrush="{StaticResource BorderStrongBrush}"
+                BorderBrush="#242836"
                 BorderThickness="0,2,0,0">
                 <Grid Margin="16,24">
                     <Grid.ColumnDefinitions>
@@ -356,14 +517,14 @@
 
                             <TextBlock
                                 Grid.Column="0"
-                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Foreground="#9BA6C4"
                                 Text="{Binding CurrentFile, StringFormat={}正在读取：{0}, FallbackValue=正在读取：}" />
 
                             <TextBlock
                                 Grid.Column="1"
                                 FontSize="14"
                                 FontWeight="SemiBold"
-                                Foreground="{StaticResource AccentTealBrush}"
+                                Foreground="#3FD9B4"
                                 Text="{Binding CurrentProgress, FallbackValue=0%}" />
                         </Grid>
 
