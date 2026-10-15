@@ -136,7 +136,7 @@
             <Setter Property="Padding" Value="14,0" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
-            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
@@ -174,7 +174,7 @@
             <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
-            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
@@ -271,7 +271,7 @@
                         Grid.Column="0"
                         Height="48"
                         Background="Transparent"
-                        BorderThickness="1.5"
+                        BorderThickness="1"
                         CornerRadius="8">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -401,7 +401,7 @@
                             Rows="1">
                             <Border
                                 BorderBrush="{DynamicResource CardBorderBrush}"
-                                BorderThickness="1.5"
+                                BorderThickness="1"
                                 CornerRadius="12">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -449,7 +449,7 @@
                             <Border
                                 Margin="16,0"
                                 BorderBrush="{DynamicResource CardBorderBrush}"
-                                BorderThickness="1.5"
+                                BorderThickness="1"
                                 CornerRadius="12">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -496,7 +496,7 @@
 
                             <Border
                                 BorderBrush="{DynamicResource CardBorderBrush}"
-                                BorderThickness="1.5"
+                                BorderThickness="1"
                                 CornerRadius="12">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -552,7 +552,7 @@
                             Grid.Row="1"
                             Margin="16,0,0,16"
                             BorderBrush="{DynamicResource CardBorderBrush}"
-                            BorderThickness="1.5"
+                            BorderThickness="1"
                             CornerRadius="12">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -598,7 +598,7 @@
                                 <Border
                                     Grid.Row="1"
                                     BorderBrush="{DynamicResource CardBorderBrush}"
-                                    BorderThickness="0,0,0,1.5" />
+                                    BorderThickness="0,0,0,1" />
 
                                 <ListBox
                                     Grid.Row="2"
@@ -615,7 +615,7 @@
                         Grid.Column="1"
                         Margin="16,0,16,16"
                         BorderBrush="{DynamicResource CardBorderBrush}"
-                        BorderThickness="1.5"
+                        BorderThickness="1"
                         CornerRadius="12">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <ScrollViewer.Resources>
@@ -866,7 +866,7 @@
                                                         <Setter Property="Background" Value="Transparent" />
                                                         <Setter Property="FontFamily" Value="Consolas" />
                                                         <Setter Property="FontSize" Value="14" />
-                                                        <Setter Property="BorderThickness" Value="1.5" />
+                                                        <Setter Property="BorderThickness" Value="1" />
                                                         <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
                                                         <Setter Property="Cursor" Value="Hand" />
                                                         <Setter Property="Template">
@@ -907,7 +907,7 @@
             <Border
                 Grid.Row="1"
                 BorderBrush="{DynamicResource CardBorderBrush}"
-                BorderThickness="0,2,0,0">
+                BorderThickness="0,1,0,0">
                 <Grid Margin="16,24">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -945,7 +945,7 @@
                             VerticalAlignment="Center"
                             Background="Transparent"
                             BorderBrush="{DynamicResource CardBorderBrush}"
-                            BorderThickness="1.5"
+                            BorderThickness="1"
                             Foreground="{StaticResource ProgressGradientBrush}"
                             Value="{Binding CurrentProgress}">
                             <ProgressBar.Style>
