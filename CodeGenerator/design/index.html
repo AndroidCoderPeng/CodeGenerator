@@ -307,6 +307,71 @@ html[data-theme="light"] .theme-btn .moon{display:none}
 }
 .panel h3{font-size:14px;font-weight:650;display:flex;align-items:center;gap:9px;margin-bottom:16px}
 .panel h3::before{content:"";width:4px;height:15px;border-radius:3px;background:var(--grad)}
+.panel h3 .gear{
+  margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
+  padding:5px 10px 5px 8px;border-radius:99px;cursor:pointer;transition:.2s;
+  background:var(--field);border:1px solid var(--line);color:var(--t2);font-family:inherit;
+}
+.panel h3 .gear:hover{color:var(--a1);border-color:var(--a1);background:rgba(91,140,255,.12)}
+.panel h3 .gear .n{
+  font-size:10.5px;color:var(--a1);background:rgba(91,140,255,.18);
+  padding:1px 7px;border-radius:99px;font-weight:700;
+}
+.panel h3 .gear svg{transition:transform .6s cubic-bezier(.4,1.5,.5,1)}
+.panel h3 .gear:hover svg{transform:rotate(60deg)}
+
+/* ===================== 模态弹窗 ===================== */
+.modal-mask{
+  position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);
+  backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:24px;
+  animation:fadeIn .2s ease;
+}
+.modal-mask.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  width:560px;max-height:calc(100vh - 64px);background:var(--bg-1);
+  border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;overflow:hidden;backdrop-filter:var(--glass-blur);
+  animation:slideUp .25s cubic-bezier(.34,1.3,.5,1);
+}
+@keyframes slideUp{from{transform:translateY(20px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.modal-head{
+  display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line);
+  background:linear-gradient(90deg,rgba(91,140,255,.05),transparent);
+}
+.modal-head h2{font-size:15px;font-weight:700;display:flex;align-items:center;gap:9px}
+.modal-head h2::before{content:"";width:4px;height:16px;border-radius:3px;background:var(--grad)}
+.modal-head .sub{font-size:11.5px;color:var(--t3);margin-left:auto}
+.modal-head .close{
+  width:28px;height:28px;flex-shrink:0;border:none;background:transparent;color:var(--t3);
+  border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;
+}
+.modal-head .close:hover{background:var(--field);color:var(--t1)}
+.modal-body{padding:18px 20px;overflow-y:auto;flex:1}
+.modal-foot{
+  display:flex;align-items:center;gap:10px;padding:14px 20px;border-top:1px solid var(--line);
+  background:var(--panel);
+}
+.modal-foot .reset{margin-right:auto;background:none;border:none;color:var(--t2);font-size:12.5px;cursor:pointer;padding:6px 10px;border-radius:8px;transition:.18s;font-family:inherit}
+.modal-foot .reset:hover{color:var(--a1);background:rgba(91,140,255,.12)}
+.btn-cancel{height:36px;padding:0 16px;border:1px solid var(--line);border-radius:9px;background:var(--field);color:var(--t2);font-size:12.5px;font-weight:600;cursor:pointer;transition:.18s;font-family:inherit}
+.btn-cancel:hover{color:var(--t1);border-color:var(--line-2)}
+.btn-ok{height:36px;padding:0 20px;border:none;border-radius:9px;background:var(--grad);color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;transition:.18s;box-shadow:0 6px 16px rgba(91,140,255,.32);font-family:inherit}
+.btn-ok:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(91,140,255,.45)}
+
+.rule-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.rule-row .fld{margin-bottom:0}
+.toggle{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-radius:10px;background:var(--field);border:1px solid var(--line);font-size:12.5px;color:var(--t2);margin-bottom:9px;cursor:pointer;transition:.2s}
+.toggle:hover{border-color:var(--line-2)}
+.toggle.on{color:var(--t1);border-color:rgba(91,140,255,.45);background:rgba(91,140,255,.08)}
+.toggle .switch-pill{
+  width:34px;height:20px;border-radius:99px;background:var(--line-2);
+  position:relative;transition:.22s;flex-shrink:0;
+}
+.toggle .switch-pill::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:.22s}
+.toggle.on .switch-pill{background:var(--grad)}
+.toggle.on .switch-pill::after{left:16px}
 .sec{font-size:11px;font-weight:600;color:var(--t3);letter-spacing:1px;margin:18px 0 10px;text-transform:uppercase}
 .sec:first-of-type{margin-top:0}
 .fld{margin-bottom:13px}
@@ -496,7 +561,14 @@ html[data-theme="light"] .theme-btn .moon{display:none}
     </section>
 
     <aside class="panel">
-      <h3>文档设置</h3>
+      <h3>
+        文档设置
+        <button class="gear" onclick="openRule()" title="配置遍历规则">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 9 19.3a1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 4.7 9a1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.3.6.9 1 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          遍历规则
+          <span class="n" id="ruleCount">15</span>
+        </button>
+      </h3>
       <div class="sec">必填信息</div>
       <div class="fld">
         <label><span class="req">*</span>页眉</label>
@@ -537,6 +609,75 @@ html[data-theme="light"] .theme-btn .moon{display:none}
     <button class="icon-btn" title="修改文档保存路径">
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
     </button>
+  </div>
+</div>
+
+<!-- ============ 遍历规则配置弹窗 ============ -->
+<div class="modal-mask" id="ruleModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>遍历规则配置</h2>
+      <span class="sub">仅在命中白名单后缀的文件中收集</span>
+      <button class="close" onclick="closeRule()" title="关闭">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- 目录黑名单 -->
+      <div class="sec">目录黑名单</div>
+      <div class="fld">
+        <div class="add">
+          <input class="inp" id="dirInput" placeholder="输入目录名，如：node_modules">
+          <button onclick="addDir()">+</button>
+        </div>
+      </div>
+      <div class="chips" id="dirChips" style="margin-bottom:16px"></div>
+
+      <!-- 文件模式黑名单 -->
+      <div class="sec">文件模式黑名单</div>
+      <div class="fld">
+        <div class="add">
+          <input class="inp" id="patInput" placeholder="输入文件后缀，如：.min.js">
+          <button onclick="addPat()">+</button>
+        </div>
+      </div>
+      <div class="chips" id="patChips" style="margin-bottom:16px"></div>
+
+      <!-- 通用开关 -->
+      <div class="sec">通用选项</div>
+      <div class="toggle on" id="tgHidden" onclick="this.classList.toggle('on')">
+        <span>跳过隐藏目录 / 文件</span><span class="switch-pill"></span>
+      </div>
+      <div class="toggle on" id="tgLink" onclick="this.classList.toggle('on')">
+        <span>跳过符号链接 / 联接点（防递归死循环）</span><span class="switch-pill"></span>
+      </div>
+
+      <!-- 阈值参数 -->
+      <div class="rule-row" style="margin-top:14px">
+        <div class="fld">
+          <label>单文件上限（MB，超出跳过）</label>
+          <input class="inp" id="rgSize" value="2">
+        </div>
+        <div class="fld">
+          <label>最大遍历深度（层）</label>
+          <input class="inp" id="rgDepth" value="32">
+        </div>
+      </div>
+      <div class="fld">
+        <label>文件数上限（达到即停止遍历）</label>
+        <input class="inp" id="rgCount" value="50000">
+      </div>
+      <div style="font-size:11.5px;color:var(--t3);line-height:1.7;margin-top:4px">
+        命中目录黑名单的整棵子树不进入 · 后缀过滤先于读取文件信息 · 结果按全路径稳定排序以保证前后 30 页可复现
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <button class="reset" onclick="resetRule()">恢复默认</button>
+      <button class="btn-cancel" onclick="closeRule()">取消</button>
+      <button class="btn-ok" onclick="saveRule()">保存规则</button>
+    </div>
   </div>
 </div>
 
@@ -601,6 +742,59 @@ function setEmpty(v){
   document.getElementById('btnEmp').classList.toggle('on',v);
   document.getElementById('btnHas').classList.toggle('on',!v);
 }
+/* ---------- 遍历规则 ---------- */
+const DEF_DIRS=['.git','.svn','.hg','node_modules','packages','vendor','bower_components',
+  'bin','obj','Debug','Release','x64','x86','build','dist','out','target','.next',
+  '.vs','.vscode','.idea','.gradle','.mvn','DerivedData','Pods','Carthage',
+  '__pycache__','.pytest_cache','.mypy_cache','coverage','htmlcov','logs','temp','tmp'];
+const DEF_PATS=['.min.js','.map','.designer.cs','.g.cs','.g.i.cs','.AssemblyInfo.cs'];
+let ruleDirs=[],rulePats=[],ruleHidden=true,ruleLink=true;
+
+function chipList(arr,fn){
+  return arr.map((v,i)=>`<span class="chip"><b>${v}</b><i onclick="${fn}(${i})">×</i></span>`).join('');
+}
+function renderDirs(){document.getElementById('dirChips').innerHTML=chipList(ruleDirs,'delDir')}
+function renderPats(){document.getElementById('patChips').innerHTML=chipList(rulePats,'delPat')}
+function addDir(){const el=document.getElementById('dirInput');
+  const v=el.value.trim();if(v&&!ruleDirs.includes(v)){ruleDirs.push(v);renderDirs()}el.value='';}
+function delDir(i){ruleDirs.splice(i,1);renderDirs()}
+function addPat(){const el=document.getElementById('patInput');
+  const v=el.value.trim().replace(/^[*\s]+/,'');if(v&&!rulePats.includes(v)){rulePats.push(v);renderPats()}el.value='';}
+function delPat(i){rulePats.splice(i,1);renderPats()}
+function countRule(){document.getElementById('ruleCount').textContent=ruleDirs.length+rulePats.length}
+function openRule(){
+  document.getElementById('ruleModal').classList.add('show');
+  document.getElementById('tgHidden').classList.toggle('on',ruleHidden);
+  document.getElementById('tgLink').classList.toggle('on',ruleLink);
+  renderDirs();renderPats();
+}
+function closeRule(){document.getElementById('ruleModal').classList.remove('show')}
+function resetRule(){
+  ruleDirs=DEF_DIRS.slice();rulePats=DEF_PATS.slice();
+  ruleHidden=true;ruleLink=true;
+  document.getElementById('rgSize').value=2;
+  document.getElementById('rgDepth').value=32;
+  document.getElementById('rgCount').value=50000;
+  document.getElementById('tgHidden').classList.add('on');
+  document.getElementById('tgLink').classList.add('on');
+  renderDirs();renderPats();countRule();
+}
+function saveRule(){
+  ruleHidden=document.getElementById('tgHidden').classList.contains('on');
+  ruleLink=document.getElementById('tgLink').classList.contains('on');
+  const size=document.getElementById('rgSize').value.trim();
+  const depth=document.getElementById('rgDepth').value.trim();
+  const cnt=document.getElementById('rgCount').value.trim();
+  if(!/^\d+$/.test(size)||!Number.isInteger(+depth)||!Number.isInteger(+cnt)){
+    alert('阈值参数必须为数字');return;
+  }
+  countRule();closeRule();
+}
+document.getElementById('ruleModal').addEventListener('click',function(e){
+  if(e.target===this)closeRule();
+});
+ruleDirs=DEF_DIRS.slice();rulePats=DEF_PATS.slice();renderDirs();renderPats();countRule();
+
 function toggleTheme(){
   const h=document.documentElement;
   const dark=h.dataset.theme==='dark';
