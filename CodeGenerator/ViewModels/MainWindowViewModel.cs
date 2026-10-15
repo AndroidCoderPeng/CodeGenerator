@@ -59,8 +59,12 @@ namespace CodeGenerator.ViewModels
             "*.m"
         ];
 
-        public MainWindowViewModel()
+        private readonly IDialogService _dialogService;
+        
+        public MainWindowViewModel(IDialogService dialogService)
         {
+            _dialogService = dialogService;
+            
             _defaultFileSuffixTypes = _codeTypes.ToObservableCollection();
         }
 
@@ -104,6 +108,12 @@ namespace CodeGenerator.ViewModels
                 Source = new Uri(IsDarkTheme ? "Resources/DarkStyle.xaml" : "Resources/LightStyle.xaml",
                     UriKind.Relative)
             });
+        }
+
+        [RelayCommand]
+        private void EditTraverseRule()
+        {
+            _dialogService.ShowEditTraverseRuleDialog();
         }
 
         [RelayCommand]

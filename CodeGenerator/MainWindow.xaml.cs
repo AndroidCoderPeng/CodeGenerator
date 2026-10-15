@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Input;
+using CodeGenerator.Utils;
 using CodeGenerator.ViewModels;
 
 namespace CodeGenerator
@@ -14,7 +15,7 @@ namespace CodeGenerator
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
+            DataContext = new MainWindowViewModel(new DialogService());
         }
 
         /// <summary>
