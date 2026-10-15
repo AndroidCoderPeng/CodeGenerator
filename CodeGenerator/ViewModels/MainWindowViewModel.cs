@@ -26,10 +26,10 @@ namespace CodeGenerator.ViewModels
         [ObservableProperty] private ObservableCollection<FileInfo> _selectedFiles = [];
         [ObservableProperty] private ObservableCollection<string> _effectiveCodeLines = [];
         [ObservableProperty] private int _expectedCodePages;
-        [ObservableProperty] private int _docFontSize;
+        [ObservableProperty] private int _docFontSize=8;
         [ObservableProperty] private string _documentHeader;
-        [ObservableProperty] private string _softwareVersion;
-        [ObservableProperty] private string _documentPage;
+        [ObservableProperty] private string _softwareVersion="V1.0.0";
+        [ObservableProperty] private string _documentPage="60";
         [ObservableProperty] private ObservableCollection<string> _fileSuffixTypes = [];
         [ObservableProperty] private ObservableCollection<string> _defaultFileSuffixTypes;
         [ObservableProperty] private string _currentFile;
