@@ -1,1 +1,36 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" /> 
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        亮色主题资源。Key 与 DarkStyle.xaml 一一对应，
+        运行时替换 App.xaml 合并字典中的 DarkStyle/LightStyle 即可切换主题。
+        颜色来源：design/index.html 的 html[data-theme="light"] 变量及等效换算
+        （半透明色已按 #F7F9FC 底色折算为不透明 HEX）。
+    -->
+
+    <!--  背景  -->
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F7F9FC" />
+    <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="FieldBackgroundBrush" Color="#FFFFFF" />
+
+    <!--  边框  -->
+    <SolidColorBrush x:Key="CardBorderBrush" Color="#E3E5EC" />
+    <SolidColorBrush x:Key="CardBorderHighlightBrush" Color="#D7DBE3" />
+
+    <!--  文字  -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#111A2E" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#5A6480" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#98A1B8" />
+
+    <!--  指标卡 / 徽标底色  -->
+    <SolidColorBrush x:Key="IconBadgeBlueBrush" Color="#E6EEFF" />
+    <SolidColorBrush x:Key="IconBadgeTealBrush" Color="#E2F9F4" />
+    <SolidColorBrush x:Key="IconBadgePurpleBrush" Color="#F0E9FF" />
+    <SolidColorBrush x:Key="PillBackgroundBrush" Color="#E6EEFF" />
+
+    <!--  滚动条  -->
+    <SolidColorBrush x:Key="ScrollBarThumbBrush" Color="#D7DBE3" />
+    <SolidColorBrush x:Key="ScrollBarThumbHoverBrush" Color="#98A1B8" />
+
+    <!--  焦点光晕  -->
+    <SolidColorBrush x:Key="FocusGlowBrush" Color="#5B8CFF" />
+</ResourceDictionary>

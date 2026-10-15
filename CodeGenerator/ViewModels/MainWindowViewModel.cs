@@ -22,7 +22,7 @@ namespace CodeGenerator.ViewModels
         #region VM
 
         [ObservableProperty] private string _codeFolder;
-        [ObservableProperty] private bool _isDarkTheme;
+        [ObservableProperty] private bool _isDarkTheme = true;
         [ObservableProperty] private ObservableCollection<FileInfo> _selectedFiles = [];
         [ObservableProperty] private ObservableCollection<string> _effectiveCodeLines = [];
         [ObservableProperty] private int _expectedCodePages;
@@ -89,15 +89,14 @@ namespace CodeGenerator.ViewModels
             IsDarkTheme = !IsDarkTheme;
 
             var resources = Application.Current.Resources.MergedDictionaries;
-            var themeDictionary = resources.FirstOrDefault(dictionary =>
+            var theme = resources.FirstOrDefault(dictionary =>
                 dictionary.Source?.OriginalString.EndsWith("LightStyle.xaml", StringComparison.OrdinalIgnoreCase) ==
                 true ||
                 dictionary.Source?.OriginalString.EndsWith("DarkStyle.xaml", StringComparison.OrdinalIgnoreCase) ==
                 true);
-
-            if (themeDictionary != null)
+            if (theme != null)
             {
-                resources.Remove(themeDictionary);
+                resources.Remove(theme);
             }
 
             resources.Add(new ResourceDictionary
@@ -232,36 +231,6 @@ namespace CodeGenerator.ViewModels
         [RelayCommand]
         private void SaveDocument()
         {
-        }
-
-        /// <summary>
-        /// 选择文件夹
-        /// </summary>
-        private void SelectFolder()
-        {
-            // var dialog = new FolderBrowserDialog { ShowNewFolderButton = false };
-            // if (dialog.ShowDialog() != DialogResult.OK)
-            // {
-            //     return;
-            // }
-            //
-            // FolderPath = dialog.SelectedPath;
-            //
-            // // 清空旧数据
-            // FileCollection.Clear();
-            // SuffixCollection.Clear();
-            //
-            // Task.Run(async () =>
-            // {
-            //     FileCollection = await GetFilesAsync();
-            //     Application.Current.Dispatcher.Invoke(() =>
-            //     {
-            //         if (!_fileCollection.Any())
-            //         {
-            //             MessageBox.Show("文件夹为空", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-            //         }
-            //     });
-            // });
         }
 
         /// <summary>

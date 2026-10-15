@@ -1,1 +1,41 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" />
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        主题无关的画刷资源（暗色/亮色主题下取值相同）。
+        主题相关的资源请见 DarkStyle.xaml / LightStyle.xaml，二者使用相同的 Key，
+        通过替换 App.xaml 中合并的资源字典即可完成主题切换。
+    -->
+
+    <!--  强调色  -->
+    <SolidColorBrush x:Key="AccentBlueBrush" Color="#5B8CFF" />
+    <SolidColorBrush x:Key="AccentPurpleBrush" Color="#9B6BFF" />
+    <SolidColorBrush x:Key="AccentTealBrush" Color="#3FD9B4" />
+
+    <!--  主按钮 / Logo 渐变（135 度）：蓝 → 紫  -->
+    <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0" Color="#5B8CFF" />
+        <GradientStop Offset="1" Color="#9B6BFF" />
+    </LinearGradientBrush>
+
+    <!--  进度条渐变（横向）：蓝 → 紫 → 青  -->
+    <LinearGradientBrush x:Key="ProgressGradientBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Offset="0" Color="#5B8CFF" />
+        <GradientStop Offset="0.6" Color="#9B6BFF" />
+        <GradientStop Offset="1" Color="#3FD9B4" />
+    </LinearGradientBrush>
+
+    <!--  macOS 交通灯  -->
+    <SolidColorBrush x:Key="TrafficRedBrush" Color="#FF5F57" />
+    <SolidColorBrush x:Key="TrafficYellowBrush" Color="#FEBC2E" />
+    <SolidColorBrush x:Key="TrafficGreenBrush" Color="#28C840" />
+    <!--  交通灯符号（macOS 为深色符号）  -->
+    <SolidColorBrush x:Key="TrafficGlyphRedBrush" Color="#5C0A00" />
+    <SolidColorBrush x:Key="TrafficGlyphYellowBrush" Color="#6B4A00" />
+    <SolidColorBrush x:Key="TrafficGlyphGreenBrush" Color="#0A4200" />
+
+    <!--  必填标记 / 警告  -->
+    <SolidColorBrush x:Key="DangerBrush" Color="#FF5F57" />
+
+    <!--  按钮文字（渐变底上恒为白色）  -->
+    <SolidColorBrush x:Key="OnAccentBrush" Color="#FFFFFF" />
+</ResourceDictionary>
