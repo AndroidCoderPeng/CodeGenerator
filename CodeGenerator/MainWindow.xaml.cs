@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using CodeGenerator.DataService.Impl;
+using CodeGenerator.DataService;
 using CodeGenerator.ViewModels;
 
 namespace CodeGenerator

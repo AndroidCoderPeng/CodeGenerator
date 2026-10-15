@@ -2,7 +2,7 @@
 using System.Linq;
 using CodeGenerator.Models;
 
-namespace CodeGenerator.DataService.Impl
+namespace CodeGenerator.DataService
 {
     public class AppDataServiceImpl : IAppDataService
     {
