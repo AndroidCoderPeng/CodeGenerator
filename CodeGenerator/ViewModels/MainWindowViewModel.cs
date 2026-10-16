@@ -75,9 +75,29 @@ namespace CodeGenerator.ViewModels
             BlackListConfig = SettingsStore.Load<BlackListConfig>(ConfigSections.FileName, ConfigSections.BlackList);
             DefaultFileSuffixTypes = _codeTypes.ToObservableCollection();
 
+            var suffixConfig =
+                SettingsStore.Load<UserDefinedFileSuffixConfig>(ConfigSections.FileName,
+                    ConfigSections.UserDefinedFileSuffix);
+
+            UserDefinedFileSuffixTypes = suffixConfig.Suffixes
+                .Where(suffix => !string.IsNullOrWhiteSpace(suffix))
+                .Select(NormalizeSuffix)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList()
+                .ToObservableCollection();
+
             // 监听默认文件后缀和用户自定义文件后缀的变化，更新白名单后缀集合
             DefaultFileSuffixTypes.CollectionChanged += (_, _) => OnPropertyChanged(nameof(WhiteListSuffix));
-            UserDefinedFileSuffixTypes.CollectionChanged += (_, _) => OnPropertyChanged(nameof(WhiteListSuffix));
+            UserDefinedFileSuffixTypes.CollectionChanged += (_, _) =>
+            {
+                OnPropertyChanged(nameof(WhiteListSuffix));
+                SettingsStore.Save(ConfigSections.FileName,
+                    ConfigSections.UserDefinedFileSuffix,
+                    new UserDefinedFileSuffixConfig
+                    {
+                        Suffixes = [.. UserDefinedFileSuffixTypes]
+                    });
+            };
         }
 
         [RelayCommand]

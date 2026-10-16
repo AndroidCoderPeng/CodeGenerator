@@ -7,6 +7,7 @@ namespace CodeGenerator.Cache
         public const string FileName = "app-config.json";
         public const string SourceFolder = "SourceFolder";
         public const string BlackList = "BlackList";
+        public const string UserDefinedFileSuffix = "UserDefinedFileSuffix";
     }
 
     public class SourceFolderConfig
@@ -69,5 +70,10 @@ namespace CodeGenerator.Cache
         public int FileSizeLimit { get; set; } = 2;
         public int MaxTraverseDepth { get; set; } = 32;
         public int MaxFileCount { get; set; } = 5000;
+    }
+    
+    public class UserDefinedFileSuffixConfig
+    {
+        public List<string> Suffixes { get; set; } = [];
     }
 }
