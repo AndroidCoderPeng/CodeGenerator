@@ -532,8 +532,7 @@ namespace CodeGenerator.ViewModels
                         _effectiveCodeLines,
                         DocumentHeader,
                         SoftwareVersion,
-                        fontSize,
-                        linesPerPage);
+                        fontSize);
                 });
 
                 CurrentProgress = 100;
@@ -568,9 +567,7 @@ namespace CodeGenerator.ViewModels
                 try
                 {
                     using var reader = new StreamReader(filePath);
-
-                    string line;
-                    while ((line = reader.ReadLine()) is not null)
+                    while (reader.ReadLine() is { } line)
                     {
                         if (!string.IsNullOrWhiteSpace(line))
                         {
@@ -617,8 +614,7 @@ namespace CodeGenerator.ViewModels
             IReadOnlyList<string> codeLines,
             string documentHeader,
             string softwareVersion,
-            int fontSize,
-            int linesPerPage)
+            int fontSize)
         {
             using var document = WordprocessingDocument.Create(filePath, WordprocessingDocumentType.Document);
 
@@ -635,9 +631,9 @@ namespace CodeGenerator.ViewModels
 
             var body = mainPart.Document.Body!;
 
-            for (var index = 0; index < codeLines.Count; index++)
+            foreach (var line in codeLines)
             {
-                body.Append(CreateCodeParagraph(codeLines[index], fontSize));
+                body.Append(CreateCodeParagraph(line, fontSize));
             }
 
             var headerReference = new HeaderReference
@@ -780,7 +776,7 @@ namespace CodeGenerator.ViewModels
             if (_toastTimer == null)
             {
                 _toastTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-                _toastTimer.Tick += (s, e) =>
+                _toastTimer.Tick += (_, _) =>
                 {
                     _toastTimer.Stop();
                     IsToastVisible = false;
