@@ -2,11 +2,12 @@
     x:Class="CodeGenerator.Dialog.EditTraverseRuleDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cvt="clr-namespace:CodeGenerator.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
     Title="遍历规则配置"
-    Width="560"
+    Width="800"
     Height="700"
     d:DataContext="{d:DesignInstance Type=vm:EditTraverseRuleDialogViewModel}"
     Background="{DynamicResource WindowBackgroundBrush}"
@@ -62,6 +63,42 @@
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MiniButtonStyle" TargetType="Button">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Content" Value="&#xe668;" />
+            <Setter Property="FontFamily" Value="/CodeGenerator;component/IconFont/#iconfont" />
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+            <Setter Property="Background" Value="{StaticResource IconBadgeRedBrush}" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="MiniButtonBorder"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10"
+                            TextElement.Foreground="{TemplateBinding Foreground}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="MiniButtonBorder" Property="Background" Value="{StaticResource DangerBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.45" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -207,6 +244,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <cvt:CommandParameterConverter x:Key="CommandParameterConverterKey" />
     </Window.Resources>
 
     <Grid>
@@ -285,7 +324,7 @@
                     <TextBox
                         Grid.Column="0"
                         Style="{StaticResource FieldTextBoxStyle}"
-                        Tag="{Binding BlackListFolderPlaceholder, FallbackValue=输入目录名，如：node_modules}"
+                        Tag="输入目录名，如：node_modules"
                         Text="{Binding BlackListFolder}" />
 
                     <Button
@@ -326,6 +365,36 @@
                             </Setter>
                         </Style>
                     </ListBox.ItemContainerStyle>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Background="{StaticResource IconBadgeBlueBrush}"
+                                BorderBrush="{StaticResource FocusGlowBrush}"
+                                BorderThickness="1"
+                                CornerRadius="16">
+                                <StackPanel Margin="12,6" Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Consolas"
+                                        FontSize="14"
+                                        Text="{Binding}" />
+
+                                    <Button
+                                        Margin="10,0,0,0"
+                                        Command="{Binding DataContext.DeleteRuleCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Style="{StaticResource MiniButtonStyle}">
+                                        <Button.CommandParameter>
+                                            <MultiBinding Converter="{StaticResource CommandParameterConverterKey}">
+                                                <Binding Source="Folder" />
+                                                <Binding />
+                                            </MultiBinding>
+                                        </Button.CommandParameter>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
 
                 <TextBlock
@@ -343,7 +412,7 @@
                     <TextBox
                         Grid.Column="0"
                         Style="{StaticResource FieldTextBoxStyle}"
-                        Tag="{Binding BlackListFilePlaceholder, FallbackValue=输入文件后缀，如：.min.js}"
+                        Tag="输入文件后缀，如：.min.js"
                         Text="{Binding BlackListFile}" />
 
                     <Button
@@ -384,6 +453,36 @@
                             </Setter>
                         </Style>
                     </ListBox.ItemContainerStyle>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border
+                                Background="{StaticResource IconBadgeBlueBrush}"
+                                BorderBrush="{StaticResource FocusGlowBrush}"
+                                BorderThickness="1"
+                                CornerRadius="16">
+                                <StackPanel Margin="12,6" Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Consolas"
+                                        FontSize="14"
+                                        Text="{Binding}" />
+
+                                    <Button
+                                        Margin="10,0,0,0"
+                                        Command="{Binding DataContext.DeleteRuleCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        Style="{StaticResource MiniButtonStyle}">
+                                        <Button.CommandParameter>
+                                            <MultiBinding Converter="{StaticResource CommandParameterConverterKey}">
+                                                <Binding Source="File" />
+                                                <Binding />
+                                            </MultiBinding>
+                                        </Button.CommandParameter>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
 
                 <TextBlock

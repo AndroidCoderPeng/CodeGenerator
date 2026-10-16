@@ -18,6 +18,7 @@
     <SolidColorBrush x:Key="IconBadgeBlueBrush" Color="#E6EEFF" />
     <SolidColorBrush x:Key="IconBadgeTealBrush" Color="#E2F9F4" />
     <SolidColorBrush x:Key="IconBadgePurpleBrush" Color="#F0E9FF" />
+    <SolidColorBrush x:Key="IconBadgeRedBrush" Color="#FFE7E6" />
     <SolidColorBrush x:Key="PillBackgroundBrush" Color="#E6EEFF" />
 
     <!--  滚动条  -->
