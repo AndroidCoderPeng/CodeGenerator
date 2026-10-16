@@ -7,12 +7,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using CodeGenerator.Cache;
 using CodeGenerator.Models;
 using CodeGenerator.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MessageBox = System.Windows.MessageBox;
 
 namespace CodeGenerator.ViewModels
 {
@@ -25,8 +27,6 @@ namespace CodeGenerator.ViewModels
         [ObservableProperty] private List<string> _whiteListSuffix = [];
         [ObservableProperty] private BlackListConfig _blackListConfig;
         [ObservableProperty] private ObservableCollection<CodeFile> _selectedFiles = [];
-        [ObservableProperty] private ObservableCollection<string> _effectiveCodeLines = [];
-        [ObservableProperty] private int _expectedCodePages;
         [ObservableProperty] private int _docFontSize = 8;
         [ObservableProperty] private string _documentHeader;
         [ObservableProperty] private string _softwareVersion = "V1.0.0";
@@ -113,6 +113,10 @@ namespace CodeGenerator.ViewModels
             var config = BlackListConfig;
             var files = await Task.Run(() => TraverseFiles(CodeFolder, config, WhiteListSuffix));
             SelectedFiles = files.ToObservableCollection();
+
+            // 统计代码行数
+
+            // 计算可生成的代码页数
         }
 
         private static List<CodeFile> TraverseFiles(
@@ -297,6 +301,34 @@ namespace CodeGenerator.ViewModels
         }
 
         [RelayCommand]
+        private void OpenCodeFile(CodeFile file)
+        {
+            if (file is null || string.IsNullOrWhiteSpace(file.FilePath))
+            {
+                return;
+            }
+
+            if (!File.Exists(file.FilePath))
+            {
+                MessageBox.Show($"文件不存在：\n{file.FilePath}", "无法打开文件", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo(file.FilePath)
+                {
+                    UseShellExecute = true
+                });
+            }
+            catch (Win32Exception exception)
+            {
+                MessageBox.Show($"无法使用系统默认程序打开该文件。\n\n{exception.Message}",
+                    "无法打开文件", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        [RelayCommand]
         private void AddFileSuffixType()
         {
             // if (string.IsNullOrWhiteSpace(_suffixType))
@@ -421,16 +453,6 @@ namespace CodeGenerator.ViewModels
         [RelayCommand]
         private void SaveDocument()
         {
-        }
-
-        /// <summary>
-        /// 双击打开文件
-        /// </summary>
-        /// <param name="selectedItem"></param>
-        private void OpenFile(FileInfo selectedItem)
-        {
-            //本机默认程序打开
-            Process.Start(selectedItem.FullName);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
     x:Class="CodeGenerator.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
@@ -486,365 +487,201 @@
                     <ColumnDefinition Width="376" />
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
+                <Border
+                    Grid.Column="0"
+                    Margin="16,0,0,16"
+                    BorderBrush="{StaticResource CardBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="1.5" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
 
-                    <UniformGrid
-                        Grid.Row="0"
-                        Margin="16,0,0,16"
-                        Columns="3"
-                        Rows="1">
-                        <Border
-                            BorderBrush="{StaticResource CardBorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="12">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
+                        <Grid Grid.Row="0" Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
 
-                                <Border
-                                    Grid.Column="0"
-                                    Margin="12"
-                                    Background="{StaticResource IconBadgeBlueBrush}"
-                                    CornerRadius="12">
-                                    <TextBlock
-                                        Margin="12"
-                                        VerticalAlignment="Center"
-                                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                        FontSize="24"
-                                        Foreground="{StaticResource AccentBlueBrush}"
-                                        Text="&#xe652;" />
-                                </Border>
-
-                                <StackPanel
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Orientation="Vertical">
-                                    <TextBlock
-                                        FontSize="14"
-                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                        Text="已选源码文件" />
-
-                                    <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
-                                        <TextBlock
-                                            FontSize="24"
-                                            FontWeight="SemiBold"
-                                            Foreground="{StaticResource TextPrimaryBrush}"
-                                            Text="{Binding SelectedFiles.Count, Mode=OneWay, FallbackValue=0}" />
-
-                                        <TextBlock
-                                            Margin="4,0,0,4"
-                                            VerticalAlignment="Bottom"
-                                            Foreground="{StaticResource TextSecondaryBrush}"
-                                            Text="个" />
-                                    </StackPanel>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-
-                        <Border
-                            Margin="16,0"
-                            BorderBrush="{StaticResource CardBorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="12">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
-                                <Border
-                                    Grid.Column="0"
-                                    Margin="12"
-                                    Background="{StaticResource IconBadgeTealBrush}"
-                                    CornerRadius="12">
-                                    <TextBlock
-                                        Margin="12"
-                                        VerticalAlignment="Center"
-                                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                        FontSize="24"
-                                        Foreground="{StaticResource AccentTealBrush}"
-                                        Text="&#xe71a;" />
-                                </Border>
-
-                                <StackPanel
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Orientation="Vertical">
-                                    <TextBlock
-                                        FontSize="14"
-                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                        Text="有效代码" />
-
-                                    <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
-                                        <TextBlock
-                                            FontSize="24"
-                                            FontWeight="SemiBold"
-                                            Foreground="{StaticResource TextPrimaryBrush}"
-                                            Text="{Binding EffectiveCodeLines.Count, Mode=OneWay, FallbackValue=0}" />
-
-                                        <TextBlock
-                                            Margin="4,0,0,4"
-                                            VerticalAlignment="Bottom"
-                                            Foreground="{StaticResource TextSecondaryBrush}"
-                                            Text="行" />
-                                    </StackPanel>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-
-                        <Border
-                            BorderBrush="{StaticResource CardBorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="12">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
-                                <Border
-                                    Grid.Column="0"
-                                    Margin="12"
-                                    Background="{StaticResource IconBadgePurpleBrush}"
-                                    CornerRadius="12">
-                                    <TextBlock
-                                        Margin="12"
-                                        VerticalAlignment="Center"
-                                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                        FontSize="24"
-                                        Foreground="{StaticResource AccentPurpleBrush}"
-                                        Text="&#xe6f0;" />
-                                </Border>
-
-                                <StackPanel
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Orientation="Vertical">
-                                    <TextBlock
-                                        FontSize="14"
-                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                        Text="预计生成" />
-
-                                    <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
-                                        <TextBlock
-                                            FontSize="24"
-                                            FontWeight="SemiBold"
-                                            Foreground="{StaticResource TextPrimaryBrush}"
-                                            Text="{Binding ExpectedCodePages, FallbackValue=0}" />
-
-                                        <TextBlock
-                                            Margin="4,0,0,4"
-                                            VerticalAlignment="Bottom"
-                                            Foreground="{StaticResource TextSecondaryBrush}"
-                                            Text="页 · " />
-
-                                        <TextBlock
-                                            Margin="4,0,0,4"
-                                            VerticalAlignment="Bottom"
-                                            Foreground="{StaticResource TextSecondaryBrush}"
-                                            Text="{Binding DocFontSize, StringFormat={}{0}号字, FallbackValue=8号字}" />
-                                    </StackPanel>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </UniformGrid>
-
-                    <Border
-                        Grid.Row="1"
-                        Margin="16,0,0,16"
-                        BorderBrush="{StaticResource CardBorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="12">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="1.5" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0" Margin="12">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock
-                                    Grid.Column="0"
-                                    FontSize="16"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource TextPrimaryBrush}"
-                                    Text="源码文件" />
-
-                                <Border
-                                    Grid.Column="1"
-                                    Margin="16,0"
-                                    Background="{StaticResource IconBadgeBlueBrush}"
-                                    CornerRadius="12">
-                                    <TextBlock
-                                        Margin="12,0"
-                                        VerticalAlignment="Center"
-                                        FontSize="14"
-                                        FontWeight="SemiBold"
-                                        Foreground="{StaticResource AccentBlueBrush}"
-                                        Text="{Binding SelectedFiles.Count, Mode=OneWay, StringFormat={}{0} 个, FallbackValue=0 个}" />
-                                </Border>
-
-                                <TextBlock
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    Foreground="{StaticResource TextSecondaryBrush}"
-                                    Text="双击打开 · 悬停移除" />
-                            </Grid>
+                            <TextBlock
+                                Grid.Column="0"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource TextPrimaryBrush}"
+                                Text="源码文件" />
 
                             <Border
-                                Grid.Row="1"
-                                BorderBrush="{StaticResource CardBorderBrush}"
-                                BorderThickness="0,0,0,1" />
+                                Grid.Column="1"
+                                Margin="16,0"
+                                Background="{StaticResource IconBadgeBlueBrush}"
+                                CornerRadius="12">
+                                <TextBlock
+                                    Margin="12,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="14"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource AccentBlueBrush}"
+                                    Text="{Binding SelectedFiles.Count, Mode=OneWay, StringFormat={}{0} 个, FallbackValue=0 个}" />
+                            </Border>
 
-                            <ListBox
-                                Grid.Row="2"
-                                Margin="4"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                ItemsSource="{Binding SelectedFiles}"
-                                ScrollViewer.CanContentScroll="False"
-                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                ScrollViewer.VerticalScrollBarVisibility="Auto">
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-
-                                <ListBox.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="Cursor" Value="Hand" />
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="ListBoxItem">
-                                                    <ContentPresenter />
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
-
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border
-                                            x:Name="CardBorder"
-                                            Width="152"
-                                            Height="128"
-                                            Margin="4"
-                                            Background="White"
-                                            BorderBrush="{StaticResource CardBorderBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="12"
-                                            ToolTip="{Binding FileName}">
-                                            <Grid>
-                                                <StackPanel
-                                                    Margin="8,0"
-                                                    VerticalAlignment="Center"
-                                                    Orientation="Vertical">
-                                                    <Grid>
-                                                        <TextBlock
-                                                            HorizontalAlignment="Center"
-                                                            FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                                            FontSize="56"
-                                                            Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
-                                                            Text="&#xe652;" />
-
-                                                        <TextBlock
-                                                            Margin="0,12,0,0"
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center"
-                                                            FontFamily="Consolas"
-                                                            FontSize="10"
-                                                            FontWeight="SemiBold"
-                                                            Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
-                                                            Text="{Binding FileSuffix, FallbackValue=Java}" />
-                                                    </Grid>
-
-                                                    <TextBlock
-                                                        Margin="0,8"
-                                                        HorizontalAlignment="Center"
-                                                        Foreground="{StaticResource TextSecondaryBrush}"
-                                                        Text="{Binding FileName}" />
-
-                                                    <TextBlock
-                                                        HorizontalAlignment="Center"
-                                                        FontSize="10"
-                                                        Foreground="{StaticResource TextTertiaryBrush}"
-                                                        Text="{Binding FileSize}" />
-                                                </StackPanel>
-
-                                                <Button
-                                                    x:Name="RemoveCodeFileButton"
-                                                    Command="{Binding DataContext.RemoveCodeFileCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                    CommandParameter="{Binding}"
-                                                    Visibility="Collapsed">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Width" Value="24" />
-                                                            <Setter Property="Height" Value="24" />
-                                                            <Setter Property="HorizontalAlignment" Value="Right" />
-                                                            <Setter Property="VerticalAlignment" Value="Top" />
-                                                            <Setter Property="BorderThickness" Value="0" />
-                                                            <Setter Property="Content" Value="&#xe668;" />
-                                                            <Setter Property="FontFamily" Value="/CodeGenerator;component/IconFont/#iconfont" />
-                                                            <Setter Property="Foreground" Value="White" />
-                                                            <Setter Property="Background" Value="{StaticResource DangerBrush}" />
-                                                            <Setter Property="Padding" Value="4" />
-                                                            <Setter Property="Margin" Value="4" />
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="Button">
-                                                                        <Border
-                                                                            x:Name="MiniButtonBorder"
-                                                                            Padding="{TemplateBinding Padding}"
-                                                                            Background="{TemplateBinding Background}"
-                                                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                                                            CornerRadius="12"
-                                                                            TextElement.Foreground="{TemplateBinding Foreground}">
-                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                                        </Border>
-
-                                                                        <ControlTemplate.Triggers>
-                                                                            <Trigger Property="IsPressed" Value="True">
-                                                                                <Setter Property="Opacity" Value="0.45" />
-                                                                            </Trigger>
-                                                                        </ControlTemplate.Triggers>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
-                                            </Grid>
-                                        </Border>
-
-                                        <DataTemplate.Triggers>
-                                            <Trigger SourceName="CardBorder" Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="CardBorder" Property="BorderBrush" Value="{StaticResource FocusGlowBrush}" />
-                                                <Setter TargetName="RemoveCodeFileButton" Property="Visibility" Value="Visible" />
-                                            </Trigger>
-                                        </DataTemplate.Triggers>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                            <TextBlock
+                                Grid.Column="2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Text="双击打开 · 悬停移除" />
                         </Grid>
-                    </Border>
-                </Grid>
+
+                        <Border
+                            Grid.Row="1"
+                            BorderBrush="{StaticResource CardBorderBrush}"
+                            BorderThickness="0,0,0,1" />
+
+                        <ListBox
+                            Grid.Row="2"
+                            Margin="4"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ItemsSource="{Binding SelectedFiles}"
+                            ScrollViewer.CanContentScroll="False"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Cursor" Value="Hand" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        x:Name="CardBorder"
+                                        Width="152"
+                                        Height="128"
+                                        Margin="4"
+                                        Background="White"
+                                        BorderBrush="{StaticResource CardBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="12"
+                                        ToolTip="{Binding FileName}">
+                                        <Grid>
+                                            <StackPanel
+                                                Margin="8,0"
+                                                VerticalAlignment="Center"
+                                                Orientation="Vertical">
+                                                <Grid>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                                        FontSize="56"
+                                                        Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
+                                                        Text="&#xe652;" />
+
+                                                    <TextBlock
+                                                        Margin="0,12,0,0"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="Consolas"
+                                                        FontSize="10"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
+                                                        Text="{Binding FileSuffix, FallbackValue=Java}" />
+                                                </Grid>
+
+                                                <TextBlock
+                                                    Margin="0,8"
+                                                    HorizontalAlignment="Center"
+                                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                                    Text="{Binding FileName}" />
+
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    FontSize="10"
+                                                    Foreground="{StaticResource TextTertiaryBrush}"
+                                                    Text="{Binding FileSize}" />
+                                            </StackPanel>
+
+                                            <Button
+                                                x:Name="RemoveCodeFileButton"
+                                                Command="{Binding DataContext.RemoveCodeFileCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                CommandParameter="{Binding}"
+                                                Visibility="Collapsed">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Width" Value="24" />
+                                                        <Setter Property="Height" Value="24" />
+                                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                                        <Setter Property="VerticalAlignment" Value="Top" />
+                                                        <Setter Property="BorderThickness" Value="0" />
+                                                        <Setter Property="Content" Value="&#xe668;" />
+                                                        <Setter Property="FontFamily" Value="/CodeGenerator;component/IconFont/#iconfont" />
+                                                        <Setter Property="Foreground" Value="White" />
+                                                        <Setter Property="Background" Value="{StaticResource DangerBrush}" />
+                                                        <Setter Property="Padding" Value="4" />
+                                                        <Setter Property="Margin" Value="4" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border
+                                                                        x:Name="MiniButtonBorder"
+                                                                        Padding="{TemplateBinding Padding}"
+                                                                        Background="{TemplateBinding Background}"
+                                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                                        CornerRadius="12"
+                                                                        TextElement.Foreground="{TemplateBinding Foreground}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                    </Border>
+
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsPressed" Value="True">
+                                                                            <Setter Property="Opacity" Value="0.45" />
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+
+                                    <DataTemplate.Triggers>
+                                        <Trigger SourceName="CardBorder" Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="CardBorder" Property="BorderBrush" Value="{StaticResource FocusGlowBrush}" />
+                                            <Setter TargetName="RemoveCodeFileButton" Property="Visibility" Value="Visible" />
+                                        </Trigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseDoubleClick">
+                                    <b:InvokeCommandAction Command="{Binding OpenCodeFileCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </ListBox>
+                    </Grid>
+                </Border>
 
                 <Border
                     Grid.Column="1"
