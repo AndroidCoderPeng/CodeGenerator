@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -15,6 +17,9 @@ using CodeGenerator.Models;
 using CodeGenerator.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using MessageBox = System.Windows.MessageBox;
 
 namespace CodeGenerator.ViewModels
@@ -482,9 +487,6 @@ namespace CodeGenerator.ViewModels
             });
 
             var readResult = await Task.Run(() => ReadCodeFiles(files, progress));
-            _effectiveCodeLines = SelectEffectiveCodeLines(readResult.Lines, pageCount * linesPerPage);
-            CurrentProgress = 100;
-
             if (readResult.Errors.Count > 0)
             {
                 var errorSummary = string.Join(
@@ -501,6 +503,7 @@ namespace CodeGenerator.ViewModels
                     "读取完成", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
+            _effectiveCodeLines = SelectEffectiveCodeLines(readResult.Lines, pageCount * linesPerPage);
             if (_effectiveCodeLines.Count == 0)
             {
                 MessageBox.Show("未读取到有效代码行。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -515,11 +518,27 @@ namespace CodeGenerator.ViewModels
 
             try
             {
-                await File.WriteAllLinesAsync(textFilePath, _effectiveCodeLines);
-                _outputFilePath = documentPath;
+                await Task.Run(() =>
+                {
+                    var outputDirectory = Path.GetDirectoryName(documentPath);
+                    if (!string.IsNullOrWhiteSpace(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                    }
 
-                CurrentFile = $"文本代码文档已生成，共 {_effectiveCodeLines.Count} 行";
-                ShowToast($"TXT 已保存至：{textFilePath}");
+                    File.WriteAllLines(textFilePath, _effectiveCodeLines, new UTF8Encoding(false));
+                    CreateWordDocument(
+                        documentPath,
+                        _effectiveCodeLines,
+                        DocumentHeader,
+                        SoftwareVersion,
+                        fontSize,
+                        linesPerPage);
+                });
+
+                CurrentProgress = 100;
+                CurrentFile = $"代码文档已生成，共 {_effectiveCodeLines.Count} 行";
+                ShowToast($"已生成 TXT 和 Word 文档：{Path.GetDirectoryName(documentPath)}");
             }
             catch (UnauthorizedAccessException exception)
             {
@@ -593,6 +612,140 @@ namespace CodeGenerator.ViewModels
             return [.. codeLines.Take(firstPartCount), .. codeLines.TakeLast(lastPartCount)];
         }
 
+        private static void CreateWordDocument(
+            string filePath,
+            IReadOnlyList<string> codeLines,
+            string documentHeader,
+            string softwareVersion,
+            int fontSize,
+            int linesPerPage)
+        {
+            using var document = WordprocessingDocument.Create(filePath, WordprocessingDocumentType.Document);
+
+            var mainPart = document.AddMainDocumentPart();
+            mainPart.Document = new Document(new Body());
+
+            var headerPart = mainPart.AddNewPart<HeaderPart>();
+            headerPart.Header = new Header(CreateHeaderParagraph($"{documentHeader} {softwareVersion}", fontSize));
+            headerPart.Header.Save();
+
+            var footerPart = mainPart.AddNewPart<FooterPart>();
+            footerPart.Footer = new Footer(CreatePageNumberParagraph(fontSize));
+            footerPart.Footer.Save();
+
+            var body = mainPart.Document.Body!;
+
+            for (var index = 0; index < codeLines.Count; index++)
+            {
+                body.Append(CreateCodeParagraph(codeLines[index], fontSize));
+                if ((index + 1) % linesPerPage == 0 && index + 1 < codeLines.Count)
+                {
+                    body.Append(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
+                }
+            }
+
+            var headerReference = new HeaderReference
+            {
+                Type = HeaderFooterValues.Default,
+                Id = mainPart.GetIdOfPart(headerPart)
+            };
+            var footerReference = new FooterReference
+            {
+                Type = HeaderFooterValues.Default,
+                Id = mainPart.GetIdOfPart(footerPart)
+            };
+            var pageSize = new PageSize
+            {
+                Width = 11906U,
+                Height = 16838U
+            };
+            var pageMargin = new PageMargin
+            {
+                Top = 850,
+                Right = 850U,
+                Bottom = 850,
+                Left = 850U,
+                Header = 425U,
+                Footer = 425U,
+                Gutter = 0U
+            };
+            var sectionProperties = new SectionProperties(headerReference, footerReference, pageSize, pageMargin);
+            body.Append(sectionProperties);
+            var settingsPart = mainPart.AddNewPart<DocumentSettingsPart>();
+            settingsPart.Settings = new Settings(new UpdateFieldsOnOpen { Val = true });
+            settingsPart.Settings.Save();
+            mainPart.Document.Save();
+        }
+
+        private static Paragraph CreateHeaderParagraph(string text, int fontSize)
+        {
+            var borders = new ParagraphBorders(new BottomBorder
+            {
+                Val = BorderValues.Single,
+                Size = 4U,
+                Color = "000000"
+            });
+            var paragraphProperties = new ParagraphProperties(
+                new Justification { Val = JustificationValues.Center },
+                borders);
+            return new Paragraph(paragraphProperties, CreateRun(text, fontSize));
+        }
+
+        private static Paragraph CreatePageNumberParagraph(int fontSize)
+        {
+            return new Paragraph(new ParagraphProperties(
+                    new Justification { Val = JustificationValues.Center }),
+                new Run(CreateRunProperties(fontSize),
+                    new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(CreateRunProperties(fontSize),
+                    new FieldCode("PAGE")),
+                new Run(CreateRunProperties(fontSize),
+                    new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(CreateRunProperties(fontSize),
+                    new Text("1")),
+                new Run(CreateRunProperties(fontSize),
+                    new FieldChar { FieldCharType = FieldCharValues.End }));
+        }
+
+        private static Paragraph CreateCodeParagraph(string codeLine, int fontSize)
+        {
+            return new Paragraph(new ParagraphProperties(
+                    new SpacingBetweenLines
+                    {
+                        Before = "0",
+                        After = "0",
+                        Line = "200",
+                        LineRule = LineSpacingRuleValues.Auto
+                    }),
+                CreateRun(codeLine, fontSize));
+        }
+
+        private static Run CreateRun(string text, int fontSize)
+        {
+            return new Run(CreateRunProperties(fontSize),
+                new Text(text)
+                {
+                    Space = SpaceProcessingModeValues.Preserve
+                }
+            );
+        }
+
+        private static RunProperties CreateRunProperties(int fontSize)
+        {
+            var openXmlFontSize = (fontSize * 2).ToString(CultureInfo.InvariantCulture);
+            var runFonts = new RunFonts
+            {
+                Ascii = "Consolas",
+                HighAnsi = "Consolas",
+                EastAsia = "Consolas",
+                ComplexScript = "Consolas"
+            };
+            return new RunProperties(runFonts,
+                new FontSize { Val = openXmlFontSize },
+                new FontSizeComplexScript { Val = openXmlFontSize }
+            );
+        }
+
         [RelayCommand]
         private void ChangeDocumentPath()
         {
@@ -621,103 +774,6 @@ namespace CodeGenerator.ViewModels
                 ConfigSections.FileName, ConfigSections.OutputPath,
                 new OutputPathConfig { Path = _outputFilePath });
             ShowToast($"文档保存路径已更改为：{_outputFilePath}");
-        }
-
-        private void Worker_OnDoWork(object sender, DoWorkEventArgs e)
-        {
-            //所有符合要求的代码文件内容
-            // var codeContentArray = new List<string>();
-            // var effectiveCode = new List<string>();
-            // var i = 0;
-            // foreach (var filePath in _generateFilePaths)
-            // {
-            //     // 逐行读取源文件，跳过空白行（避免一次性加载整个文件到内存）
-            //     var lines = new List<string>();
-            //     using (var reader = new StreamReader(filePath))
-            //     {
-            //         string line;
-            //         while ((line = reader.ReadLine()) != null)
-            //         {
-            //             if (!string.IsNullOrWhiteSpace(line))
-            //             {
-            //                 lines.Add(line);
-            //             }
-            //         }
-            //     }
-            //
-            //     if (lines.Count > 0)
-            //     {
-            //         codeContentArray.AddRange(lines);
-            //         i++;
-            //         var percent = i / (float)_generateFilePaths.Count;
-            //         _backgroundWorker.ReportProgress((int)(percent * 100));
-            //     }
-            //
-            //     //此行代码根据情况可选择删除或者保留
-            //     Thread.Sleep(10);
-            // }
-            //
-            // //筛选代码行区间
-            // if (codeContentArray.Count <= _effectiveCodeCount)
-            // {
-            //     effectiveCode = codeContentArray;
-            // }
-            // else
-            // {
-            //     //选择前30页代码
-            //     for (var j = 0; j < _effectiveCodeCount / 2; j++)
-            //     {
-            //         effectiveCode.Add(codeContentArray[j]);
-            //     }
-            //
-            //     //选择后30页代码
-            //     var end = codeContentArray.Count - _effectiveCodeCount / 2;
-            //     for (var k = end; k < codeContentArray.Count; k++)
-            //     {
-            //         effectiveCode.Add(codeContentArray[k]);
-            //     }
-            // }
-            //
-            // //设置有效代码行数
-            // EffectiveCodeLines = $"代码文档已生成，有效代码共：{effectiveCode.Count}行";
-            //
-            // //生成带有缩进格式的Text，便于写入word
-            // File.WriteAllLines($"{_outputFilePath}.txt", effectiveCode);
-            //
-            // //读取整篇格式化好了的Text写入word
-            // var text = File.ReadAllText($"{_outputFilePath}.txt");
-            // using (var document = DocX.Create(_outputFilePath))
-            // {
-            //     var font = new Font("微软雅黑");
-            //     //页眉
-            //     document.AddHeaders();
-            //     var header = document.Headers.Odd;
-            //     var headerParagraph = header.InsertParagraph($"{_codeHeader} {_softVersion}");
-            //     headerParagraph.Font(font);
-            //     headerParagraph.FontSize(_size);
-            //     headerParagraph.Alignment = Alignment.center;
-            //     headerParagraph.InsertHorizontalLine(
-            //         HorizontalBorderPosition.bottom, BorderStyle.Tcbs_single, 1, 1, Color.Black
-            //     );
-            //
-            //     //页码
-            //     document.AddFooters();
-            //     var footer = document.Footers.Odd;
-            //     var footerParagraph = footer.InsertParagraph();
-            //     footerParagraph.Font(font);
-            //     footerParagraph.FontSize(_size);
-            //     footerParagraph.AppendPageNumber(PageNumberFormat.normal);
-            //     footerParagraph.Alignment = Alignment.center;
-            //
-            //     //正文
-            //     var paragraph = document.InsertParagraph();
-            //     paragraph.Append(text, new Formatting
-            //     {
-            //         FontFamily = font,
-            //         Size = _size
-            //     });
-            //     document.Save();
-            // }
         }
 
         private void ShowToast(string message)
