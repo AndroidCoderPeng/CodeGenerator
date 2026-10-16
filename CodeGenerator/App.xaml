@@ -6,11 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--  强调色、渐变、交通灯等共享画刷  -->
+                <!--  应用画刷与颜色资源  -->
                 <ResourceDictionary Source="Resources/ColorBrushes.xaml" />
-
-                <!--  固定使用亮色样式  -->
-                <ResourceDictionary Source="Resources/LightStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

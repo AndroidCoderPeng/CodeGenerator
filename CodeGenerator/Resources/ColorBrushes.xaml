@@ -1,9 +1,36 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--  强调色、渐变与交通灯画刷  -->
+    <!--  背景  -->
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F7F9FC" />
+    <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="FieldBackgroundBrush" Color="#FFFFFF" />
+
+    <!--  边框  -->
+    <SolidColorBrush x:Key="CardBorderBrush" Color="#E3E5EC" />
+    <SolidColorBrush x:Key="CardBorderHighlightBrush" Color="#D7DBE3" />
+
+    <!--  文字  -->
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#111A2E" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#5A6480" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#98A1B8" />
+
+    <!--  指标卡 / 徽标底色  -->
+    <SolidColorBrush x:Key="IconBadgeBlueBrush" Color="#E6EEFF" />
+    <SolidColorBrush x:Key="IconBadgeTealBrush" Color="#E2F9F4" />
+    <SolidColorBrush x:Key="IconBadgePurpleBrush" Color="#F0E9FF" />
+    <SolidColorBrush x:Key="PillBackgroundBrush" Color="#E6EEFF" />
+
+    <!--  滚动条  -->
+    <SolidColorBrush x:Key="ScrollBarThumbBrush" Color="#D7DBE3" />
+    <SolidColorBrush x:Key="ScrollBarThumbHoverBrush" Color="#98A1B8" />
+
+    <Color x:Key="AccentBlueColor">#5B8CFF</Color>
+
+    <!--  焦点光晕  -->
+    <SolidColorBrush x:Key="FocusGlowBrush" Color="{StaticResource AccentBlueColor}" />
 
     <!--  强调色  -->
-    <SolidColorBrush x:Key="AccentBlueBrush" Color="#5B8CFF" />
+    <SolidColorBrush x:Key="AccentBlueBrush" Color="{StaticResource AccentBlueColor}" />
     <SolidColorBrush x:Key="AccentPurpleBrush" Color="#9B6BFF" />
     <SolidColorBrush x:Key="AccentTealBrush" Color="#3FD9B4" />
 
@@ -19,15 +46,6 @@
         <GradientStop Offset="0.6" Color="#9B6BFF" />
         <GradientStop Offset="1" Color="#3FD9B4" />
     </LinearGradientBrush>
-
-    <!--  macOS 交通灯  -->
-    <SolidColorBrush x:Key="TrafficRedBrush" Color="#FF5F57" />
-    <SolidColorBrush x:Key="TrafficYellowBrush" Color="#FEBC2E" />
-    <SolidColorBrush x:Key="TrafficGreenBrush" Color="#28C840" />
-    <!--  交通灯符号（macOS 为深色符号）  -->
-    <SolidColorBrush x:Key="TrafficGlyphRedBrush" Color="#5C0A00" />
-    <SolidColorBrush x:Key="TrafficGlyphYellowBrush" Color="#6B4A00" />
-    <SolidColorBrush x:Key="TrafficGlyphGreenBrush" Color="#0A4200" />
 
     <!--  必填标记 / 警告  -->
     <SolidColorBrush x:Key="DangerBrush" Color="#FF5F57" />

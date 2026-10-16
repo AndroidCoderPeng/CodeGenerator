@@ -17,19 +17,6 @@
     mc:Ignorable="d">
 
     <Window.Resources>
-        <!--  主按钮 / Logo 渐变（135 度）  -->
-        <LinearGradientBrush x:Key="AccentGradientBrush" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Offset="0" Color="#5B8CFF" />
-            <GradientStop Offset="1" Color="#9B6BFF" />
-        </LinearGradientBrush>
-
-        <!--  进度条渐变：蓝 紫 青  -->
-        <LinearGradientBrush x:Key="ProgressGradientBrush" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Offset="0" Color="#5B8CFF" />
-            <GradientStop Offset="0.6" Color="#9B6BFF" />
-            <GradientStop Offset="1" Color="#3FD9B4" />
-        </LinearGradientBrush>
-
         <!--  主按钮：蓝底白字  -->
         <Style x:Key="PrimaryCompactButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="40" />
@@ -167,7 +154,7 @@
                                                 BlurRadius="6"
                                                 Opacity="0.18"
                                                 ShadowDepth="0"
-                                                Color="#5B8CFF" />
+                                                Color="{StaticResource AccentBlueColor}" />
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>
@@ -194,7 +181,7 @@
                         <Grid Grid.Column="1">
                             <TextBox
                                 x:Name="CodeFolderTextBox"
-                                Margin="8,0,0,0"
+                                Margin="6,0,0,0"
                                 VerticalAlignment="Center"
                                 VerticalContentAlignment="Center"
                                 Background="Transparent"
@@ -204,7 +191,7 @@
                                 Text="{Binding CodeFolder, UpdateSourceTrigger=PropertyChanged}" />
 
                             <TextBlock
-                                Margin="8,0,0,0"
+                                Margin="10,0,0,0"
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="{DynamicResource TextSecondaryBrush}"
