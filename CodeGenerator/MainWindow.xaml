@@ -541,145 +541,194 @@
                             BorderBrush="{StaticResource CardBorderBrush}"
                             BorderThickness="0,0,0,1" />
 
-                        <ListBox
-                            Grid.Row="2"
-                            Margin="4"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            ItemsSource="{Binding SelectedFiles}"
-                            ScrollViewer.CanContentScroll="False"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ScrollViewer.VerticalScrollBarVisibility="Auto">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
+                        <Grid Grid.Row="2" Margin="4">
+                            <ListBox
+                                Background="Transparent"
+                                BorderThickness="0"
+                                ItemsSource="{Binding SelectedFiles}"
+                                ScrollViewer.CanContentScroll="False"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
 
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="Cursor" Value="Hand" />
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="ListBoxItem">
-                                                <ContentPresenter />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Cursor" Value="Hand" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <ContentPresenter />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
 
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            x:Name="CardBorder"
+                                            Width="152"
+                                            Height="128"
+                                            Margin="4"
+                                            Background="White"
+                                            BorderBrush="{StaticResource CardBorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            ToolTip="{Binding FileName}">
+                                            <Grid>
+                                                <StackPanel
+                                                    Margin="8,0"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Vertical">
+                                                    <Grid>
+                                                        <TextBlock
+                                                            HorizontalAlignment="Center"
+                                                            FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                                            FontSize="56"
+                                                            Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
+                                                            Text="&#xe652;" />
+
+                                                        <TextBlock
+                                                            Margin="0,12,0,0"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            FontFamily="Consolas"
+                                                            FontSize="10"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
+                                                            Text="{Binding FileSuffix, FallbackValue=Java}" />
+                                                    </Grid>
+
+                                                    <TextBlock
+                                                        Margin="0,8"
+                                                        HorizontalAlignment="Center"
+                                                        Foreground="{StaticResource TextSecondaryBrush}"
+                                                        Text="{Binding FileName}" />
+
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        FontSize="10"
+                                                        Foreground="{StaticResource TextTertiaryBrush}"
+                                                        Text="{Binding FileSize}" />
+                                                </StackPanel>
+
+                                                <Button
+                                                    x:Name="RemoveCodeFileButton"
+                                                    Command="{Binding DataContext.RemoveCodeFileCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    CommandParameter="{Binding}"
+                                                    Visibility="Collapsed">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Width" Value="24" />
+                                                            <Setter Property="Height" Value="24" />
+                                                            <Setter Property="HorizontalAlignment" Value="Right" />
+                                                            <Setter Property="VerticalAlignment" Value="Top" />
+                                                            <Setter Property="BorderThickness" Value="0" />
+                                                            <Setter Property="Content" Value="&#xe668;" />
+                                                            <Setter Property="FontFamily" Value="/CodeGenerator;component/IconFont/#iconfont" />
+                                                            <Setter Property="Foreground" Value="White" />
+                                                            <Setter Property="Background" Value="{StaticResource DangerBrush}" />
+                                                            <Setter Property="Padding" Value="4" />
+                                                            <Setter Property="Margin" Value="4" />
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border
+                                                                            x:Name="MiniButtonBorder"
+                                                                            Padding="{TemplateBinding Padding}"
+                                                                            Background="{TemplateBinding Background}"
+                                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                                            CornerRadius="12"
+                                                                            TextElement.Foreground="{TemplateBinding Foreground}">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                        </Border>
+
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsPressed" Value="True">
+                                                                                <Setter Property="Opacity" Value="0.45" />
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+
+                                        <DataTemplate.Triggers>
+                                            <Trigger SourceName="CardBorder" Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="CardBorder" Property="BorderBrush" Value="{StaticResource FocusGlowBrush}" />
+                                                <Setter TargetName="RemoveCodeFileButton" Property="Visibility" Value="Visible" />
+                                            </Trigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="MouseDoubleClick">
+                                        <b:InvokeCommandAction Command="{Binding OpenCodeFileCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListBox}}" />
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </ListBox>
+
+                            <!--  空态：无文件时覆盖显示  -->
+                            <Grid>
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedFiles.Count}" Value="0">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+
+                                <Rectangle
+                                    RadiusX="8"
+                                    RadiusY="8"
+                                    Stroke="{StaticResource CardBorderBrush}"
+                                    StrokeDashArray="3 3" />
+
+                                <StackPanel VerticalAlignment="Center">
                                     <Border
-                                        x:Name="CardBorder"
-                                        Width="152"
-                                        Height="128"
-                                        Margin="4"
-                                        Background="White"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
                                         BorderBrush="{StaticResource CardBorderBrush}"
                                         BorderThickness="1"
-                                        CornerRadius="12"
-                                        ToolTip="{Binding FileName}">
-                                        <Grid>
-                                            <StackPanel
-                                                Margin="8,0"
-                                                VerticalAlignment="Center"
-                                                Orientation="Vertical">
-                                                <Grid>
-                                                    <TextBlock
-                                                        HorizontalAlignment="Center"
-                                                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
-                                                        FontSize="56"
-                                                        Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
-                                                        Text="&#xe652;" />
-
-                                                    <TextBlock
-                                                        Margin="0,12,0,0"
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        FontFamily="Consolas"
-                                                        FontSize="10"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
-                                                        Text="{Binding FileSuffix, FallbackValue=Java}" />
-                                                </Grid>
-
-                                                <TextBlock
-                                                    Margin="0,8"
-                                                    HorizontalAlignment="Center"
-                                                    Foreground="{StaticResource TextSecondaryBrush}"
-                                                    Text="{Binding FileName}" />
-
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    FontSize="10"
-                                                    Foreground="{StaticResource TextTertiaryBrush}"
-                                                    Text="{Binding FileSize}" />
-                                            </StackPanel>
-
-                                            <Button
-                                                x:Name="RemoveCodeFileButton"
-                                                Command="{Binding DataContext.RemoveCodeFileCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                CommandParameter="{Binding}"
-                                                Visibility="Collapsed">
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Setter Property="Width" Value="24" />
-                                                        <Setter Property="Height" Value="24" />
-                                                        <Setter Property="HorizontalAlignment" Value="Right" />
-                                                        <Setter Property="VerticalAlignment" Value="Top" />
-                                                        <Setter Property="BorderThickness" Value="0" />
-                                                        <Setter Property="Content" Value="&#xe668;" />
-                                                        <Setter Property="FontFamily" Value="/CodeGenerator;component/IconFont/#iconfont" />
-                                                        <Setter Property="Foreground" Value="White" />
-                                                        <Setter Property="Background" Value="{StaticResource DangerBrush}" />
-                                                        <Setter Property="Padding" Value="4" />
-                                                        <Setter Property="Margin" Value="4" />
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="Button">
-                                                                    <Border
-                                                                        x:Name="MiniButtonBorder"
-                                                                        Padding="{TemplateBinding Padding}"
-                                                                        Background="{TemplateBinding Background}"
-                                                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                                                        CornerRadius="12"
-                                                                        TextElement.Foreground="{TemplateBinding Foreground}">
-                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                                    </Border>
-
-                                                                    <ControlTemplate.Triggers>
-                                                                        <Trigger Property="IsPressed" Value="True">
-                                                                            <Setter Property="Opacity" Value="0.45" />
-                                                                        </Trigger>
-                                                                    </ControlTemplate.Triggers>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
-                                        </Grid>
+                                        CornerRadius="24">
+                                        <TextBlock
+                                            Margin="24"
+                                            FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                            FontSize="48"
+                                            Foreground="{StaticResource TextTertiaryBrush}"
+                                            Text="&#xe680;" />
                                     </Border>
 
-                                    <DataTemplate.Triggers>
-                                        <Trigger SourceName="CardBorder" Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="CardBorder" Property="BorderBrush" Value="{StaticResource FocusGlowBrush}" />
-                                            <Setter TargetName="RemoveCodeFileButton" Property="Visibility" Value="Visible" />
-                                        </Trigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                                    <TextBlock
+                                        Margin="0,16"
+                                        HorizontalAlignment="Center"
+                                        FontSize="16"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
+                                        Text="这里什么都没有~" />
 
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="MouseDoubleClick">
-                                    <b:InvokeCommandAction Command="{Binding OpenCodeFileCommand}" CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListBox}}" />
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </ListBox>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="14"
+                                        Foreground="{StaticResource TextTertiaryBrush}"
+                                        Text="先选择一个源码文件夹吧" />
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Border>
 
