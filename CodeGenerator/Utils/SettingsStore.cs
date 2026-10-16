@@ -12,7 +12,7 @@ public class SettingsStore
         "CodeGenerator"
     );
 
-    private static readonly object Lock = new object();
+    private static readonly object Lock = new();
 
     private static string GetFilePath(string fileName) => Path.Combine(Dir, fileName);
     
@@ -35,7 +35,13 @@ public class SettingsStore
     public static T Load<T>(string fileName, string section) where T : class, new()
     {
         var node = ReadRoot(GetFilePath(fileName))[section];
-        return node == null ? new T() : node.ToObject<T>() ?? new T();
+        if (node == null) return new T();
+        
+        var serializer = JsonSerializer.Create(new JsonSerializerSettings
+        {
+            ObjectCreationHandling = ObjectCreationHandling.Replace
+        });
+        return node.ToObject<T>(serializer) ?? new T();
     }
 
     // 按分组保存：只更新该 section，其他 section 原样保留

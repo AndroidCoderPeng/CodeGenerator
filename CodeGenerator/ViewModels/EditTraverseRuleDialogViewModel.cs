@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using CodeGenerator.Cache;
 using CodeGenerator.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -72,8 +71,9 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
     [RelayCommand]
     private void ResetRule()
     {
-        DefaultBlackListFolders = _config.Folders.ToObservableCollection();
-        DefaultBlackListFiles = _config.Files.ToObservableCollection();
+        var defaultConfig = new BlackListConfig();
+        DefaultBlackListFolders = defaultConfig.Folders.ToObservableCollection();
+        DefaultBlackListFiles = defaultConfig.Files.ToObservableCollection();
     }
 
     [RelayCommand]
@@ -85,8 +85,8 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
     [RelayCommand]
     private void SaveRule()
     {
-        _config.Folders = DefaultBlackListFolders.ToList();
-        _config.Files = DefaultBlackListFiles.ToList();
+        _config.Folders = [.. DefaultBlackListFolders];
+        _config.Files = [.. DefaultBlackListFiles];
         SettingsStore.Save(ConfigSections.FileName, ConfigSections.BlackList, _config);
         RequestClose?.Invoke(this, EventArgs.Empty);
     }
