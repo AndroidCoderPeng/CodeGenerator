@@ -8,9 +8,9 @@
     xmlns:vm="clr-namespace:CodeGenerator.ViewModels"
     Title="软著代码生成器"
     Width="1080"
-    Height="756"
+    Height="768"
     MinWidth="1080"
-    MinHeight="756"
+    MinHeight="768"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
     Background="{StaticResource WindowBackgroundBrush}"
     ResizeMode="CanResize"
@@ -585,15 +585,17 @@
                             <RowDefinition />
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" Margin="12">
+                        <Grid Grid.Row="0" Margin="12,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <TextBlock
                                 Grid.Column="0"
+                                VerticalAlignment="Center"
                                 FontSize="16"
                                 FontWeight="SemiBold"
                                 Foreground="{StaticResource TextPrimaryBrush}"
@@ -602,10 +604,11 @@
                             <Border
                                 Grid.Column="1"
                                 Margin="16,0"
+                                VerticalAlignment="Center"
                                 Background="{StaticResource IconBadgeBlueBrush}"
-                                CornerRadius="12">
+                                CornerRadius="14">
                                 <TextBlock
-                                    Margin="12,0"
+                                    Margin="12,6"
                                     VerticalAlignment="Center"
                                     FontSize="14"
                                     FontWeight="SemiBold"
@@ -619,6 +622,28 @@
                                 VerticalAlignment="Center"
                                 Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="双击打开 · 悬停移除" />
+
+                            <Button
+                                Grid.Column="3"
+                                Height="32"
+                                Margin="16,12,0,12"
+                                Command="{Binding ClearCodeFilesCommand}"
+                                Style="{StaticResource CompactButtonStyle}">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                            FontSize="16"
+                                            Text="&#xe666;" />
+                                        <TextBlock
+                                            Margin="8,0,0,0"
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Text="清空" />
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
                         </Grid>
 
                         <Border
@@ -1136,7 +1161,7 @@
                             FontSize="14"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource AccentTealBrush}"
-                            Text="{Binding CurrentProgress, FallbackValue=0%}" />
+                            Text="{Binding CurrentProgress, StringFormat={}{0:F2}%, FallbackValue=0%}" />
                     </Grid>
 
                     <ProgressBar

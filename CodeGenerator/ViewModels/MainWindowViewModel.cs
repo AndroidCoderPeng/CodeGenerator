@@ -313,6 +313,13 @@ namespace CodeGenerator.ViewModels
         }
 
         [RelayCommand]
+        private void ClearCodeFiles()
+        {
+            SelectedFiles.Clear();
+            _effectiveCodeLines= [];
+        }
+        
+        [RelayCommand]
         private void RemoveCodeFile(CodeFile file)
         {
             if (file == null)

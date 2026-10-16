@@ -308,6 +308,29 @@ body{
 .f-head h3{font-size:14px;font-weight:650}
 .f-pill{font-size:11.5px;font-weight:600;color:var(--a1);padding:3px 10px;border-radius:99px;background:rgba(91,140,255,.14)}
 .f-head .hint{font-size:11.5px;color:var(--t3);margin-left:auto}
+.fc-clear{
+  flex-shrink:0;display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:8px;cursor:pointer;font-size:11.5px;font-weight:600;
+  background:var(--field);border:1px solid var(--line);color:var(--t2);font-family:inherit;transition:.18s;
+}
+.fc-clear:hover:not(:disabled){color:var(--warn);border-color:var(--warn);background:rgba(255,107,107,.1)}
+.fc-clear:disabled{opacity:.4;cursor:not-allowed}
+/* 操作后的轻量反馈条（带撤销，避免误点丢失扫描结果） */
+.toast{
+  display:none;align-items:center;gap:9px;margin-bottom:12px;padding:8px 12px;
+  border-radius:10px;background:rgba(63,217,180,.12);border:1px solid rgba(63,217,180,.3);
+  animation:toastIn .22s cubic-bezier(.34,1.4,.5,1);
+}
+.toast.show{display:flex}
+@keyframes toastIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.toast svg{color:var(--a3);flex-shrink:0}
+.toast span{font-size:11.5px;color:var(--t2);flex:1;min-width:0}
+.toast span b{color:var(--t1);font-weight:700}
+.toast button{
+  flex-shrink:0;padding:4px 11px;border-radius:99px;cursor:pointer;font-size:11px;font-weight:600;
+  background:var(--field);border:1px solid var(--line);color:var(--t2);font-family:inherit;transition:.18s;
+}
+.toast button:hover{color:var(--a1);border-color:var(--a1);background:rgba(91,140,255,.12)}
 .f-body{flex:1;overflow-y:auto;padding:12px;min-height:0}
 .f-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:11px}
 .f-card{
@@ -594,12 +617,22 @@ body{
         <h3>源码文件</h3>
         <span class="f-pill" id="fPill">12 个</span>
         <span class="hint">双击打开 · 悬停移除</span>
+        <button class="fc-clear" id="btnClear" onclick="clearFiles()"
+                title="清空已收集的源码文件（只清列表，不会删除磁盘上的文件）">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          清空
+        </button>
       </div>
       <div class="f-body">
         <div class="scan" id="scanBar">
           <div class="scan-spin"></div>
           <span class="scan-txt">正在扫描 <b>MyProject</b> · 已找到 <b id="scanFound">0</b> 个源码文件，跳过 <b id="scanSkip">0</b> 个目录</span>
           <button class="scan-stop" onclick="stopScan()">停止扫描</button>
+        </div>
+        <div class="toast" id="toast">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+          <span id="toastMsg"></span>
+          <button onclick="undoClear()">撤销</button>
         </div>
         <div class="f-grid" id="fGrid"></div>
         <div class="empty">
@@ -746,6 +779,8 @@ const FILES=[
   ['App.xaml','xaml','1 KB'],['index.html','html','32 KB'],['style.css','css','14 KB'],
   ['main.go','go','9 KB'],['utils.py','py','12 KB'],['UserService.java','java','15 KB']
 ];
+const DEFAULT_FILES=FILES.map(f=>f.slice());   /* 演示用：供「有文件」一键恢复 */
+let demoEmpty=null;                            /* 演示条的强制状态，null 表示跟随真实数据 */
 const LANGS=['py','cpp','c','java','cs','js','go','vue','html','ts','php','rs','swift','kt','rb','sh','m'];
 const ON=['cs','xaml'];
 let sfx=['cs'];   /* 自定义后缀；与已选常用语言去重后共同构成白名单 */
@@ -770,8 +805,40 @@ function renderFiles(){
       <div class="f-size">${f[2]}</div>
     </div>`).join('');
   document.getElementById('fPill').textContent=FILES.length+' 个';
+  const bc=document.getElementById('btnClear');
+  if(bc)bc.disabled=(FILES.length===0);          // 列表为空时不可点
+  const empty=(demoEmpty!==null)?demoEmpty:(FILES.length===0);
+  document.getElementById('body').classList.toggle('is-empty',empty);
 }
 function delFile(i){FILES.splice(i,1);renderFiles()}
+
+/* ---------- 一键清空 + 撤销 ---------- */
+let lastCleared=null,toastTimer=null;
+function clearFiles(){
+  if(!FILES.length)return;
+  lastCleared=FILES.slice();
+  FILES.length=0;
+  demoEmpty=null;                                // 真实结果优先：清空即进入空状态
+  renderFiles();
+  stopScan();
+  document.getElementById('toastMsg').innerHTML=`已清空 <b>${lastCleared.length}</b> 个源码文件`;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(hideToast,5000);
+}
+function undoClear(){
+  if(!lastCleared||!lastCleared.length)return hideToast();
+  FILES.push.apply(FILES,lastCleared);
+  lastCleared=null;
+  demoEmpty=null;
+  renderFiles();
+  hideToast();
+}
+function hideToast(){
+  clearTimeout(toastTimer);
+  document.getElementById('toast').classList.remove('show');
+}
 function renderChips(){
   document.getElementById('chips').innerHTML=sfx.map((s,i)=>
     `<span class="chip">.${s}<i onclick="delSfx(${i})">×</i></span>`).join('');
@@ -796,10 +863,15 @@ function toggleLang(i){
   if(k>=0)ON.splice(k,1);else ON.push(l);
   renderLangs();
 }
+/* demoEmpty：null=跟随真实数据；true/false=演示条的强制覆盖 */
 function setEmpty(v){
-  document.getElementById('body').classList.toggle('is-empty',v);
+  demoEmpty=v;
+  if(!v&&FILES.length===0){          // 演示：点「有文件」时把示例数据装回来
+    DEFAULT_FILES.forEach(f=>FILES.push(f.slice()));
+  }
   document.getElementById('btnEmp').classList.toggle('on',v);
   document.getElementById('btnHas').classList.toggle('on',!v);
+  renderFiles();
 }
 /* ---------- 遍历规则 ---------- */
 const DEF_DIRS=['.git','.svn','.hg','node_modules','packages','vendor','bower_components',
@@ -897,7 +969,8 @@ function runScan(){
   const skipped=document.getElementById('scanSkip');
   if(!bar)return;
   stopScan();
-  setEmpty(false);
+  demoEmpty=false;                       // 只切回列表视图，不注入示例数据
+  document.getElementById('body').classList.remove('is-empty');
   document.getElementById('btnScan').classList.add('on');
   const rb=document.getElementById('pathReload');
   if(rb)rb.classList.add('spinning');
