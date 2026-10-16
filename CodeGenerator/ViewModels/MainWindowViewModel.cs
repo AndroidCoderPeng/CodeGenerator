@@ -484,7 +484,6 @@ namespace CodeGenerator.ViewModels
             var readResult = await Task.Run(() => ReadCodeFiles(files, progress));
             _effectiveCodeLines = SelectEffectiveCodeLines(readResult.Lines, pageCount * linesPerPage);
             CurrentProgress = 100;
-            CurrentFile = $"代码文档已生成，有效代码共 {_effectiveCodeLines.Count} 行";
 
             if (readResult.Errors.Count > 0)
             {
@@ -509,9 +508,29 @@ namespace CodeGenerator.ViewModels
             }
 
             // 默认写入到软件共工作目录，如果_outputFilePath不为空，就保存到_outputFilePath
+            var documentPath = string.IsNullOrWhiteSpace(_outputFilePath)
+                ? Path.Combine(Environment.CurrentDirectory, "软著代码.docx")
+                : _outputFilePath;
+            var textFilePath = Path.ChangeExtension(documentPath, ".txt");
 
-            // 后续生成 TXT / Word 时使用 _effectiveCodeLines。
-            _ = fontSize;
+            try
+            {
+                await File.WriteAllLinesAsync(textFilePath, _effectiveCodeLines);
+                _outputFilePath = documentPath;
+
+                CurrentFile = $"文本代码文档已生成，共 {_effectiveCodeLines.Count} 行";
+                ShowToast($"TXT 已保存至：{textFilePath}");
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                MessageBox.Show($"无权限写入文本文件：\n{exception.Message}",
+                    "导出失败", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (IOException exception)
+            {
+                MessageBox.Show($"无法写入文本文件：\n{exception.Message}",
+                    "导出失败", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private static CodeReadResult ReadCodeFiles(
@@ -555,6 +574,12 @@ namespace CodeGenerator.ViewModels
             return new CodeReadResult(lines, errors);
         }
 
+        /// <summary>
+        /// 分别取总代码的前1500行和后1500行，组成最终的有效代码行集合
+        /// </summary>
+        /// <param name="codeLines"></param>
+        /// <param name="maximumLineCount"></param>
+        /// <returns></returns>
         private static IReadOnlyList<string> SelectEffectiveCodeLines(IReadOnlyList<string> codeLines,
             int maximumLineCount)
         {
@@ -693,11 +718,6 @@ namespace CodeGenerator.ViewModels
             //     });
             //     document.Save();
             // }
-        }
-
-        private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            // Growl.Success($"软著代码生成完毕，保存在{_outputFilePath}");
         }
 
         private void ShowToast(string message)
