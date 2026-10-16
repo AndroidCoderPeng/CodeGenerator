@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeGenerator.Cache;
 using CodeGenerator.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -19,6 +20,7 @@ namespace CodeGenerator.ViewModels
         #region VM
 
         [ObservableProperty] private string _codeFolder;
+        [ObservableProperty] private BlackListConfig _blackListConfig;
         [ObservableProperty] private ObservableCollection<FileInfo> _selectedFiles = [];
         [ObservableProperty] private ObservableCollection<string> _effectiveCodeLines = [];
         [ObservableProperty] private int _expectedCodePages;
@@ -56,12 +58,13 @@ namespace CodeGenerator.ViewModels
         ];
 
         private readonly IDialogService _dialogService;
-        
+
         public MainWindowViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
-            
-            _defaultFileSuffixTypes = _codeTypes.ToObservableCollection();
+
+            BlackListConfig = SettingsStore.Load<BlackListConfig>(ConfigSections.FileName, ConfigSections.BlackList);
+            DefaultFileSuffixTypes = _codeTypes.ToObservableCollection();
         }
 
         [RelayCommand]
@@ -89,6 +92,8 @@ namespace CodeGenerator.ViewModels
         {
             if (_dialogService.ShowDialog<EditTraverseRuleDialogViewModel>() == true)
             {
+                BlackListConfig =
+                    SettingsStore.Load<BlackListConfig>(ConfigSections.FileName, ConfigSections.BlackList);
                 _ = TraverseFolderAsync();
             }
         }

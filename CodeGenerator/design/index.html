@@ -232,6 +232,29 @@ body{
 }
 .rg-tag b{color:var(--t1);font-weight:700}
 .rg-tag.off{color:var(--t3);text-decoration:line-through;text-decoration-color:var(--line-2)}
+/* 可点击的标签：带右箭头，表明点了能跳到对应配置处 */
+.rg-tag.link{
+  display:inline-flex;align-items:center;gap:5px;font-family:inherit;cursor:pointer;transition:.18s;
+}
+.rg-tag.link svg{color:var(--t3);transition:.18s}
+.rg-tag.link:hover{
+  color:var(--a1);border-color:rgba(91,140,255,.45);background:rgba(91,140,255,.1);
+}
+.rg-tag.link:hover b,.rg-tag.link:hover svg{color:var(--a1)}
+.rg-tag.link:hover svg{transform:translateX(2px)}
+.sec-tip{
+  font-size:10px;font-weight:500;color:var(--t3);letter-spacing:0;text-transform:none;
+  padding:2px 7px;border-radius:99px;background:var(--field);border:1px solid var(--line);
+}
+/* 白名单区高亮脉冲，指明数据入口位置 */
+@keyframes zonePulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(91,140,255,0)}
+  25%{box-shadow:0 0 0 3px rgba(91,140,255,.22)}
+}
+#sfxZone.flash{
+  animation:zonePulse 1s ease-out 2;
+  border-radius:10px;
+}
 .rg-edit{
   margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:6px;
   padding:6px 12px;border-radius:99px;cursor:pointer;font-size:11.5px;font-weight:600;
@@ -538,9 +561,18 @@ body{
       遍历范围
     </span>
     <span class="rg-tags">
-      <span class="rg-tag">白名单 <b id="tagSfx">2</b> 类后缀</span>
-      <span class="rg-tag">跳过 <b id="tagDir">34</b> 类目录</span>
-      <span class="rg-tag">排除 <b id="tagPat">6</b> 类文件</span>
+      <button class="rg-tag link" id="tagSfx" onclick="jumpSfx()" title="点击定位到右侧「源码文件后缀 / 常用语言」配置">
+        白名单 <b>2</b> 类后缀
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <button class="rg-tag link" id="tagDir" onclick="openRule()" title="点击在「遍历规则」中编辑目录黑名单">
+        跳过 <b>34</b> 类目录
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <button class="rg-tag link" id="tagPat" onclick="openRule()" title="点击在「遍历规则」中编辑文件模式黑名单">
+        排除 <b>6</b> 类文件
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
       <span class="rg-tag">单文件 ≤ <b id="tagSize">2</b>MB</span>
       <span class="rg-tag off" id="tagHidden">隐藏/链接已排除</span>
     </span>
@@ -613,16 +645,22 @@ body{
         <div class="fld"><label>代码页数</label><input class="inp" placeholder="默认 60"></div>
         <div class="fld"><label>文档字号</label><input class="inp" placeholder="默认 8"></div>
       </div>
-      <div class="sec">源码文件后缀</div>
-      <div class="fld">
-        <div class="add">
-          <input class="inp" id="sfxInput" placeholder="如：cs">
-          <button onclick="addSfx()">+</button>
+      <!-- 后缀白名单区：遍历范围条上的「白名单 N 类后缀」点击后定位到这里 -->
+      <div id="sfxZone">
+        <div class="sec" style="display:flex;align-items:center;gap:8px">
+          源码文件后缀
+          <span class="sec-tip" id="sfxTip"></span>
         </div>
+        <div class="fld">
+          <div class="add">
+            <input class="inp" id="sfxInput" placeholder="如：cs">
+            <button onclick="addSfx()">+</button>
+          </div>
+        </div>
+        <div class="chips" id="chips"></div>
+        <div class="sec" style="margin-top:16px">常用语言</div>
+        <div class="langs" id="langs"></div>
       </div>
-      <div class="chips" id="chips"></div>
-      <div class="sec" style="margin-top:16px">常用语言</div>
-      <div class="langs" id="langs"></div>
     </aside>
   </div>
 
@@ -727,7 +765,7 @@ const FILES=[
 ];
 const LANGS=['py','cpp','c','java','cs','js','go','vue','html','ts','php','rs','swift','kt','rb','sh','m'];
 const ON=['cs','xaml'];
-let sfx=['cs','xaml'];
+let sfx=['cs'];   /* 自定义后缀；与已选常用语言去重后共同构成白名单 */
 
 function docIcon(e){
   const T=TYPES[e]||{c:'#7C8AA5',t:e.slice(0,4).toUpperCase()};
@@ -755,6 +793,7 @@ function delFile(i){FILES.splice(i,1);renderFiles()}
 function renderChips(){
   document.getElementById('chips').innerHTML=sfx.map((s,i)=>
     `<span class="chip">.${s}<i onclick="delSfx(${i})">×</i></span>`).join('');
+  countRule();   // 自定义后缀变化 → 同步遍历范围条上的白名单计数
 }
 function addSfx(){
   const el=document.getElementById('sfxInput');
@@ -764,8 +803,16 @@ function addSfx(){
 }
 function delSfx(i){sfx.splice(i,1);renderChips()}
 function renderLangs(){
-  document.getElementById('langs').innerHTML=LANGS.map(l=>
-    `<span class="lang${ON.includes(l)?' on':''}" onclick="this.classList.toggle('on')">.${l}</span>`).join('');
+  document.getElementById('langs').innerHTML=LANGS.map((l,i)=>
+    `<span class="lang${ON.includes(l)?' on':''}" onclick="toggleLang(${i})">.${l}</span>`).join('');
+  countRule();   // 常用语言选择变化 → 同步遍历范围条上的白名单计数
+}
+/* 常用语言以前只改 CSS class，ON 数组从不更新，导致白名单无数据源；现在真正写回数据 */
+function toggleLang(i){
+  const l=LANGS[i];
+  const k=ON.indexOf(l);
+  if(k>=0)ON.splice(k,1);else ON.push(l);
+  renderLangs();
 }
 function setEmpty(v){
   document.getElementById('body').classList.toggle('is-empty',v);
@@ -829,12 +876,38 @@ ruleDirs=DEF_DIRS.slice();rulePats=DEF_PATS.slice();renderDirs();renderPats();co
    说明真实的遍进行为：后台流式枚举、结果 Incremental 呈现、随时可停止，
    因此即便用户直接选择了庞大的源码根目录，界面也不会卡死。 */
 let scanTimer=null;
+/* 后缀白名单 = 自定义后缀 ∪ 已选常用语言（去重），与右侧面板同源 */
+function whitelist(){
+  const set={};
+  ON.forEach(l=>set[l]=1);
+  sfx.forEach(s=>set[s.replace(/^\./,'')]=1);
+  return Object.keys(set);
+}
 function applyRuleTags(){
-  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
-  set('tagSfx',sfx.length);set('tagDir',ruleDirs.length);set('tagPat',rulePats.length);
-  set('tagSize',(document.getElementById('rgSize')||{}).value||2);
+  const setB=(id,v)=>{const el=document.getElementById(id);if(el){const b=el.querySelector('b');if(b)b.textContent=v}};
+  setB('tagSfx',whitelist().length);
+  setB('tagDir',ruleDirs.length);
+  setB('tagPat',rulePats.length);
+  setB('tagSize',(document.getElementById('rgSize')||{}).value||2);
   const th=document.getElementById('tagHidden');
   if(th)th.classList.toggle('off',!(ruleHidden&&ruleLink));
+  const tip=document.getElementById('sfxTip');
+  if(tip){
+    const w=whitelist();
+    tip.textContent=w.length?w.join(' · '):'未选择任何后缀';
+    tip.style.color=w.length?'':'var(--warn)';
+  }
+}
+/* 从遍历范围条点「白名单 N 类后缀」→ 定位到右侧面板的真实配置处 */
+function jumpSfx(){
+  const zone=document.getElementById('sfxZone');
+  const panel=zone?zone.closest('.panel'):null;
+  if(!zone||!panel)return;
+  panel.scrollTo({top:zone.offsetTop-panel.offsetTop+panel.scrollTop-8,behavior:'smooth'});
+  zone.classList.remove('flash');
+  void zone.offsetWidth;
+  zone.classList.add('flash');
+  setTimeout(()=>zone.classList.remove('flash'),2200);
 }
 function runScan(){
   const bar=document.getElementById('scanBar');

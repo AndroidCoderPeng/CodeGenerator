@@ -597,6 +597,7 @@
 
                         <TextBox
                             Margin="0,4,0,0"
+                            MaxLength="1"
                             Style="{StaticResource FieldTextBoxStyle}"
                             Text="{Binding FileSizeLimit, FallbackValue=2}" />
                     </StackPanel>
@@ -610,6 +611,7 @@
 
                         <TextBox
                             Margin="0,4,0,0"
+                            MaxLength="2"
                             Style="{StaticResource FieldTextBoxStyle}"
                             Text="{Binding MaxTraverseDepth, FallbackValue=32}" />
                     </StackPanel>
@@ -622,7 +624,10 @@
                     Foreground="{DynamicResource TextSecondaryBrush}"
                     Text="文件数上限（达到即停止遍历）" />
 
-                <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding MaxFileCount, FallbackValue=5000}" />
+                <TextBox
+                    MaxLength="4"
+                    Style="{StaticResource FieldTextBoxStyle}"
+                    Text="{Binding MaxFileCount, FallbackValue=5000}" />
 
                 <TextBlock
                     Margin="0,12"

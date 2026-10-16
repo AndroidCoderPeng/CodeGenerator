@@ -301,6 +301,7 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
@@ -340,7 +341,7 @@
                             <Run
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource TextPrimaryBrush}"
-                                Text="{Binding SuffixWhiteList.Count, FallbackValue=2}" />
+                                Text="{Binding SuffixWhiteList.Count, Mode=OneWay, FallbackValue=2}" />
                             <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="类后缀" />
                         </TextBlock>
                     </Border>
@@ -357,7 +358,7 @@
                             <Run
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource TextPrimaryBrush}"
-                                Text="{Binding ExcludeFolders.Count, FallbackValue=34}" />
+                                Text="{Binding BlackListConfig.Folders.Count, Mode=OneWay, FallbackValue=34}" />
                             <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="类目录" />
                         </TextBlock>
                     </Border>
@@ -373,7 +374,7 @@
                             <Run
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource TextPrimaryBrush}"
-                                Text="{Binding ExcludeFiles.Count, FallbackValue=6}" />
+                                Text="{Binding BlackListConfig.Files.Count, Mode=OneWay, FallbackValue=6}" />
                             <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="类文件" />
                         </TextBlock>
                     </Border>
@@ -390,13 +391,29 @@
                             <Run
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource TextPrimaryBrush}"
-                                Text="{Binding SingleFileSize, FallbackValue=2}" />
+                                Text="{Binding BlackListConfig.FileSizeLimit, FallbackValue=2}" />
                             <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="MB" />
                         </TextBlock>
                     </Border>
 
-                    <Button
+                    <Border
                         Grid.Column="5"
+                        VerticalAlignment="Center"
+                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <TextBlock Margin="12,8" FontSize="14">
+                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="文件数上限" />
+                            <Run
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                Text="{Binding BlackListConfig.MaxFileCount, Mode=OneWay, FallbackValue=5000}" />
+                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="个" />
+                        </TextBlock>
+                    </Border>
+
+                    <Button
+                        Grid.Column="6"
                         Margin="12,8"
                         HorizontalAlignment="Right"
                         Command="{Binding EditTraverseRuleCommand}">
@@ -509,7 +526,7 @@
                                             FontSize="24"
                                             FontWeight="SemiBold"
                                             Foreground="{DynamicResource TextPrimaryBrush}"
-                                            Text="{Binding SelectedFiles.Count, FallbackValue=0}" />
+                                            Text="{Binding SelectedFiles.Count, Mode=OneWay, FallbackValue=0}" />
 
                                         <TextBlock
                                             Margin="4,0,0,4"
@@ -560,7 +577,7 @@
                                             FontSize="24"
                                             FontWeight="SemiBold"
                                             Foreground="{DynamicResource TextPrimaryBrush}"
-                                            Text="{Binding EffectiveCodeLines.Count, FallbackValue=0}" />
+                                            Text="{Binding EffectiveCodeLines.Count, Mode=OneWay, FallbackValue=0}" />
 
                                         <TextBlock
                                             Margin="4,0,0,4"
@@ -666,7 +683,7 @@
                                         VerticalAlignment="Center"
                                         FontSize="14"
                                         Foreground="{StaticResource AccentBlueBrush}"
-                                        Text="{Binding SelectedFiles.Count, StringFormat={}{0} 个, FallbackValue=0 个}" />
+                                        Text="{Binding SelectedFiles.Count, Mode=OneWay, StringFormat={}{0} 个, FallbackValue=0 个}" />
                                 </Border>
 
                                 <TextBlock
@@ -862,7 +879,7 @@
                                 <TextBox
                                     Grid.Column="0"
                                     Style="{StaticResource PlaceholderFieldTextBoxStyle}"
-                                    Tag="{Binding FileSuffixPlaceholder, FallbackValue=如：cs}" />
+                                    Tag="如：cs" />
 
                                 <Button
                                     Grid.Column="1"

@@ -84,6 +84,11 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
         var defaultConfig = new BlackListConfig();
         DefaultBlackListFolders = defaultConfig.Folders.ToObservableCollection();
         DefaultBlackListFiles = defaultConfig.Files.ToObservableCollection();
+        IsSkipHiddenFileEnabled = defaultConfig.SkipHiddenFile;
+        IsSkipSymbolEnabled = defaultConfig.SkipSymbol;
+        FileSizeLimit = defaultConfig.FileSizeLimit;
+        MaxTraverseDepth = defaultConfig.MaxTraverseDepth;
+        MaxFileCount = defaultConfig.MaxFileCount;
     }
 
     [RelayCommand]
