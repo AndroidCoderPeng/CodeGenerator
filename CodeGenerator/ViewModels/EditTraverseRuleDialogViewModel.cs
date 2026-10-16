@@ -23,8 +23,13 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
 
     #endregion
 
+    public sealed class DialogCloseRequestedEventArgs(bool? dialogResult) : EventArgs
+    {
+        public bool? DialogResult { get; } = dialogResult;
+    }
+    
     private readonly BlackListConfig _config;
-    public event EventHandler RequestClose;
+    public event EventHandler<DialogCloseRequestedEventArgs> RequestClose;
 
     public EditTraverseRuleDialogViewModel()
     {
@@ -84,7 +89,7 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
     [RelayCommand]
     private void DismissDialog()
     {
-        RequestClose?.Invoke(this, EventArgs.Empty);
+        RequestClose?.Invoke(this, new DialogCloseRequestedEventArgs(false));
     }
 
     [RelayCommand]
@@ -98,6 +103,6 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
         _config.MaxTraverseDepth = MaxTraverseDepth;
         _config.MaxFileCount = MaxFileCount;
         SettingsStore.Save(ConfigSections.FileName, ConfigSections.BlackList, _config);
-        RequestClose?.Invoke(this, EventArgs.Empty);
+        RequestClose?.Invoke(this, new DialogCloseRequestedEventArgs(true));
     }
 }

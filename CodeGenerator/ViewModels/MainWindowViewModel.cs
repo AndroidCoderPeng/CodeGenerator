@@ -81,12 +81,16 @@ namespace CodeGenerator.ViewModels
         /// </summary>
         private async Task TraverseFolderAsync()
         {
+            Console.WriteLine(@"遍历文件夹，获取所有文件");
         }
 
         [RelayCommand]
         private void EditTraverseRule()
         {
-            _dialogService.ShowDialog<EditTraverseRuleDialogViewModel>();
+            if (_dialogService.ShowDialog<EditTraverseRuleDialogViewModel>() == true)
+            {
+                _ = TraverseFolderAsync();
+            }
         }
 
         [RelayCommand]

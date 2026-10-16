@@ -12,7 +12,7 @@ public partial class EditTraverseRuleDialog : Window
         {
             if (DataContext is EditTraverseRuleDialogViewModel viewModel)
             {
-                viewModel.RequestClose += (_, _) => Close();
+                viewModel.RequestClose += (_, args) => DialogResult = args.DialogResult;
             }
         };
     }

@@ -7,5 +7,5 @@ public interface IDialogService
     /// </summary>
     /// <param name="parameter">要传递给对话框的可选参数。</param>
     /// <typeparam name="T">与视图对应的视图模型类型。</typeparam>
-    void ShowDialog<T>(object parameter = null) where T : class, new();
+    bool? ShowDialog<T>(object parameter = null) where T : class, new();
 }

@@ -5,7 +5,7 @@ namespace CodeGenerator.Utils;
 
 public sealed class DialogService : IDialogService
 {
-    public void ShowDialog<T>(object parameter = null) where T : class, new()
+    public bool? ShowDialog<T>(object parameter = null) where T : class, new()
     {
         var dialog = new EditTraverseRuleDialog
         {
@@ -13,6 +13,6 @@ public sealed class DialogService : IDialogService
             DataContext = new T()
         };
 
-        dialog.ShowDialog();
+        return dialog.ShowDialog();
     }
 }

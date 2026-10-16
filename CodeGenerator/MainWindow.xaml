@@ -750,27 +750,8 @@
                             </Style>
                         </ScrollViewer.Resources>
 
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-
-                            <StackPanel
-                                Grid.Row="0"
-                                Margin="12"
-                                Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="12" Orientation="Horizontal">
                                 <Border
                                     Margin="0,2"
                                     BorderBrush="{StaticResource AccentGradientBrush}"
@@ -786,7 +767,6 @@
                             </StackPanel>
 
                             <TextBlock
-                                Grid.Row="1"
                                 Margin="12,0"
                                 VerticalAlignment="Center"
                                 FontSize="14"
@@ -794,7 +774,6 @@
                                 Text="必填信息" />
 
                             <StackPanel
-                                Grid.Row="2"
                                 Margin="12,16,12,4"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
@@ -811,13 +790,11 @@
                             </StackPanel>
 
                             <TextBox
-                                Grid.Row="3"
                                 Margin="12,0"
                                 Style="{StaticResource FieldTextBoxStyle}"
                                 Text="{Binding DocumentHeader}" />
 
                             <StackPanel
-                                Grid.Row="4"
                                 Margin="12,12,12,4"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
@@ -834,19 +811,17 @@
                             </StackPanel>
 
                             <TextBox
-                                Grid.Row="5"
                                 Margin="12,0"
                                 Style="{StaticResource FieldTextBoxStyle}"
                                 Text="{Binding SoftwareVersion, FallbackValue=V1.0.0}" />
 
                             <TextBlock
-                                Grid.Row="6"
                                 Margin="12"
                                 FontSize="14"
                                 Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="排版参数" />
 
-                            <UniformGrid Grid.Row="7" Rows="1">
+                            <UniformGrid Columns="2" Rows="1">
                                 <StackPanel Margin="12,0" Orientation="Vertical">
                                     <TextBlock
                                         VerticalAlignment="Center"
@@ -873,13 +848,12 @@
                             </UniformGrid>
 
                             <TextBlock
-                                Grid.Row="8"
                                 Margin="12,12,12,4"
                                 FontSize="14"
                                 Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="源码文件后缀" />
 
-                            <Grid Grid.Row="9" Margin="12,0">
+                            <Grid Margin="12,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition Width="Auto" />
@@ -903,7 +877,6 @@
                             </Grid>
 
                             <ListBox
-                                Grid.Row="10"
                                 Margin="12"
                                 Background="Transparent"
                                 BorderThickness="0"
@@ -911,14 +884,12 @@
                                 ScrollViewer.CanContentScroll="False" />
 
                             <TextBlock
-                                Grid.Row="11"
                                 Margin="12,0"
                                 FontSize="14"
                                 Foreground="{DynamicResource TextSecondaryBrush}"
                                 Text="常用语言" />
 
                             <ListBox
-                                Grid.Row="12"
                                 Margin="12,4"
                                 Background="Transparent"
                                 BorderThickness="0"
@@ -987,7 +958,7 @@
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
-                        </Grid>
+                        </StackPanel>
                     </ScrollViewer>
                 </Border>
             </Grid>
