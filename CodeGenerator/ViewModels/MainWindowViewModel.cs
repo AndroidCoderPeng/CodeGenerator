@@ -638,10 +638,6 @@ namespace CodeGenerator.ViewModels
             for (var index = 0; index < codeLines.Count; index++)
             {
                 body.Append(CreateCodeParagraph(codeLines[index], fontSize));
-                if ((index + 1) % linesPerPage == 0 && index + 1 < codeLines.Count)
-                {
-                    body.Append(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
-                }
             }
 
             var headerReference = new HeaderReference
@@ -686,7 +682,7 @@ namespace CodeGenerator.ViewModels
                 Color = "000000"
             });
             var paragraphProperties = new ParagraphProperties(
-                new Justification { Val = JustificationValues.Center },
+                new Justification { Val = JustificationValues.Left },
                 borders);
             return new Paragraph(paragraphProperties, CreateRun(text, fontSize));
         }
@@ -714,8 +710,8 @@ namespace CodeGenerator.ViewModels
                     {
                         Before = "0",
                         After = "0",
-                        Line = "200",
-                        LineRule = LineSpacingRuleValues.Auto
+                        Line = "300",
+                        LineRule = LineSpacingRuleValues.Exact
                     }),
                 CreateRun(codeLine, fontSize));
         }
