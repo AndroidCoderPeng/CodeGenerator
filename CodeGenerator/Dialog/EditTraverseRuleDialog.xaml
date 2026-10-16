@@ -10,7 +10,7 @@
     Width="800"
     Height="700"
     d:DataContext="{d:DesignInstance Type=vm:EditTraverseRuleDialogViewModel}"
-    Background="{DynamicResource WindowBackgroundBrush}"
+    Background="{StaticResource WindowBackgroundBrush}"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
     WindowStartupLocation="CenterOwner"
@@ -183,9 +183,9 @@
             <Setter Property="Height" Value="40" />
             <Setter Property="Padding" Value="14,0" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -280,14 +280,14 @@
                                                         <Border
                                                             x:Name="ThumbBorder"
                                                             Margin="2"
-                                                            Background="{DynamicResource ScrollBarThumbBrush}"
+                                                            Background="{StaticResource ScrollBarThumbBrush}"
                                                             CornerRadius="6" />
                                                         <ControlTemplate.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}" />
+                                                                <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
                                                             </Trigger>
                                                             <Trigger Property="IsDragging" Value="True">
-                                                                <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}" />
+                                                                <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
@@ -312,7 +312,7 @@
                 <TextBlock
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Foreground="{DynamicResource TextTertiaryBrush}"
+                    Foreground="{StaticResource TextTertiaryBrush}"
                     Text="黑名单目录" />
 
                 <Grid Margin="0,12">
@@ -400,7 +400,7 @@
                 <TextBlock
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Foreground="{DynamicResource TextTertiaryBrush}"
+                    Foreground="{StaticResource TextTertiaryBrush}"
                     Text="黑名单文件" />
 
                 <Grid Margin="0,12">
@@ -488,7 +488,7 @@
                 <TextBlock
                     FontSize="14"
                     FontWeight="SemiBold"
-                    Foreground="{DynamicResource TextTertiaryBrush}"
+                    Foreground="{StaticResource TextTertiaryBrush}"
                     Text="通用选项" />
 
                 <Border
@@ -592,7 +592,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="14"
-                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Foreground="{StaticResource TextSecondaryBrush}"
                             Text="单文件上限（MB，超出跳过）" />
 
                         <TextBox
@@ -606,7 +606,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="14"
-                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Foreground="{StaticResource TextSecondaryBrush}"
                             Text="最大遍历深度（层）" />
 
                         <TextBox
@@ -621,7 +621,7 @@
                     Margin="0,0,0,8"
                     VerticalAlignment="Center"
                     FontSize="14"
-                    Foreground="{DynamicResource TextSecondaryBrush}"
+                    Foreground="{StaticResource TextSecondaryBrush}"
                     Text="文件数上限（达到即停止遍历）" />
 
                 <TextBox
@@ -632,7 +632,7 @@
                 <TextBlock
                     Margin="0,12"
                     FontSize="14"
-                    Foreground="{DynamicResource TextTertiaryBrush}"
+                    Foreground="{StaticResource TextTertiaryBrush}"
                     Text="命中目录黑名单的整棵子树不进入 · 后缀过滤先于读取文件信息 · 结果按全路径稳定排序以保证前后 30 页可复现"
                     TextWrapping="Wrap" />
             </StackPanel>
@@ -640,8 +640,8 @@
 
         <Border
             Grid.Row="1"
-            Background="{DynamicResource TitleBarBackgroundBrush}"
-            BorderBrush="{DynamicResource CardBorderBrush}"
+            Background="{StaticResource TitleBarBackgroundBrush}"
+            BorderBrush="{StaticResource CardBorderBrush}"
             BorderThickness="0,1,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -657,13 +657,13 @@
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="FontSize" Value="14" />
-                            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
                             <Setter Property="HorizontalAlignment" Value="Right" />
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="Padding" Value="16,10" />
                             <Setter Property="Margin" Value="16,0" />
                             <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
+                            <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}" />
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">

@@ -395,6 +395,25 @@ namespace CodeGenerator.ViewModels
             UserDefinedFileSuffixTypes.Remove(suffix);
         }
 
+        [RelayCommand]
+        private void OpenResult()
+        {
+            // 默认打开软件共工作目录，如果_outputFilePath不为空，就打开_outputFilePath所在的目录
+            var directoryToOpen = string.IsNullOrWhiteSpace(_outputFilePath)
+                ? Environment.CurrentDirectory
+                : Path.GetDirectoryName(_outputFilePath);
+            if (directoryToOpen != null && Directory.Exists(directoryToOpen))
+            {
+                Process.Start(new ProcessStartInfo(directoryToOpen)
+                {
+                    UseShellExecute = true
+                });
+            }
+        }
+
+        /// <summary>
+        /// Windows 文件缓存：第一次读取时需要从磁盘加载文件内容；读取过的文件会被系统缓存在内存中。第二次生成读取的是内存缓存，速度会非常快
+        /// </summary>
         [RelayCommand(AllowConcurrentExecutions = false)]
         private async Task GeneratorCode()
         {
@@ -488,6 +507,8 @@ namespace CodeGenerator.ViewModels
                 MessageBox.Show("未读取到有效代码行。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
+            // 默认写入到软件共工作目录，如果_outputFilePath不为空，就保存到_outputFilePath
 
             // 后续生成 TXT / Word 时使用 _effectiveCodeLines。
             _ = fontSize;
@@ -678,7 +699,7 @@ namespace CodeGenerator.ViewModels
         {
             // Growl.Success($"软著代码生成完毕，保存在{_outputFilePath}");
         }
-        
+
         private void ShowToast(string message)
         {
             ToastMessage = message;

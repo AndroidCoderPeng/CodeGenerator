@@ -1128,6 +1128,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0">
@@ -1138,14 +1139,15 @@
 
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0" Text="{Binding CurrentFile}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="14" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
                                     <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding CurrentProgress}" Value="100">
@@ -1158,6 +1160,7 @@
 
                         <TextBlock
                             Grid.Column="1"
+                            HorizontalAlignment="Right"
                             FontSize="14"
                             FontWeight="SemiBold"
                             Foreground="{StaticResource AccentTealBrush}"
@@ -1202,6 +1205,40 @@
 
                 <Button
                     Grid.Column="1"
+                    Margin="16,0,0,0"
+                    Command="{Binding OpenResultCommand}"
+                    ToolTip="打开文档保存目录（生成完成后可使用）">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                FontSize="16"
+                                Text="&#xe680;" />
+                            <TextBlock
+                                Margin="8,0,0,0"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="打开目录" />
+                        </StackPanel>
+                    </Button.Content>
+
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource CompactButtonStyle}" TargetType="Button">
+                            <Setter Property="IsEnabled" Value="False" />
+                            <Setter Property="Opacity" Value="0.45" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentProgress}" Value="100">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                    <Setter Property="Opacity" Value="1" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button
+                    Grid.Column="2"
                     Margin="16,0"
                     Command="{Binding GeneratorCodeCommand}"
                     Style="{StaticResource PrimaryCompactButtonStyle}">
@@ -1222,7 +1259,7 @@
                 </Button>
 
                 <Button
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Command="{Binding ChangeDocumentPathCommand}"
                     Content="&#xe6ca;"
                     FontFamily="/CodeGenerator;component/IconFont/#iconfont"
