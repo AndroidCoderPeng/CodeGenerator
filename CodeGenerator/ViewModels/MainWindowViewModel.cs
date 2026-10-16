@@ -282,6 +282,21 @@ namespace CodeGenerator.ViewModels
         }
 
         [RelayCommand]
+        private void RemoveCodeFile(CodeFile file)
+        {
+            if (file == null)
+            {
+                return;
+            }
+
+            var fileToRemove = SelectedFiles.FirstOrDefault(f => f.FilePath == file.FilePath);
+            if (fileToRemove != null)
+            {
+                SelectedFiles.Remove(fileToRemove);
+            }
+        }
+
+        [RelayCommand]
         private void AddFileSuffixType()
         {
             // if (string.IsNullOrWhiteSpace(_suffixType))
