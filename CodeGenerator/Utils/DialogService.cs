@@ -1,17 +1,16 @@
-﻿using CodeGenerator.Dialog;
-using CodeGenerator.ViewModels;
-using System.Windows;
+﻿using System.Windows;
+using CodeGenerator.Dialog;
 
 namespace CodeGenerator.Utils;
 
 public sealed class DialogService : IDialogService
 {
-    public void ShowEditTraverseRuleDialog()
+    public void ShowDialog<T>(object parameter = null) where T : class, new()
     {
         var dialog = new EditTraverseRuleDialog
         {
             Owner = Application.Current.MainWindow,
-            DataContext = new EditTraverseRuleDialogViewModel()
+            DataContext = new T()
         };
 
         dialog.ShowDialog();

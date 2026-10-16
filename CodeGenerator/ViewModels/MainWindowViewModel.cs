@@ -86,7 +86,7 @@ namespace CodeGenerator.ViewModels
         [RelayCommand]
         private void EditTraverseRule()
         {
-            _dialogService.ShowEditTraverseRuleDialog();
+            _dialogService.ShowDialog<EditTraverseRuleDialogViewModel>();
         }
 
         [RelayCommand]
