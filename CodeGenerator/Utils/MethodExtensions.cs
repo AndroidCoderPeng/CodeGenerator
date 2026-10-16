@@ -75,11 +75,6 @@ namespace CodeGenerator.Utils
             return $"#{red:X2}{green:X2}{blue:X2}";
         }
 
-        /// <summary>
-        /// List 转 ObservableCollection
-        /// </summary>
-        /// <param name="list"></param>
-        /// <returns></returns>
         public static ObservableCollection<T> ToObservableCollection<T>(this List<T> list)
         {
             var collection = new ObservableCollection<T>();

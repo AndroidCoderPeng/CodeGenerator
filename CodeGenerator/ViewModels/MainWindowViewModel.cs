@@ -21,19 +21,21 @@ namespace CodeGenerator.ViewModels
     [SupportedOSPlatform("windows6.1")]
     public partial class MainWindowViewModel : ObservableObject
     {
+        private sealed record CodeReadResult(IReadOnlyList<string> Lines, IReadOnlyList<string> Errors);
+
         #region VM
 
         [ObservableProperty] private string _codeFolder;
         [ObservableProperty] private BlackListConfig _blackListConfig;
         [ObservableProperty] private ObservableCollection<CodeFile> _selectedFiles = [];
-        [ObservableProperty] private int _docFontSize = 8;
         [ObservableProperty] private string _documentHeader;
         [ObservableProperty] private string _softwareVersion = "V1.0.0";
         [ObservableProperty] private string _documentPage = "60";
+        [ObservableProperty] private string _docFontSize = "8";
         [ObservableProperty] private string _userDefinedFileSuffix;
         [ObservableProperty] private ObservableCollection<string> _userDefinedFileSuffixTypes = [];
         [ObservableProperty] private ObservableCollection<string> _defaultFileSuffixTypes;
-        [ObservableProperty] private string _currentFile;
+        [ObservableProperty] private string _currentFile = "准备就绪";
         [ObservableProperty] private double _currentProgress;
 
         #endregion
@@ -64,6 +66,8 @@ namespace CodeGenerator.ViewModels
 
         public ObservableCollection<string> WhiteListSuffix =>
             [.. DefaultFileSuffixTypes.Concat(UserDefinedFileSuffixTypes)];
+
+        private IReadOnlyList<string> _effectiveCodeLines = [];
 
         public MainWindowViewModel(IDialogService dialogService)
         {
@@ -375,122 +379,161 @@ namespace CodeGenerator.ViewModels
             UserDefinedFileSuffixTypes.Remove(suffix);
         }
 
-        [RelayCommand]
-        private void GeneratorCode()
+        [RelayCommand(AllowConcurrentExecutions = false)]
+        private async Task GeneratorCode()
         {
-            // if (string.IsNullOrWhiteSpace(_codeHeader))
-            // {
-            //     MessageBox.Show("请设置文档页眉", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            //     return;
-            // }
-            //
-            // if (string.IsNullOrWhiteSpace(_softVersion))
-            // {
-            //     MessageBox.Show("请设置文档页眉软件版本", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            //     return;
-            // }
-            //
-            // var suffixSet = new HashSet<string>();
-            // //添加默认文件后缀（如果有的话）
-            // foreach (var item in _defaultSuffixCollection)
-            // {
-            //     if (item.IsChecked)
-            //     {
-            //         suffixSet.Add(item.Suffix);
-            //     }
-            // }
-            //
-            // //添加用户自定义的文件后缀（如果有的话）
-            // foreach (var suffix in _suffixCollection)
-            // {
-            //     suffixSet.Add(suffix);
-            // }
-            //
-            // if (!suffixSet.Any())
-            // {
-            //     MessageBox.Show("请设置需要格式化的文件后缀", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            //     return;
-            // }
-            //
-            // // 如果用户没有设置过保存路径，那就默认已登录账号桌面路径为保存文档的路径
-            // if (string.IsNullOrEmpty(_outputFilePath))
-            // {
-            //     var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            //     _outputFilePath = Path.Combine(desktopPath, "软著代码");
-            // }
-            //
-            // // 如果没有设置代码页数，默认60页（前后各30页）
-            // if (string.IsNullOrEmpty(_codePageLimit))
-            // {
-            //     _effectiveCodeCount = 60 * 50;
-            // }
-            // else
-            // {
-            //     if (!_codePageLimit.IsNumber())
-            //     {
-            //         MessageBox.Show("页码格式不对，请输入数字", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-            //         return;
-            //     }
-            //
-            //     _effectiveCodeCount = Convert.ToInt32(_codePageLimit) * 50;
-            // }
-            //
-            // //如果没有设置字体，默认8号。软著要求每页50行代码，8号字体正好合适
-            // if (string.IsNullOrEmpty(_fontSize))
-            // {
-            //     _size = 8;
-            // }
-            // else
-            // {
-            //     if (!_fontSize.IsNumber())
-            //     {
-            //         MessageBox.Show("字体大小格式不对，请输入数字", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-            //         return;
-            //     }
-            //
-            //     _size = Convert.ToInt32(_fontSize);
-            // }
-            //
-            // //从用户筛选后的文件列表中，按照设置的文件后缀遍历文件
-            // _generateFilePaths = FileCollection.Where(f => suffixSet.Contains(f.Extension)).Select(f => f.FullName)
-            //     .ToList();
-            // if (!_generateFilePaths.Any())
-            // {
-            //     MessageBox.Show("没找检索到符合条件的代码源文件", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
-            //     return;
-            // }
-            //
-            // //启动文件处理后台线程
-            // if (_backgroundWorker.IsBusy)
-            // {
-            //     MessageBox.Show("当前正在处理文件中", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //     return;
-            // }
-            //
-            // _backgroundWorker.RunWorkerAsync();
+            if (string.IsNullOrWhiteSpace(DocumentHeader))
+            {
+                MessageBox.Show("请设置文档页眉", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(SoftwareVersion))
+            {
+                MessageBox.Show("请设置软件版本号", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            const int linesPerPage = 50;
+            const int defaultPageCount = 60;
+
+            int pageCount;
+            if (string.IsNullOrWhiteSpace(DocumentPage))
+            {
+                pageCount = defaultPageCount;
+            }
+            else if (!int.TryParse(DocumentPage, out pageCount) || pageCount <= 0)
+            {
+                MessageBox.Show("代码页数格式不对，请输入大于 0 的整数。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            int fontSize;
+            if (string.IsNullOrWhiteSpace(DocFontSize))
+            {
+                fontSize = 8;
+            }
+            else if (!int.TryParse(DocFontSize, out fontSize) || fontSize <= 0)
+            {
+                MessageBox.Show("字体大小格式不对，请输入大于 0 的整数。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (pageCount > int.MaxValue / linesPerPage)
+            {
+                MessageBox.Show("代码页数过大。", "提示", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var files = SelectedFiles
+                .Where(file => !string.IsNullOrWhiteSpace(file.FilePath))
+                .OrderBy(file => file.FilePath, StringComparer.OrdinalIgnoreCase)
+                .Select(file => file.FilePath)
+                .ToList();
+
+            if (files.Count == 0)
+            {
+                MessageBox.Show("未找到可读取的代码文件。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            CurrentProgress = 0;
+            CurrentFile = "准备就绪";
+
+            var progress = new Progress<(string FileName, double Progress)>(value =>
+            {
+                CurrentFile = $"正在读取：{value.FileName}";
+                CurrentProgress = value.Progress;
+            });
+
+            var readResult = await Task.Run(() => ReadCodeFiles(files, progress));
+            _effectiveCodeLines = SelectEffectiveCodeLines(readResult.Lines, pageCount * linesPerPage);
+            CurrentProgress = 100;
+            CurrentFile = $"代码文档已生成，有效代码共 {_effectiveCodeLines.Count} 行";
+
+            if (readResult.Errors.Count > 0)
+            {
+                var errorSummary = string.Join(
+                    Environment.NewLine,
+                    readResult.Errors.Take(5).Select(error => $"• {error}"));
+
+                var remainingCount = readResult.Errors.Count - 5;
+                if (remainingCount > 0)
+                {
+                    errorSummary += $"{Environment.NewLine}另有 {remainingCount} 个文件读取失败。";
+                }
+
+                MessageBox.Show($"部分代码文件无法读取：{Environment.NewLine}{Environment.NewLine}{errorSummary}",
+                    "读取完成", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
+            if (_effectiveCodeLines.Count == 0)
+            {
+                MessageBox.Show("未读取到有效代码行。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // 后续生成 TXT / Word 时使用 _effectiveCodeLines。
+            _ = fontSize;
+        }
+
+        private static CodeReadResult ReadCodeFiles(
+            IReadOnlyList<string> filePaths,
+            IProgress<(string FileName, double Progress)> progress)
+        {
+            var lines = new List<string>();
+            var errors = new List<string>();
+            for (var index = 0; index < filePaths.Count; index++)
+            {
+                var filePath = filePaths[index];
+                var fileName = Path.GetFileName(filePath);
+
+                progress.Report((fileName, index * 100d / filePaths.Count));
+
+                try
+                {
+                    using var reader = new StreamReader(filePath);
+
+                    string line;
+                    while ((line = reader.ReadLine()) is not null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            lines.Add(line);
+                        }
+                    }
+                }
+                catch (UnauthorizedAccessException exception)
+                {
+                    errors.Add($"{fileName}：{exception.Message}");
+                }
+                catch (IOException exception)
+                {
+                    errors.Add($"{fileName}：{exception.Message}");
+                }
+
+                progress.Report((fileName, (index + 1) * 100d / filePaths.Count));
+            }
+
+            return new CodeReadResult(lines, errors);
+        }
+
+        private static IReadOnlyList<string> SelectEffectiveCodeLines(IReadOnlyList<string> codeLines,
+            int maximumLineCount)
+        {
+            if (codeLines.Count <= maximumLineCount)
+            {
+                return [.. codeLines];
+            }
+
+            var firstPartCount = maximumLineCount / 2;
+            var lastPartCount = maximumLineCount - firstPartCount;
+            return [.. codeLines.Take(firstPartCount), .. codeLines.TakeLast(lastPartCount)];
         }
 
         [RelayCommand]
         private void SaveDocument()
         {
-        }
-
-        /// <summary>
-        /// 删除文件
-        /// </summary>
-        /// <param name="file"></param>
-        private void DeleteFile(FileInfo file)
-        {
-            // FileCollection.Remove(file);
-        }
-
-        /// <summary>
-        /// 删除后缀
-        /// </summary>
-        /// <param name="suffix"></param>
-        private void DeleteFileSuffix(string suffix)
-        {
-            // SuffixCollection.Remove(suffix);
         }
 
         /// <summary>

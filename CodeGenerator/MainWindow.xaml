@@ -1117,10 +1117,19 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock
-                            Grid.Column="0"
-                            Foreground="{StaticResource TextSecondaryBrush}"
-                            Text="{Binding CurrentFile, StringFormat={}正在读取：{0}, FallbackValue=正在读取：}" />
+                        <TextBlock Grid.Column="0" Text="{Binding CurrentFile}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="14" />
+                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CurrentProgress}" Value="100">
+                                            <Setter Property="Foreground" Value="{StaticResource AccentTealBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
 
                         <TextBlock
                             Grid.Column="1"
