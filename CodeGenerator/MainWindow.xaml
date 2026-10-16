@@ -85,6 +85,55 @@
             </Setter>
         </Style>
 
+        <Style x:Key="ScrollBarStyle" TargetType="ScrollBar">
+            <Setter Property="Width" Value="8" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid Background="Transparent">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton
+                                        Command="ScrollBar.PageUpCommand"
+                                        Focusable="False"
+                                        Opacity="0" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Focusable="False">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border
+                                                    x:Name="ThumbBorder"
+                                                    MinHeight="{TemplateBinding MinHeight}"
+                                                    Margin="2"
+                                                    Background="{StaticResource ScrollBarThumbBrush}"
+                                                    CornerRadius="6" />
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsDragging" Value="True">
+                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton
+                                        Command="ScrollBar.PageDownCommand"
+                                        Focusable="False"
+                                        Opacity="0" />
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!--  圆角输入框  -->
         <Style x:Key="FieldTextBoxStyle" TargetType="TextBox">
             <Setter Property="Height" Value="36" />
@@ -164,6 +213,42 @@
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MiniButtonStyle" TargetType="Button">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Content" Value="&#xe668;" />
+            <Setter Property="FontFamily" Value="/CodeGenerator;component/IconFont/#iconfont" />
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
+            <Setter Property="Background" Value="{StaticResource IconBadgeRedBrush}" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="MiniButtonBorder"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="10"
+                            TextElement.Foreground="{TemplateBinding Foreground}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="MiniButtonBorder" Property="Background" Value="{StaticResource DangerBrush}" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.45" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -549,6 +634,10 @@
                                 ScrollViewer.CanContentScroll="False"
                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.Resources>
+                                    <Style BasedOn="{StaticResource ScrollBarStyle}" TargetType="ScrollBar" />
+                                </ListBox.Resources>
+
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel />
@@ -609,7 +698,8 @@
                                                         Margin="0,8"
                                                         HorizontalAlignment="Center"
                                                         Foreground="{StaticResource TextSecondaryBrush}"
-                                                        Text="{Binding FileName}" />
+                                                        Text="{Binding FileName}"
+                                                        TextTrimming="CharacterEllipsis" />
 
                                                     <TextBlock
                                                         HorizontalAlignment="Center"
@@ -740,53 +830,7 @@
                     CornerRadius="12">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <ScrollViewer.Resources>
-                            <Style TargetType="ScrollBar">
-                                <Setter Property="Width" Value="8" />
-                                <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ScrollBar">
-                                            <Grid Background="Transparent">
-                                                <Track x:Name="PART_Track" IsDirectionReversed="True">
-                                                    <Track.DecreaseRepeatButton>
-                                                        <RepeatButton
-                                                            Command="ScrollBar.PageUpCommand"
-                                                            Focusable="False"
-                                                            Opacity="0" />
-                                                    </Track.DecreaseRepeatButton>
-                                                    <Track.Thumb>
-                                                        <Thumb Focusable="False">
-                                                            <Thumb.Template>
-                                                                <ControlTemplate TargetType="Thumb">
-                                                                    <Border
-                                                                        x:Name="ThumbBorder"
-                                                                        Margin="2"
-                                                                        Background="{StaticResource ScrollBarThumbBrush}"
-                                                                        CornerRadius="6" />
-                                                                    <ControlTemplate.Triggers>
-                                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
-                                                                        </Trigger>
-                                                                        <Trigger Property="IsDragging" Value="True">
-                                                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
-                                                                        </Trigger>
-                                                                    </ControlTemplate.Triggers>
-                                                                </ControlTemplate>
-                                                            </Thumb.Template>
-                                                        </Thumb>
-                                                    </Track.Thumb>
-                                                    <Track.IncreaseRepeatButton>
-                                                        <RepeatButton
-                                                            Command="ScrollBar.PageDownCommand"
-                                                            Focusable="False"
-                                                            Opacity="0" />
-                                                    </Track.IncreaseRepeatButton>
-                                                </Track>
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
+                            <Style BasedOn="{StaticResource ScrollBarStyle}" TargetType="ScrollBar" />
                         </ScrollViewer.Resources>
 
                         <StackPanel Orientation="Vertical">
@@ -901,14 +945,15 @@
                                 <TextBox
                                     Grid.Column="0"
                                     Style="{StaticResource PlaceholderFieldTextBoxStyle}"
-                                    Tag="如：cs" />
+                                    Tag="如：cs"
+                                    Text="{Binding UserDefinedFileSuffix, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <Button
                                     Grid.Column="1"
                                     Height="36"
                                     Margin="12,0,0,0"
                                     Padding="10,0"
-                                    Command="{Binding AddFileSuffixTypeCommand}"
+                                    Command="{Binding AddFileSuffixCommand}"
                                     Content="&#xe605;"
                                     FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                     FontSize="16"
@@ -919,8 +964,54 @@
                                 Margin="12"
                                 Background="Transparent"
                                 BorderThickness="0"
-                                ItemsSource="{Binding FileSuffixTypes}"
-                                ScrollViewer.CanContentScroll="False" />
+                                ItemsSource="{Binding UserDefinedFileSuffixTypes}"
+                                ScrollViewer.CanContentScroll="False"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Margin" Value="0,0,8,8" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <ContentPresenter />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{StaticResource IconBadgeBlueBrush}"
+                                            BorderBrush="{StaticResource FocusGlowBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="16">
+                                            <StackPanel Margin="12,6" Orientation="Horizontal">
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    FontFamily="Consolas"
+                                                    FontSize="14"
+                                                    Text="{Binding}" />
+
+                                                <Button
+                                                    Margin="10,0,0,0"
+                                                    Command="{Binding DataContext.DeleteUserDefinedFileSuffixCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    CommandParameter="{Binding}"
+                                                    Style="{StaticResource MiniButtonStyle}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
                             <TextBlock
                                 Margin="12,0"

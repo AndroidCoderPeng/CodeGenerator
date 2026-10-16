@@ -24,14 +24,14 @@ namespace CodeGenerator.ViewModels
         #region VM
 
         [ObservableProperty] private string _codeFolder;
-        [ObservableProperty] private List<string> _whiteListSuffix = [];
         [ObservableProperty] private BlackListConfig _blackListConfig;
         [ObservableProperty] private ObservableCollection<CodeFile> _selectedFiles = [];
         [ObservableProperty] private int _docFontSize = 8;
         [ObservableProperty] private string _documentHeader;
         [ObservableProperty] private string _softwareVersion = "V1.0.0";
         [ObservableProperty] private string _documentPage = "60";
-        [ObservableProperty] private ObservableCollection<string> _fileSuffixTypes = [];
+        [ObservableProperty] private string _userDefinedFileSuffix;
+        [ObservableProperty] private ObservableCollection<string> _userDefinedFileSuffixTypes = [];
         [ObservableProperty] private ObservableCollection<string> _defaultFileSuffixTypes;
         [ObservableProperty] private string _currentFile;
         [ObservableProperty] private double _currentProgress;
@@ -62,6 +62,9 @@ namespace CodeGenerator.ViewModels
 
         private readonly IDialogService _dialogService;
 
+        public ObservableCollection<string> WhiteListSuffix =>
+            [.. DefaultFileSuffixTypes.Concat(UserDefinedFileSuffixTypes)];
+
         public MainWindowViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
@@ -71,6 +74,10 @@ namespace CodeGenerator.ViewModels
             CodeFolder = sourceFolderConfig.Path;
             BlackListConfig = SettingsStore.Load<BlackListConfig>(ConfigSections.FileName, ConfigSections.BlackList);
             DefaultFileSuffixTypes = _codeTypes.ToObservableCollection();
+
+            // 监听默认文件后缀和用户自定义文件后缀的变化，更新白名单后缀集合
+            DefaultFileSuffixTypes.CollectionChanged += (_, _) => OnPropertyChanged(nameof(WhiteListSuffix));
+            UserDefinedFileSuffixTypes.CollectionChanged += (_, _) => OnPropertyChanged(nameof(WhiteListSuffix));
         }
 
         [RelayCommand]
@@ -113,10 +120,6 @@ namespace CodeGenerator.ViewModels
             var config = BlackListConfig;
             var files = await Task.Run(() => TraverseFiles(CodeFolder, config, WhiteListSuffix));
             SelectedFiles = files.ToObservableCollection();
-
-            // 统计代码行数
-
-            // 计算可生成的代码页数
         }
 
         private static List<CodeFile> TraverseFiles(
@@ -329,30 +332,27 @@ namespace CodeGenerator.ViewModels
         }
 
         [RelayCommand]
-        private void AddFileSuffixType()
+        private void AddFileSuffix()
         {
-            // if (string.IsNullOrWhiteSpace(_suffixType))
-            // {
-            //     MessageBox.Show("文件类型为空，无法添加", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-            //     return;
-            // }
-            //
-            // if (_suffixType.Contains("*"))
-            // {
-            //     MessageBox.Show("文件类型不用自带『*』", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //     return;
-            // }
-            //
-            // if (SuffixCollection.Contains($"*{_suffixType}") || SuffixCollection.Contains($"*.{_suffixType}"))
-            // {
-            //     MessageBox.Show("文件类型已添加，请勿重复添加", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //     return;
-            // }
-            //
-            // SuffixCollection.Add(_suffixType.Contains(".") ? $"*{_suffixType}" : $"*.{_suffixType}");
-            //
-            // //添加之后将输入框置空
-            // SuffixType = string.Empty;
+            if (string.IsNullOrWhiteSpace(UserDefinedFileSuffix)) return;
+
+            var suffix = NormalizeSuffix(UserDefinedFileSuffix);
+            if (WhiteListSuffix.Any(item =>
+                    string.Equals(NormalizeSuffix(item), suffix, StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show("文件后缀已存在，请勿重复添加。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            UserDefinedFileSuffixTypes.Add(suffix);
+            UserDefinedFileSuffix = string.Empty;
+        }
+
+        [RelayCommand]
+        private void DeleteUserDefinedFileSuffix(string suffix)
+        {
+            if (string.IsNullOrWhiteSpace(suffix)) return;
+            UserDefinedFileSuffixTypes.Remove(suffix);
         }
 
         [RelayCommand]
