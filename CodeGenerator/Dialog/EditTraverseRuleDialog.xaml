@@ -16,6 +16,132 @@
     mc:Ignorable="d">
 
     <Window.Resources>
+        <!--  ========== 输入框（带水印） ==========  -->
+        <Style x:Key="FieldTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+            <Setter Property="CaretBrush" Value="{StaticResource FocusGlowBrush}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border
+                            x:Name="FieldBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            SnapsToDevicePixels="True">
+                            <Grid Margin="10,0">
+                                <TextBlock
+                                    x:Name="PlaceholderText"
+                                    Margin="4,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Foreground="{StaticResource TextTertiaryBrush}"
+                                    IsHitTestVisible="False"
+                                    Text="{TemplateBinding Tag}"
+                                    Visibility="Collapsed" />
+                                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!--  空文本 -> 显示水印；同时覆盖 null，绑定为 null 时 Value="" 是不匹配的  -->
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="Text" Value="{x:Null}">
+                                <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible" />
+                            </Trigger>
+
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="FieldBorder" Property="Background" Value="White" />
+                                <Setter TargetName="FieldBorder" Property="BorderBrush" Value="{StaticResource FocusGlowBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  开关样式复选框  -->
+        <Style x:Key="ToggleSwitchStyle" TargetType="CheckBox">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource CardBorderBrush}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" TextElement.Foreground="{TemplateBinding Foreground}">
+                            <Border
+                                x:Name="SwitchTrack"
+                                Width="36"
+                                Height="24"
+                                Background="{StaticResource CardBorderBrush}"
+                                CornerRadius="12">
+                                <Ellipse
+                                    x:Name="SwitchThumb"
+                                    Width="18"
+                                    Height="18"
+                                    Margin="3,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Fill="White"
+                                    RenderTransformOrigin="0.5,0.5">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform X="0" />
+                                    </Ellipse.RenderTransform>
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect
+                                            BlurRadius="4"
+                                            Direction="270"
+                                            Opacity="0.25"
+                                            ShadowDepth="1"
+                                            Color="{StaticResource AccentBlueColor}" />
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                            </Border>
+                            <ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="SwitchTrack" Property="Background" Value="{StaticResource AccentGradientBrush}" />
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="SwitchThumb"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                                To="12"
+                                                Duration="0:0:0.18" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="SwitchThumb"
+                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                                To="0"
+                                                Duration="0:0:0.18" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="CompactButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="40" />
             <Setter Property="Padding" Value="14,0" />
@@ -142,6 +268,270 @@
                     </Setter>
                 </Style>
             </ScrollViewer.Resources>
+
+            <StackPanel Margin="16" Orientation="Vertical">
+                <TextBlock
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextTertiaryBrush}"
+                    Text="黑名单目录" />
+
+                <Grid Margin="0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox
+                        Grid.Column="0"
+                        Style="{StaticResource FieldTextBoxStyle}"
+                        Tag="{Binding BlackListFolderPlaceholder, FallbackValue=输入目录名，如：node_modules}"
+                        Text="{Binding BlackListFolder}" />
+
+                    <Button
+                        Grid.Column="1"
+                        Height="36"
+                        Margin="12,0,0,0"
+                        Padding="10,0"
+                        Command="{Binding AddBlackListFolderCommand}"
+                        Content="&#xe605;"
+                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                        FontSize="16"
+                        Style="{StaticResource PrimaryCompactButtonStyle}" />
+                </Grid>
+
+                <ListBox
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding DefaultBlackListFolders}"
+                    ScrollViewer.CanContentScroll="False"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Margin" Value="0,0,8,8" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+
+                <TextBlock
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextTertiaryBrush}"
+                    Text="黑名单文件" />
+
+                <Grid Margin="0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox
+                        Grid.Column="0"
+                        Style="{StaticResource FieldTextBoxStyle}"
+                        Tag="{Binding BlackListFilePlaceholder, FallbackValue=输入文件后缀，如：.min.js}"
+                        Text="{Binding BlackListFile}" />
+
+                    <Button
+                        Grid.Column="1"
+                        Height="36"
+                        Margin="12,0,0,0"
+                        Padding="10,0"
+                        Command="{Binding AddBlackListFileCommand}"
+                        Content="&#xe605;"
+                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                        FontSize="16"
+                        Style="{StaticResource PrimaryCompactButtonStyle}" />
+                </Grid>
+
+                <ListBox
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding DefaultBlackListFiles}"
+                    ScrollViewer.CanContentScroll="False"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Margin" Value="0,0,8,8" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+
+                <TextBlock
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextTertiaryBrush}"
+                    Text="通用选项" />
+
+                <Border
+                    Margin="0,12"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{StaticResource FocusGlowBrush}" />
+                            <Setter Property="Background" Value="{StaticResource IconBadgeBlueBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=SkipHiddenFileCheckBox}" Value="False">
+                                    <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                    <Grid Margin="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            FontSize="16"
+                            Text="跳过隐藏目录/文件">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=SkipHiddenFileCheckBox}" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <CheckBox
+                            x:Name="SkipHiddenFileCheckBox"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding IsSkipHiddenFileEnabled}"
+                            Style="{StaticResource ToggleSwitchStyle}" />
+                    </Grid>
+                </Border>
+
+                <Border BorderThickness="1" CornerRadius="8">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{StaticResource FocusGlowBrush}" />
+                            <Setter Property="Background" Value="{StaticResource IconBadgeBlueBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=SkipSymbolCheckBox}" Value="False">
+                                    <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                    <Grid Margin="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            FontSize="16"
+                            Text="跳过符号链接/联接点（防递归死循环）">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsChecked, ElementName=SkipSymbolCheckBox}" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <CheckBox
+                            x:Name="SkipSymbolCheckBox"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding IsSkipSymbolEnabled}"
+                            Style="{StaticResource ToggleSwitchStyle}" />
+                    </Grid>
+                </Border>
+
+                <UniformGrid
+                    Margin="0,12"
+                    Columns="2"
+                    Rows="1">
+                    <StackPanel Margin="0,0,6,0" Orientation="Vertical">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Text="单文件上限（MB，超出跳过）" />
+
+                        <TextBox
+                            Margin="0,4,0,0"
+                            Style="{StaticResource FieldTextBoxStyle}"
+                            Text="{Binding FileSizeLimit, FallbackValue=2}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="6,0,0,0" Orientation="Vertical">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Text="最大遍历深度（层）" />
+
+                        <TextBox
+                            Margin="0,4,0,0"
+                            Style="{StaticResource FieldTextBoxStyle}"
+                            Text="{Binding MaxTraverseDepth, FallbackValue=32}" />
+                    </StackPanel>
+                </UniformGrid>
+
+                <TextBlock
+                    Margin="0,0,0,8"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Foreground="{DynamicResource TextSecondaryBrush}"
+                    Text="文件数上限（达到即停止遍历）" />
+
+                <TextBox Style="{StaticResource FieldTextBoxStyle}" Text="{Binding MaxFileCount, FallbackValue=5000}" />
+
+                <TextBlock
+                    Margin="0,12"
+                    FontSize="14"
+                    Foreground="{DynamicResource TextTertiaryBrush}"
+                    Text="命中目录黑名单的整棵子树不进入 · 后缀过滤先于读取文件信息 · 结果按全路径稳定排序以保证前后 30 页可复现"
+                    TextWrapping="Wrap" />
+            </StackPanel>
         </ScrollViewer>
 
         <Border
