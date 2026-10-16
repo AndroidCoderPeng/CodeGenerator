@@ -11,7 +11,7 @@
     MinWidth="1080"
     MinHeight="756"
     d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
-    Background="{DynamicResource WindowBackgroundBrush}"
+    Background="{StaticResource WindowBackgroundBrush}"
     ResizeMode="CanResize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -54,9 +54,9 @@
             <Setter Property="Height" Value="40" />
             <Setter Property="Padding" Value="10,0" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
@@ -90,9 +90,9 @@
             <Setter Property="Padding" Value="8,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="FontSize" Value="14" />
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CaretBrush" Value="{StaticResource FocusGlowBrush}" />
             <Setter Property="Template">
@@ -188,6 +188,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <Border
@@ -198,7 +199,7 @@
                     CornerRadius="8">
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsKeyboardFocused, ElementName=CodeFolderTextBox}" Value="True">
                                     <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}" />
@@ -228,7 +229,7 @@
                             VerticalAlignment="Center"
                             FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                             FontSize="18"
-                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Foreground="{StaticResource TextSecondaryBrush}"
                             Text="&#xe680;" />
 
                         <!--  输入框 + placeholder  -->
@@ -241,14 +242,14 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 FontSize="14"
-                                Foreground="{DynamicResource TextSecondaryBrush}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="{Binding CodeFolder, UpdateSourceTrigger=PropertyChanged}" />
 
                             <TextBlock
                                 Margin="10,0,0,0"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="{DynamicResource TextSecondaryBrush}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 IsHitTestVisible="False"
                                 Text="选择源码文件夹，如：D:\Pengxh\Code\CodeGenerator\CodeGenerator">
                                 <TextBlock.Style>
@@ -268,7 +269,7 @@
 
                 <Button
                     Grid.Column="1"
-                    Margin="16,0,0,0"
+                    Margin="16,0"
                     Command="{Binding SelectCodeFolderCommand}"
                     Style="{StaticResource PrimaryCompactButtonStyle}">
                     <Button.Content>
@@ -286,12 +287,20 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
+
+                <Button
+                    Grid.Column="2"
+                    Command="{Binding ReTraverseFolderCommand}"
+                    Content="&#xe614;"
+                    FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                    FontSize="20"
+                    Style="{StaticResource CompactButtonStyle}" />
             </Grid>
 
             <Border
                 Grid.Row="1"
                 Margin="16,0,16,16"
-                BorderBrush="{DynamicResource CardBorderBrush}"
+                BorderBrush="{StaticResource CardBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="12">
                 <Grid>
@@ -310,7 +319,7 @@
                         Margin="12,0"
                         Padding="16,0"
                         VerticalAlignment="Center"
-                        Background="{DynamicResource IconBadgeBlueBrush}"
+                        Background="{StaticResource IconBadgeBlueBrush}"
                         BorderThickness="0"
                         CornerRadius="8">
                         <StackPanel Orientation="Horizontal">
@@ -318,14 +327,14 @@
                                 VerticalAlignment="Center"
                                 FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                                 FontSize="16"
-                                Foreground="{DynamicResource AccentBlueBrush}"
+                                Foreground="{StaticResource AccentBlueBrush}"
                                 Text="&#xe69e;" />
 
                             <TextBlock
                                 Margin="12,8,0,8"
                                 FontSize="14"
                                 FontWeight="SemiBold"
-                                Foreground="{DynamicResource AccentBlueBrush}"
+                                Foreground="{StaticResource AccentBlueBrush}"
                                 Text="遍历范围" />
                         </StackPanel>
                     </Border>
@@ -333,16 +342,16 @@
                     <Border
                         Grid.Column="1"
                         VerticalAlignment="Center"
-                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="8">
                         <TextBlock Margin="12,8" FontSize="14">
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="白名单" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="白名单" />
                             <Run
                                 FontWeight="SemiBold"
-                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                Foreground="{StaticResource TextPrimaryBrush}"
                                 Text="{Binding WhiteListSuffix.Count, Mode=OneWay}" />
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="类后缀" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="类后缀" />
                         </TextBlock>
                     </Border>
 
@@ -350,32 +359,32 @@
                         Grid.Column="2"
                         Margin="12,0"
                         VerticalAlignment="Center"
-                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="8">
                         <TextBlock Margin="12,8" FontSize="14">
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="排除" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="排除" />
                             <Run
                                 FontWeight="SemiBold"
-                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                Foreground="{StaticResource TextPrimaryBrush}"
                                 Text="{Binding BlackListConfig.Folders.Count, Mode=OneWay, FallbackValue=34}" />
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="类目录" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="类目录" />
                         </TextBlock>
                     </Border>
 
                     <Border
                         Grid.Column="3"
                         VerticalAlignment="Center"
-                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="8">
                         <TextBlock Margin="12,8" FontSize="14">
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="排除" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="排除" />
                             <Run
                                 FontWeight="SemiBold"
-                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                Foreground="{StaticResource TextPrimaryBrush}"
                                 Text="{Binding BlackListConfig.Files.Count, Mode=OneWay, FallbackValue=6}" />
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="类文件" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="类文件" />
                         </TextBlock>
                     </Border>
 
@@ -383,32 +392,32 @@
                         Grid.Column="4"
                         Margin="12,0"
                         VerticalAlignment="Center"
-                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="8">
                         <TextBlock Margin="12,8" FontSize="14">
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="单文件 &lt;=" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="单文件 &lt;=" />
                             <Run
                                 FontWeight="SemiBold"
-                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                Foreground="{StaticResource TextPrimaryBrush}"
                                 Text="{Binding BlackListConfig.FileSizeLimit, FallbackValue=2}" />
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="MB" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="MB" />
                         </TextBlock>
                     </Border>
 
                     <Border
                         Grid.Column="5"
                         VerticalAlignment="Center"
-                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="8">
                         <TextBlock Margin="12,8" FontSize="14">
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="文件数上限" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="文件数上限" />
                             <Run
                                 FontWeight="SemiBold"
-                                Foreground="{DynamicResource TextPrimaryBrush}"
+                                Foreground="{StaticResource TextPrimaryBrush}"
                                 Text="{Binding BlackListConfig.MaxFileCount, Mode=OneWay, FallbackValue=5000}" />
-                            <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="个" />
+                            <Run Foreground="{StaticResource TextSecondaryBrush}" Text="个" />
                         </TextBlock>
                     </Border>
 
@@ -422,9 +431,9 @@
                                 <Setter Property="Height" Value="40" />
                                 <Setter Property="Padding" Value="14,0" />
                                 <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
                                 <Setter Property="BorderThickness" Value="1" />
-                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
                                 <Setter Property="Cursor" Value="Hand" />
                                 <Setter Property="Template">
                                     <Setter.Value>
@@ -489,7 +498,7 @@
                         Columns="3"
                         Rows="1">
                         <Border
-                            BorderBrush="{DynamicResource CardBorderBrush}"
+                            BorderBrush="{StaticResource CardBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="12">
                             <Grid>
@@ -501,7 +510,7 @@
                                 <Border
                                     Grid.Column="0"
                                     Margin="12"
-                                    Background="{DynamicResource IconBadgeBlueBrush}"
+                                    Background="{StaticResource IconBadgeBlueBrush}"
                                     CornerRadius="12">
                                     <TextBlock
                                         Margin="12"
@@ -518,20 +527,20 @@
                                     Orientation="Vertical">
                                     <TextBlock
                                         FontSize="14"
-                                        Foreground="{DynamicResource TextSecondaryBrush}"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
                                         Text="已选源码文件" />
 
                                     <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
                                         <TextBlock
                                             FontSize="24"
                                             FontWeight="SemiBold"
-                                            Foreground="{DynamicResource TextPrimaryBrush}"
+                                            Foreground="{StaticResource TextPrimaryBrush}"
                                             Text="{Binding SelectedFiles.Count, Mode=OneWay, FallbackValue=0}" />
 
                                         <TextBlock
                                             Margin="4,0,0,4"
                                             VerticalAlignment="Bottom"
-                                            Foreground="{DynamicResource TextSecondaryBrush}"
+                                            Foreground="{StaticResource TextSecondaryBrush}"
                                             Text="个" />
                                     </StackPanel>
                                 </StackPanel>
@@ -540,7 +549,7 @@
 
                         <Border
                             Margin="16,0"
-                            BorderBrush="{DynamicResource CardBorderBrush}"
+                            BorderBrush="{StaticResource CardBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="12">
                             <Grid>
@@ -552,7 +561,7 @@
                                 <Border
                                     Grid.Column="0"
                                     Margin="12"
-                                    Background="{DynamicResource IconBadgeTealBrush}"
+                                    Background="{StaticResource IconBadgeTealBrush}"
                                     CornerRadius="12">
                                     <TextBlock
                                         Margin="12"
@@ -569,20 +578,20 @@
                                     Orientation="Vertical">
                                     <TextBlock
                                         FontSize="14"
-                                        Foreground="{DynamicResource TextSecondaryBrush}"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
                                         Text="有效代码" />
 
                                     <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
                                         <TextBlock
                                             FontSize="24"
                                             FontWeight="SemiBold"
-                                            Foreground="{DynamicResource TextPrimaryBrush}"
+                                            Foreground="{StaticResource TextPrimaryBrush}"
                                             Text="{Binding EffectiveCodeLines.Count, Mode=OneWay, FallbackValue=0}" />
 
                                         <TextBlock
                                             Margin="4,0,0,4"
                                             VerticalAlignment="Bottom"
-                                            Foreground="{DynamicResource TextSecondaryBrush}"
+                                            Foreground="{StaticResource TextSecondaryBrush}"
                                             Text="行" />
                                     </StackPanel>
                                 </StackPanel>
@@ -590,7 +599,7 @@
                         </Border>
 
                         <Border
-                            BorderBrush="{DynamicResource CardBorderBrush}"
+                            BorderBrush="{StaticResource CardBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="12">
                             <Grid>
@@ -602,7 +611,7 @@
                                 <Border
                                     Grid.Column="0"
                                     Margin="12"
-                                    Background="{DynamicResource IconBadgePurpleBrush}"
+                                    Background="{StaticResource IconBadgePurpleBrush}"
                                     CornerRadius="12">
                                     <TextBlock
                                         Margin="12"
@@ -619,26 +628,26 @@
                                     Orientation="Vertical">
                                     <TextBlock
                                         FontSize="14"
-                                        Foreground="{DynamicResource TextSecondaryBrush}"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
                                         Text="预计生成" />
 
                                     <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
                                         <TextBlock
                                             FontSize="24"
                                             FontWeight="SemiBold"
-                                            Foreground="{DynamicResource TextPrimaryBrush}"
+                                            Foreground="{StaticResource TextPrimaryBrush}"
                                             Text="{Binding ExpectedCodePages, FallbackValue=0}" />
 
                                         <TextBlock
                                             Margin="4,0,0,4"
                                             VerticalAlignment="Bottom"
-                                            Foreground="{DynamicResource TextSecondaryBrush}"
+                                            Foreground="{StaticResource TextSecondaryBrush}"
                                             Text="页 · " />
 
                                         <TextBlock
                                             Margin="4,0,0,4"
                                             VerticalAlignment="Bottom"
-                                            Foreground="{DynamicResource TextSecondaryBrush}"
+                                            Foreground="{StaticResource TextSecondaryBrush}"
                                             Text="{Binding DocFontSize, StringFormat={}{0}号字, FallbackValue=8号字}" />
                                     </StackPanel>
                                 </StackPanel>
@@ -649,7 +658,7 @@
                     <Border
                         Grid.Row="1"
                         Margin="16,0,0,16"
-                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="12">
                         <Grid>
@@ -670,13 +679,13 @@
                                     Grid.Column="0"
                                     FontSize="16"
                                     FontWeight="SemiBold"
-                                    Foreground="{DynamicResource TextPrimaryBrush}"
+                                    Foreground="{StaticResource TextPrimaryBrush}"
                                     Text="源码文件" />
 
                                 <Border
                                     Grid.Column="1"
                                     Margin="16,0"
-                                    Background="{DynamicResource IconBadgeBlueBrush}"
+                                    Background="{StaticResource IconBadgeBlueBrush}"
                                     CornerRadius="12">
                                     <TextBlock
                                         Margin="12,0"
@@ -690,22 +699,95 @@
                                     Grid.Column="2"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource TextSecondaryBrush}"
+                                    Foreground="{StaticResource TextSecondaryBrush}"
                                     Text="双击打开 · 悬停移除" />
                             </Grid>
 
                             <Border
                                 Grid.Row="1"
-                                BorderBrush="{DynamicResource CardBorderBrush}"
+                                BorderBrush="{StaticResource CardBorderBrush}"
                                 BorderThickness="0,0,0,1" />
 
                             <ListBox
                                 Grid.Row="2"
-                                Margin="16"
+                                Margin="4"
                                 Background="Transparent"
                                 BorderThickness="0"
                                 ItemsSource="{Binding SelectedFiles}"
-                                ScrollViewer.CanContentScroll="False" />
+                                ScrollViewer.CanContentScroll="False">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Cursor" Value="Hand" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <ContentPresenter />
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            x:Name="CardBorder"
+                                            Width="128"
+                                            Height="112"
+                                            Margin="4"
+                                            Background="White"
+                                            BorderBrush="{StaticResource CardBorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            ToolTip="{Binding FileName}">
+                                            <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+                                                <Grid>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        FontFamily="/CodeGenerator;component/IconFont/#iconfont"
+                                                        FontSize="48"
+                                                        Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
+                                                        Text="&#xe652;" />
+
+                                                    <TextBlock
+                                                        Margin="0,12,0,0"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="Consolas"
+                                                        FontSize="10"
+                                                        Foreground="{Binding FileTypeColor, FallbackValue={StaticResource TextSecondaryBrush}}"
+                                                        Text="{Binding FileSuffix, FallbackValue=Java}" />
+                                                </Grid>
+
+                                                <TextBlock
+                                                    Margin="0,8"
+                                                    HorizontalAlignment="Center"
+                                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                                    Text="{Binding FileName}" />
+
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    FontSize="10"
+                                                    Foreground="{StaticResource TextTertiaryBrush}"
+                                                    Text="{Binding FileSize}" />
+                                            </StackPanel>
+                                        </Border>
+
+                                        <DataTemplate.Triggers>
+                                            <Trigger SourceName="CardBorder" Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="CardBorder" Property="BorderBrush" Value="{StaticResource FocusGlowBrush}" />
+                                            </Trigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </Grid>
                     </Border>
                 </Grid>
@@ -713,7 +795,7 @@
                 <Border
                     Grid.Column="1"
                     Margin="16,0,16,16"
-                    BorderBrush="{DynamicResource CardBorderBrush}"
+                    BorderBrush="{StaticResource CardBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="12">
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -739,14 +821,14 @@
                                                                     <Border
                                                                         x:Name="ThumbBorder"
                                                                         Margin="2"
-                                                                        Background="{DynamicResource ScrollBarThumbBrush}"
+                                                                        Background="{StaticResource ScrollBarThumbBrush}"
                                                                         CornerRadius="6" />
                                                                     <ControlTemplate.Triggers>
                                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}" />
+                                                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
                                                                         </Trigger>
                                                                         <Trigger Property="IsDragging" Value="True">
-                                                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource ScrollBarThumbHoverBrush}" />
+                                                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
                                                                         </Trigger>
                                                                     </ControlTemplate.Triggers>
                                                                 </ControlTemplate>
@@ -779,7 +861,7 @@
                                     Margin="8,0,0,0"
                                     FontSize="16"
                                     FontWeight="SemiBold"
-                                    Foreground="{DynamicResource TextPrimaryBrush}"
+                                    Foreground="{StaticResource TextPrimaryBrush}"
                                     Text="文档设置" />
                             </StackPanel>
 
@@ -787,7 +869,7 @@
                                 Margin="12,0"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="{DynamicResource TextSecondaryBrush}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="必填信息" />
 
                             <StackPanel
@@ -802,7 +884,7 @@
                                 <TextBlock
                                     Margin="4,0"
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource TextPrimaryBrush}"
+                                    Foreground="{StaticResource TextPrimaryBrush}"
                                     Text="页眉" />
                             </StackPanel>
 
@@ -823,7 +905,7 @@
                                 <TextBlock
                                     Margin="4,0"
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource TextSecondaryBrush}"
+                                    Foreground="{StaticResource TextSecondaryBrush}"
                                     Text="软件版本号" />
                             </StackPanel>
 
@@ -835,14 +917,14 @@
                             <TextBlock
                                 Margin="12"
                                 FontSize="14"
-                                Foreground="{DynamicResource TextSecondaryBrush}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="排版参数" />
 
                             <UniformGrid Columns="2" Rows="1">
                                 <StackPanel Margin="12,0" Orientation="Vertical">
                                     <TextBlock
                                         VerticalAlignment="Center"
-                                        Foreground="{DynamicResource TextSecondaryBrush}"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
                                         Text="代码页数" />
 
                                     <TextBox
@@ -854,7 +936,7 @@
                                 <StackPanel Margin="12,0" Orientation="Vertical">
                                     <TextBlock
                                         VerticalAlignment="Center"
-                                        Foreground="{DynamicResource TextSecondaryBrush}"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
                                         Text="文档字号" />
 
                                     <TextBox
@@ -867,7 +949,7 @@
                             <TextBlock
                                 Margin="12,12,12,4"
                                 FontSize="14"
-                                Foreground="{DynamicResource TextSecondaryBrush}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="源码文件后缀" />
 
                             <Grid Margin="12,0">
@@ -903,7 +985,7 @@
                             <TextBlock
                                 Margin="12,0"
                                 FontSize="14"
-                                Foreground="{DynamicResource TextSecondaryBrush}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 Text="常用语言" />
 
                             <ListBox
@@ -939,12 +1021,12 @@
                                         <ToggleButton Content="{Binding}">
                                             <ToggleButton.Style>
                                                 <Style TargetType="ToggleButton">
-                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
                                                     <Setter Property="Background" Value="Transparent" />
                                                     <Setter Property="FontFamily" Value="Consolas" />
                                                     <Setter Property="FontSize" Value="14" />
                                                     <Setter Property="BorderThickness" Value="1" />
-                                                    <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
+                                                    <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
                                                     <Setter Property="Cursor" Value="Hand" />
                                                     <Setter Property="Template">
                                                         <Setter.Value>
@@ -983,7 +1065,7 @@
 
         <Border
             Grid.Row="1"
-            BorderBrush="{DynamicResource CardBorderBrush}"
+            BorderBrush="{StaticResource CardBorderBrush}"
             BorderThickness="0,1,0,0">
             <Grid Margin="16,24">
                 <Grid.ColumnDefinitions>
@@ -1006,7 +1088,7 @@
 
                         <TextBlock
                             Grid.Column="0"
-                            Foreground="{DynamicResource TextSecondaryBrush}"
+                            Foreground="{StaticResource TextSecondaryBrush}"
                             Text="{Binding CurrentFile, StringFormat={}正在读取：{0}, FallbackValue=正在读取：}" />
 
                         <TextBlock
@@ -1021,7 +1103,7 @@
                         Grid.Row="1"
                         VerticalAlignment="Center"
                         Background="Transparent"
-                        BorderBrush="{DynamicResource CardBorderBrush}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="1"
                         Foreground="{StaticResource ProgressGradientBrush}"
                         Value="{Binding CurrentProgress}">

@@ -9,6 +9,7 @@ using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CodeGenerator.Cache;
+using CodeGenerator.Models;
 using CodeGenerator.Utils;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -23,7 +24,7 @@ namespace CodeGenerator.ViewModels
         [ObservableProperty] private string _codeFolder;
         [ObservableProperty] private List<string> _whiteListSuffix = [];
         [ObservableProperty] private BlackListConfig _blackListConfig;
-        [ObservableProperty] private ObservableCollection<FileInfo> _selectedFiles = [];
+        [ObservableProperty] private ObservableCollection<CodeFile> _selectedFiles = [];
         [ObservableProperty] private ObservableCollection<string> _effectiveCodeLines = [];
         [ObservableProperty] private int _expectedCodePages;
         [ObservableProperty] private int _docFontSize = 8;
@@ -65,6 +66,9 @@ namespace CodeGenerator.ViewModels
         {
             _dialogService = dialogService;
 
+            var sourceFolderConfig =
+                SettingsStore.Load<SourceFolderConfig>(ConfigSections.FileName, ConfigSections.SourceFolder);
+            CodeFolder = sourceFolderConfig.Path;
             BlackListConfig = SettingsStore.Load<BlackListConfig>(ConfigSections.FileName, ConfigSections.BlackList);
             DefaultFileSuffixTypes = _codeTypes.ToObservableCollection();
         }
@@ -73,9 +77,23 @@ namespace CodeGenerator.ViewModels
         private void SelectCodeFolder()
         {
             using var dialog = new FolderBrowserDialog();
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() != DialogResult.OK) return;
+
+            CodeFolder = dialog.SelectedPath;
+
+            // 缓存源码目录
+            SettingsStore.Save(ConfigSections.FileName, ConfigSections.SourceFolder,
+                new SourceFolderConfig { Path = CodeFolder });
+
+            _ = TraverseFolderAsync();
+        }
+
+        [RelayCommand]
+        private void ReTraverseFolder()
+        {
+            if (string.IsNullOrWhiteSpace(CodeFolder) || !Directory.Exists(CodeFolder))
             {
-                CodeFolder = dialog.SelectedPath;
+                return;
             }
 
             _ = TraverseFolderAsync();
@@ -97,12 +115,12 @@ namespace CodeGenerator.ViewModels
             SelectedFiles = files.ToObservableCollection();
         }
 
-        private static List<FileInfo> TraverseFiles(
+        private static List<CodeFile> TraverseFiles(
             string rootPath,
             BlackListConfig config,
             IEnumerable<string> whiteListSuffixes)
         {
-            var result = new List<FileInfo>();
+            var result = new List<CodeFile>();
             var blackListFolders = config.Folders
                 .Where(folder => !string.IsNullOrWhiteSpace(folder))
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -180,7 +198,14 @@ namespace CodeGenerator.ViewModels
                                 continue;
                             }
 
-                            result.Add(fileInfo);
+                            result.Add(new CodeFile
+                            {
+                                FilePath = fileInfo.FullName,
+                                FileName = fileInfo.Name,
+                                FileSuffix = fileInfo.Extension,
+                                FileTypeColor = fileInfo.Extension.GetFileTypeColor(),
+                                FileSize = fileInfo.Length.FormatFileSize()
+                            });
                         }
                         catch (UnauthorizedAccessException exception)
                         {

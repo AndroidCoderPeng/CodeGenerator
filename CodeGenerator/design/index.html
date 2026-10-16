@@ -215,6 +215,22 @@ body{
 }
 .btn-solid:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(91,140,255,.5)}
 .btn-solid:active{transform:none}
+/* 重新扫描按钮：与路径、生成按钮同高（46px），风格与表单控件保持一致 */
+.path-reload{
+  width:46px;height:46px;flex-shrink:0;border-radius:var(--r-md);cursor:pointer;
+  background:var(--field);border:1px solid var(--line);color:var(--t2);
+  display:flex;align-items:center;justify-content:center;transition:.25s;position:relative;overflow:hidden;
+}
+.path-reload:hover:not(:disabled){
+  color:var(--a1);border-color:var(--a1);background:rgba(91,140,255,.12);
+  transform:translateY(-1px);box-shadow:0 6px 16px rgba(91,140,255,.22);
+}
+.path-reload:hover:not(:disabled) svg{animation:spinReload .9s cubic-bezier(.4,1.5,.5,1)}
+.path-reload:active:not(:disabled){transform:translateY(0)}
+.path-reload:disabled{opacity:.45;cursor:not-allowed}
+.path-reload.spinning{color:var(--a1);border-color:rgba(91,140,255,.45);background:rgba(91,140,255,.1)}
+.path-reload.spinning svg{animation:spinReload 1.1s linear infinite}
+@keyframes spinReload{to{transform:rotate(360deg)}}
 /* 遍历范围条：紧贴路径行下方，规则默认生效且一眼可见 */
 .range{
   display:flex;align-items:center;gap:12px;margin:10px 22px 0;padding:9px 12px;
@@ -551,6 +567,9 @@ body{
     <button class="btn-solid" onclick="demoPick()">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
       选择文件夹
+    </button>
+    <button class="path-reload" id="pathReload" onclick="reloadScan()" title="重新扫描当前文件夹">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15.5-6.3L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.3L3 16"/><path d="M3 21v-5h5"/></svg>
     </button>
   </div>
 
@@ -917,6 +936,8 @@ function runScan(){
   stopScan();
   setEmpty(false);
   document.getElementById('btnScan').classList.add('on');
+  const rb=document.getElementById('pathReload');
+  if(rb)rb.classList.add('spinning');
   bar.classList.add('show');
   let f=0,s=0;found.textContent=0;skipped.textContent=0;
   scanTimer=setInterval(()=>{
@@ -929,6 +950,7 @@ function runScan(){
         `扫描完成 · 命中规则保留 <b>${found.textContent}</b> 个源码文件，<b>${skipped.textContent}</b> 个目录已被跳过`;
       bar.classList.add('show');
       document.getElementById('btnScan').classList.remove('on');
+      if(rb)rb.classList.remove('spinning');
       setTimeout(()=>{bar.classList.remove('show')},2600);
     }
   },180);
@@ -953,7 +975,20 @@ function runDemo(){
     }
   },260);
 }
-function demoPick(){alert('演示：选择文件夹后递归遍历源码文件并展示在网格中')}
+function demoPick(){
+  const box=document.querySelector('.path-box input');
+  if(box){
+    box.value='C:\\Users\\Pengxh\\Desktop\\MyProject';
+    box.dispatchEvent(new Event('input'));
+  }
+  runScan();
+}
+/* 重新扫描：复用 runScan 的流式逻辑；runScan 已自行管理 pathReload 的旋转状态 */
+function reloadScan(){
+  const btn=document.getElementById('pathReload');
+  if(!btn||btn.disabled)return;
+  runScan();
+}
 
 /* 标题栏窗口按钮（视觉稿演示） */
 function minWin() {

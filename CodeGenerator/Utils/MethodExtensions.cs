@@ -1,56 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CodeGenerator.Utils
 {
     public static class MethodExtensions
     {
-        /// <summary>
-        /// 递归遍历路径，得到所有文件
-        /// </summary>
-        /// <param name="path">路径一定是存在的，因为路径是系统Dialog返回的</param>
-        /// <param name="suffixes">后缀集合</param>
-        /// <returns></returns>
-        public static List<string> GetFilesBySuffix(this string path, HashSet<string> suffixes)
+        public static string FormatFileSize(this long bytes)
         {
-            var result = new List<string>();
-            var directoryInfo = new DirectoryInfo(path);
-            foreach (var suffix in suffixes)
-            {
-                var files = directoryInfo.GetFiles($"{suffix}", SearchOption.AllDirectories);
-                result.AddRange(files.Select(file => file.FullName));
-            }
+            const long kilobyte = 1024;
+            const long megabyte = kilobyte * 1024;
+            const long gigabyte = megabyte * 1024;
 
-            return result;
+            return bytes switch
+            {
+                >= gigabyte => $"{bytes / (double)gigabyte:F2} GB",
+                >= megabyte => $"{bytes / (double)megabyte:F2} MB",
+                >= kilobyte => $"{bytes / (double)kilobyte:F2} KB",
+                _ => $"{bytes} B"
+            };
         }
 
-        public static void TraverseFolder(this string path, ObservableCollection<FileInfo> result)
+        public static string GetFileTypeColor(this string fileExtension)
         {
-            try
+            var extension = fileExtension?.Trim().ToLowerInvariant();
+            return extension switch
             {
-                Parallel.ForEach(Directory.GetFiles(path), file => { result.Add(new FileInfo(file)); });
+                ".py" => "#4B8BBE",
+                ".c" => "#A8B9CC",
+                ".cpp" or ".cxx" or ".cc" or ".hpp" => "#F34B7D",
+                ".java" => "#E76F00",
+                ".cs" => "#7B4FE0",
+                ".js" or ".mjs" or ".cjs" => "#EFD81D",
+                ".ts" or ".tsx" => "#3178C6",
+                ".sql" => "#CC2927",
+                ".vb" or ".vbs" => "#945DB7",
+                ".go" => "#29BEB0",
+                ".pas" or ".pp" or ".dpr" => "#E3A300",
+                ".pl" or ".pm" => "#39457E",
+                ".f" or ".for" or ".f90" or ".f95" or ".f03" => "#734F96",
+                ".php" => "#777BB4",
+                ".r" => "#276DC3",
+                ".m" => "#E16737",
+                ".rs" => "#DEA584",
+                ".asm" or ".s" => "#6E4C13",
+                ".cob" or ".cbl" => "#005CA9",
+                ".swift" => "#F05138",
+                ".rb" => "#CC342D",
+                ".kt" or ".kts" => "#A97BFF",
 
-                foreach (var dir in Directory.GetDirectories(path))
-                {
-                    TraverseFolder(dir, result);
-                }
-            }
-            catch (Exception ex) when (ex is UnauthorizedAccessException || ex is IOException)
-            {
-                // 可选：记录无法访问的目录
-                Console.WriteLine($@"无法访问目录：{path}，原因：{ex.Message}");
-            }
+                ".html" or ".htm" => "#E44D26",
+                ".css" or ".scss" or ".sass" or ".less" => "#563D7C",
+                ".vue" => "#41B883",
+                ".md" or ".markdown" => "#519ABA",
+                ".json" => "#8BC9FF",
+                ".xaml" => "#2FA8E0",
+                _ => GetDeterministicColor(extension)
+            };
         }
 
-        public static bool IsNumber(this string value)
+        private static string GetDeterministicColor(string value)
         {
-            return int.TryParse(value, out _);
+            var hash = 2166136261u;
+
+            foreach (var character in value ?? string.Empty)
+            {
+                hash ^= character;
+                hash *= 16777619;
+            }
+
+            var red = 80 + (int)(hash & 0x7F);
+            var green = 80 + (int)((hash >> 8) & 0x7F);
+            var blue = 80 + (int)((hash >> 16) & 0x7F);
+
+            return $"#{red:X2}{green:X2}{blue:X2}";
         }
-        
+
         /// <summary>
         /// List 转 ObservableCollection
         /// </summary>

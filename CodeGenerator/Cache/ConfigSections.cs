@@ -5,9 +5,15 @@ namespace CodeGenerator.Cache
     public class ConfigSections
     {
         public const string FileName = "app-config.json";
+        public const string SourceFolder = "SourceFolder";
         public const string BlackList = "BlackList";
     }
 
+    public class SourceFolderConfig
+    {
+        public string Path { get; set; } = string.Empty;
+    }
+    
     public class BlackListConfig
     {
         public List<string> Folders { get; set; } =
@@ -57,7 +63,7 @@ namespace CodeGenerator.Cache
             // 常见代码生成器输出
             ".pb.cs", ".pb.go", ".pb.cc", ".pb.cpp", ".pb.h", ".pb.hpp", ".generated.java"
         ];
-        
+
         public bool SkipHiddenFile { get; set; } = true;
         public bool SkipSymbol { get; set; } = true;
         public int FileSizeLimit { get; set; } = 2;

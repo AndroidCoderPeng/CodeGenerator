@@ -21,7 +21,7 @@
 
     <ItemGroup>
         <Resource Include="IconFont\iconfont.ttf"/>
-        <Resource Include="Images\**\*"/>
+        <Resource Include="Images\launcher.ico"/>
     </ItemGroup>
 
     <ItemGroup>
