@@ -90,7 +90,7 @@
             <Setter Property="Padding" Value="8,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="FontSize" Value="14" />
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="{DynamicResource CardBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
@@ -341,7 +341,7 @@
                             <Run
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource TextPrimaryBrush}"
-                                Text="{Binding SuffixWhiteList.Count, Mode=OneWay, FallbackValue=2}" />
+                                Text="{Binding WhiteListSuffix.Count, Mode=OneWay}" />
                             <Run Foreground="{DynamicResource TextSecondaryBrush}" Text="类后缀" />
                         </TextBlock>
                     </Border>
@@ -802,7 +802,7 @@
                                 <TextBlock
                                     Margin="4,0"
                                     VerticalAlignment="Center"
-                                    Foreground="{DynamicResource TextSecondaryBrush}"
+                                    Foreground="{DynamicResource TextPrimaryBrush}"
                                     Text="页眉" />
                             </StackPanel>
 

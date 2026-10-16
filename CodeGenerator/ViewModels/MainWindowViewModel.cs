@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,6 +21,7 @@ namespace CodeGenerator.ViewModels
         #region VM
 
         [ObservableProperty] private string _codeFolder;
+        [ObservableProperty] private List<string> _whiteListSuffix = [];
         [ObservableProperty] private BlackListConfig _blackListConfig;
         [ObservableProperty] private ObservableCollection<FileInfo> _selectedFiles = [];
         [ObservableProperty] private ObservableCollection<string> _effectiveCodeLines = [];
@@ -80,11 +82,167 @@ namespace CodeGenerator.ViewModels
         }
 
         /// <summary>
-        /// 遍历文件夹，获取所有文件
+        /// 根据遍历规则遍历文件夹，获取所有文件，不设置白名单就获取所有文件，设置了白名单就获取白名单内的文件
         /// </summary>
         private async Task TraverseFolderAsync()
         {
-            Console.WriteLine(@"遍历文件夹，获取所有文件");
+            if (string.IsNullOrWhiteSpace(CodeFolder) || !Directory.Exists(CodeFolder))
+            {
+                SelectedFiles.Clear();
+                return;
+            }
+
+            var config = BlackListConfig;
+            var files = await Task.Run(() => TraverseFiles(CodeFolder, config, WhiteListSuffix));
+            SelectedFiles = files.ToObservableCollection();
+        }
+
+        private static List<FileInfo> TraverseFiles(
+            string rootPath,
+            BlackListConfig config,
+            IEnumerable<string> whiteListSuffixes)
+        {
+            var result = new List<FileInfo>();
+            var blackListFolders = config.Folders
+                .Where(folder => !string.IsNullOrWhiteSpace(folder))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var blackListFiles = config.Files
+                .Where(file => !string.IsNullOrWhiteSpace(file))
+                .ToArray();
+
+            var suffixes = whiteListSuffixes
+                .Where(suffix => !string.IsNullOrWhiteSpace(suffix))
+                .Select(NormalizeSuffix)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var maxDepth = Math.Max(0, config.MaxTraverseDepth);
+            var maxFileCount = Math.Max(0, config.MaxFileCount);
+            var maxFileSizeBytes = Math.Max(0L, config.FileSizeLimit) * 1024 * 1024;
+
+            var directories = new Stack<(string Path, int Depth)>();
+            directories.Push((rootPath, 0));
+
+            while (directories.Count > 0 && result.Count < maxFileCount)
+            {
+                var (directoryPath, depth) = directories.Pop();
+
+                try
+                {
+                    var directoryInfo = new DirectoryInfo(directoryPath);
+                    var directoryAttributes = directoryInfo.Attributes;
+
+                    if (config.SkipSymbol && directoryAttributes.HasFlag(FileAttributes.ReparsePoint))
+                    {
+                        continue;
+                    }
+
+                    if (config.SkipHiddenFile && directoryAttributes.HasFlag(FileAttributes.Hidden))
+                    {
+                        continue;
+                    }
+
+                    foreach (var filePath in Directory.EnumerateFiles(directoryPath))
+                    {
+                        if (result.Count >= maxFileCount)
+                        {
+                            break;
+                        }
+
+                        try
+                        {
+                            var fileInfo = new FileInfo(filePath);
+                            var fileAttributes = fileInfo.Attributes;
+
+                            if (config.SkipSymbol && fileAttributes.HasFlag(FileAttributes.ReparsePoint))
+                            {
+                                continue;
+                            }
+
+                            if (config.SkipHiddenFile && fileAttributes.HasFlag(FileAttributes.Hidden))
+                            {
+                                continue;
+                            }
+
+                            if (blackListFiles.Any(rule =>
+                                    fileInfo.Name.EndsWith(rule, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                continue;
+                            }
+
+                            if (suffixes.Count > 0 && !suffixes.Contains(fileInfo.Extension))
+                            {
+                                continue;
+                            }
+
+                            if (fileInfo.Length > maxFileSizeBytes)
+                            {
+                                continue;
+                            }
+
+                            result.Add(fileInfo);
+                        }
+                        catch (UnauthorizedAccessException exception)
+                        {
+                            Console.WriteLine($@"无法读取文件：{filePath}，原因：{exception.Message}");
+                        }
+                        catch (IOException exception)
+                        {
+                            Console.WriteLine($@"无法读取文件：{filePath}，原因：{exception.Message}");
+                        }
+                    }
+
+                    if (depth >= maxDepth)
+                    {
+                        continue;
+                    }
+
+                    foreach (var subDirectoryPath in Directory.EnumerateDirectories(directoryPath))
+                    {
+                        try
+                        {
+                            var subDirectory = new DirectoryInfo(subDirectoryPath);
+
+                            if (blackListFolders.Contains(subDirectory.Name))
+                            {
+                                continue;
+                            }
+
+                            directories.Push((subDirectoryPath, depth + 1));
+                        }
+                        catch (UnauthorizedAccessException exception)
+                        {
+                            Console.WriteLine($@"无法读取目录：{subDirectoryPath}，原因：{exception.Message}");
+                        }
+                        catch (IOException exception)
+                        {
+                            Console.WriteLine($@"无法读取目录：{subDirectoryPath}，原因：{exception.Message}");
+                        }
+                    }
+                }
+                catch (UnauthorizedAccessException exception)
+                {
+                    Console.WriteLine($@"无法读取目录：{directoryPath}，原因：{exception.Message}");
+                }
+                catch (IOException exception)
+                {
+                    Console.WriteLine($@"无法读取目录：{directoryPath}，原因：{exception.Message}");
+                }
+            }
+
+            return result;
+        }
+
+        private static string NormalizeSuffix(string suffix)
+        {
+            suffix = suffix.Trim();
+
+            if (suffix.StartsWith("*.", StringComparison.Ordinal))
+            {
+                return suffix[1..];
+            }
+
+            return suffix.StartsWith('.') ? suffix : $".{suffix}";
         }
 
         [RelayCommand]
