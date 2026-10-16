@@ -57,5 +57,11 @@ namespace CodeGenerator.Cache
             // 常见代码生成器输出
             ".pb.cs", ".pb.go", ".pb.cc", ".pb.cpp", ".pb.h", ".pb.hpp", ".generated.java"
         ];
+        
+        public bool SkipHiddenFile { get; set; } = true;
+        public bool SkipSymbol { get; set; } = true;
+        public int FileSizeLimit { get; set; } = 2;
+        public int MaxTraverseDepth { get; set; } = 32;
+        public int MaxFileCount { get; set; } = 5000;
     }
 }

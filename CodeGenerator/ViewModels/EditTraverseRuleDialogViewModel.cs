@@ -15,11 +15,11 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
     [ObservableProperty] private string _blackListFile;
     [ObservableProperty] private ObservableCollection<string> _defaultBlackListFolders;
     [ObservableProperty] private ObservableCollection<string> _defaultBlackListFiles;
-    [ObservableProperty] private bool _isSkipHiddenFileEnabled = true;
-    [ObservableProperty] private bool _isSkipSymbolEnabled = true;
-    [ObservableProperty] private int _fileSizeLimit = 2;
-    [ObservableProperty] private int _maxTraverseDepth = 32;
-    [ObservableProperty] private int _maxFileCount = 5000;
+    [ObservableProperty] private bool _isSkipHiddenFileEnabled;
+    [ObservableProperty] private bool _isSkipSymbolEnabled;
+    [ObservableProperty] private int _fileSizeLimit;
+    [ObservableProperty] private int _maxTraverseDepth;
+    [ObservableProperty] private int _maxFileCount;
 
     #endregion
 
@@ -29,8 +29,13 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
     public EditTraverseRuleDialogViewModel()
     {
         _config = SettingsStore.Load<BlackListConfig>(ConfigSections.FileName, ConfigSections.BlackList);
-        _defaultBlackListFolders = _config.Folders.ToObservableCollection();
-        _defaultBlackListFiles = _config.Files.ToObservableCollection();
+        DefaultBlackListFolders = _config.Folders.ToObservableCollection();
+        DefaultBlackListFiles = _config.Files.ToObservableCollection();
+        IsSkipHiddenFileEnabled = _config.SkipHiddenFile;
+        IsSkipSymbolEnabled = _config.SkipSymbol;
+        FileSizeLimit = _config.FileSizeLimit;
+        MaxTraverseDepth = _config.MaxTraverseDepth;
+        MaxFileCount = _config.MaxFileCount;
     }
 
     [RelayCommand]
@@ -81,12 +86,17 @@ public partial class EditTraverseRuleDialogViewModel : ObservableObject
     {
         RequestClose?.Invoke(this, EventArgs.Empty);
     }
-    
+
     [RelayCommand]
     private void SaveRule()
     {
         _config.Folders = [.. DefaultBlackListFolders];
         _config.Files = [.. DefaultBlackListFiles];
+        _config.SkipHiddenFile = IsSkipHiddenFileEnabled;
+        _config.SkipSymbol = IsSkipSymbolEnabled;
+        _config.FileSizeLimit = FileSizeLimit;
+        _config.MaxTraverseDepth = MaxTraverseDepth;
+        _config.MaxFileCount = MaxFileCount;
         SettingsStore.Save(ConfigSections.FileName, ConfigSections.BlackList, _config);
         RequestClose?.Invoke(this, EventArgs.Empty);
     }
