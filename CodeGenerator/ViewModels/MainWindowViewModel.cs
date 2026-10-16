@@ -9,6 +9,7 @@ using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using CodeGenerator.Cache;
 using CodeGenerator.Models;
 using CodeGenerator.Utils;
@@ -37,6 +38,8 @@ namespace CodeGenerator.ViewModels
         [ObservableProperty] private ObservableCollection<string> _defaultFileSuffixTypes;
         [ObservableProperty] private string _currentFile = "准备就绪";
         [ObservableProperty] private double _currentProgress;
+        [ObservableProperty] private bool _isToastVisible;
+        [ObservableProperty] private string _toastMessage;
 
         #endregion
 
@@ -68,6 +71,8 @@ namespace CodeGenerator.ViewModels
             [.. DefaultFileSuffixTypes.Concat(UserDefinedFileSuffixTypes)];
 
         private IReadOnlyList<string> _effectiveCodeLines = [];
+        private string _outputFilePath;
+        private DispatcherTimer _toastTimer;
 
         public MainWindowViewModel(IDialogService dialogService)
         {
@@ -102,6 +107,10 @@ namespace CodeGenerator.ViewModels
                         Suffixes = [.. UserDefinedFileSuffixTypes]
                     });
             };
+
+            var outputPathConfig = SettingsStore.Load<OutputPathConfig>(ConfigSections.FileName,
+                ConfigSections.OutputPath);
+            _outputFilePath = outputPathConfig.Path;
         }
 
         [RelayCommand]
@@ -316,9 +325,9 @@ namespace CodeGenerator.ViewModels
         private void ClearCodeFiles()
         {
             SelectedFiles.Clear();
-            _effectiveCodeLines= [];
+            _effectiveCodeLines = [];
         }
-        
+
         [RelayCommand]
         private void RemoveCodeFile(CodeFile file)
         {
@@ -539,20 +548,33 @@ namespace CodeGenerator.ViewModels
         }
 
         [RelayCommand]
-        private void SaveDocument()
+        private void ChangeDocumentPath()
         {
-        }
+            using var fileDialog = new SaveFileDialog();
+            fileDialog.Title = @"选择文档保存位置";
+            fileDialog.Filter = @"Word 文档 (*.docx)|*.docx";
+            fileDialog.DefaultExt = ".docx";
+            fileDialog.AddExtension = true;
+            fileDialog.FileName = string.IsNullOrWhiteSpace(_outputFilePath)
+                ? "软著代码.docx"
+                : Path.GetFileName(_outputFilePath);
 
-        /// <summary>
-        /// 选择文档保存的路径
-        /// </summary>
-        private void SelectDocSavePath()
-        {
-            // var fileDialog = new SaveFileDialog();
-            // if (fileDialog.ShowDialog() == DialogResult.OK)
-            // {
-            //     _outputFilePath = fileDialog.FileName;
-            // }
+            var cachedDirectory = Path.GetDirectoryName(_outputFilePath);
+            if (!string.IsNullOrWhiteSpace(cachedDirectory) && Directory.Exists(cachedDirectory))
+            {
+                fileDialog.InitialDirectory = cachedDirectory;
+            }
+
+            if (fileDialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            _outputFilePath = fileDialog.FileName;
+            SettingsStore.Save(
+                ConfigSections.FileName, ConfigSections.OutputPath,
+                new OutputPathConfig { Path = _outputFilePath });
+            ShowToast($"文档保存路径已更改为：{_outputFilePath}");
         }
 
         private void Worker_OnDoWork(object sender, DoWorkEventArgs e)
@@ -655,6 +677,25 @@ namespace CodeGenerator.ViewModels
         private void Worker_OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // Growl.Success($"软著代码生成完毕，保存在{_outputFilePath}");
+        }
+        
+        private void ShowToast(string message)
+        {
+            ToastMessage = message;
+            IsToastVisible = true;
+
+            if (_toastTimer == null)
+            {
+                _toastTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+                _toastTimer.Tick += (s, e) =>
+                {
+                    _toastTimer.Stop();
+                    IsToastVisible = false;
+                };
+            }
+
+            _toastTimer.Stop();
+            _toastTimer.Start();
         }
     }
 }

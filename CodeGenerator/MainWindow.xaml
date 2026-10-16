@@ -1223,12 +1223,37 @@
 
                 <Button
                     Grid.Column="2"
-                    Command="{Binding SaveDocumentCommand}"
+                    Command="{Binding ChangeDocumentPathCommand}"
                     Content="&#xe6ca;"
                     FontFamily="/CodeGenerator;component/IconFont/#iconfont"
                     FontSize="20"
-                    Style="{StaticResource CompactButtonStyle}" />
+                    Style="{StaticResource CompactButtonStyle}"
+                    ToolTip="更改文件保存位置" />
             </Grid>
+        </Border>
+
+        <Border
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Panel.ZIndex="999"
+            Background="Gray"
+            CornerRadius="16">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsToastVisible}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock
+                Margin="16,8"
+                FontSize="14"
+                Foreground="White"
+                Text="{Binding ToastMessage}" />
         </Border>
     </Grid>
 </Window>

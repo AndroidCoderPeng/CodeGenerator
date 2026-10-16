@@ -8,6 +8,7 @@ namespace CodeGenerator.Cache
         public const string SourceFolder = "SourceFolder";
         public const string BlackList = "BlackList";
         public const string UserDefinedFileSuffix = "UserDefinedFileSuffix";
+        public const string OutputPath = "OutputPath";
     }
 
     public class SourceFolderConfig
@@ -75,5 +76,10 @@ namespace CodeGenerator.Cache
     public class UserDefinedFileSuffixConfig
     {
         public List<string> Suffixes { get; set; } = [];
+    }
+    
+    public class OutputPathConfig
+    {
+        public string Path { get; set; } = string.Empty;
     }
 }
